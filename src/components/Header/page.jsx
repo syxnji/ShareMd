@@ -6,6 +6,7 @@ export function Header() {
     <header className={styles.header}>
       <Link href={"/login"}>Login</Link>
       <Link href={"/"}>Top</Link>
+      <Link href={"/Library"}>Library</Link>
     </header>
   );
 }

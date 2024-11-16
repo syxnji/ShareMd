@@ -1,0 +1,52 @@
+.outerMenu{
+    position: relative;
+    width: 25%;
+    background-color: #fff;
+    border-right: solid 1px #999;
+}
+.innerMenu{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px;
+}
+.head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.head p{
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.category{
+    margin-top: 10px;
+}
+.category p{
+    color: #555;
+    font-size: 1rem;
+    font-weight: bold;
+}
+.notes{
+    margin-left: 1rem;
+}
+.note p{
+    color: #aaa;
+    font-size: 0.8rem;
+    font-weight: normal;
+}
+.foot{
+    width: 100%;
+    display: flex;
+    padding: 5px 0;
+    align-items: center;
+    justify-content: center;
+    background-color: #333;
+    border-radius: 100px;
+}
+.foot p{
+    font-size: 0.7rem;
+    margin-left: 5px;
+    color: #fff;
+}

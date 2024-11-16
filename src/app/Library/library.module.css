@@ -1,0 +1,85 @@
+.main{
+    display: flex;
+}
+.content{
+    width: 100%;
+}
+
+/* head */
+.outerHead{
+    width: 100%;
+    margin-bottom: 50px;
+}
+.innerHead{
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.left .title{
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.right{
+    display: flex;
+}
+.layouts{
+    display: flex;
+}
+.layouts button{
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 5px;
+    border: solid 1px #aaa;
+    border-radius: 5px;
+}
+.addNote button{
+    height: 32px;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #429;
+    border: solid 1px #aaa;
+    border-radius: 5px;
+    color: #fff;
+}
+.addNote button span{
+    margin-left: 5px;
+}
+
+/* search */
+.search{
+    margin: 5px;
+}
+.search form{
+    display: flex;
+}
+.search input{
+    width: 50%;
+    height: 32px;
+    padding-left: 5px;
+    margin-right: 5px;
+    border: solid 2px #aaa;
+    border-radius: 10px;
+}
+.search button{
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: solid 2px #aaa;
+    border-radius: 10px;
+}
+
+/* notes */
+.notes{
+    padding: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}

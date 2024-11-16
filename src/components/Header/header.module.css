@@ -2,3 +2,6 @@
     background-color: #eee;
     color: #333;
 }
+.header a{
+    margin-left: 10px;
+}
