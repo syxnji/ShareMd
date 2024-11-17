@@ -3,7 +3,7 @@ import Link from "next/link"
 
 export function Notes() {
     return(
-        <Link href={"/"} className={styles.link}>
+        <Link href={"/Editor"} className={styles.link}>
             <div className={styles.note}>
                 
                 <div className={styles.top}>
