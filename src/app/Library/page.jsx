@@ -5,6 +5,7 @@ import { BsFileEarmarkPlus } from "react-icons/bs";
 import { BsSearch } from "react-icons/bs";
 import { BsList } from "react-icons/bs";
 import styles from "./library.module.css";
+import { LuListChecks } from "react-icons/lu";
 
 
 export default function Library() {
@@ -22,6 +23,11 @@ export default function Library() {
                                 <p className={styles.title}>
                                     Category Name
                                 </p>
+                                <div className={styles.auth}>
+                                    <button>
+                                        <LuListChecks size={25} /> 
+                                    </button>
+                                </div>
                             </div>
                             <div className={styles.right}>
                                 <div className={styles.layouts}>

@@ -9,7 +9,7 @@ export function Menu() {
                 <div className={styles.top}>
                     <div className={styles.head}>
                         <p>Books</p>
-                        <BsArrowBarLeft size={15} />
+                        <BsArrowBarLeft size={20} />
                     </div>
                     <div className={styles.categories}>
                         <div className={styles.category}>

@@ -15,6 +15,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    border-bottom: solid 1px #ddd;
 }
 .head svg{
     border-radius: 10px;
@@ -22,8 +23,7 @@
     transition: all 0.3s;
 }
 .head svg:hover{
-    background-color: #777;
-    color: #fff;
+    background-color: #ddd;
 }
 .head p{
     font-size: 1.5rem;
@@ -31,7 +31,7 @@
 }
 .category{
     padding: 10px;
-    margin-top: 10px;
+    margin-top: 15px;
     border-radius: 10px;
     transition: 0.2s;
 }

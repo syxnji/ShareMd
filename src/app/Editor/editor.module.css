@@ -1,40 +1,92 @@
 
-/* main */
-.mdContent{
-    overflow-y: auto;
-    height: 80dvh;
-    /* headerの高さで調整 */
-    margin-top: 30px;
+.main{
     display: flex;
 }
-.mdInput{
-    padding: 5px;
-    background-color: #eee;
+.content{
+    width: 100%;
+    padding: 10px;
+}
+
+/* head */
+.head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: solid 1px #ddd;
+    margin-bottom: 15px;
+}
+.title{
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* md */
+.mdContent{
+    display: flex;
+    gap: 10px;
+}
+.innerContent{
     width: 50%;
+}
+.mdHead{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 10px;
+    background-color: #333;
+    border-radius: 10px 10px 0 0;
+}
+.mdHead svg{
+    color: #fff;
+    transition: all 0.3s;
+}
+.mdHead svg:hover{
+    color: #77f;
+}
+.mdInput{
+    width: 100%;
 }
 .mdPreview{
-    padding: 5px;
-    background-color: #eee;
-    width: 50%;
-    margin-left: 5px;
+    width: 100%;
+}
+.mdTitle{
+    font-weight: bold;
+    font-size: 0.7rem;
+    color: #aaa;
 }
 .mdInputArea{
-    height: 100px;
+    box-sizing: border-box;
+    height: 70vh;
+    width: 100%;
     resize: vertical;
-    width: 98%;
-}
-.mdPreviewArea{
     background-color: #fff;
     border: solid 1px #888;
-    border-radius: 3px;
-    padding: 0 3px;
+    border-radius: 0 0 10px 10px;
+}
+.mdPreviewArea{
+    height: 70vh;
+    overflow-y: auto;
+    background-color: #fff;
+    border: solid 1px #888;
+    border-radius: 0 0 5px 5px;
 }
 .saveBtn{
-    margin-top: 5px;
-    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 32px;
+    padding: 5px 10px;
+    font-weight: bold;
     color: #fff;
-    background-color: #777;
-    border-radius: 5px;
-    /* footerの高さで調整 */
-    margin-bottom: 30px;
+    background-color: #429;
+    border: solid 1px #ccc;
+    border-radius: 10px;
+    transition: all 0.3s;
+}
+.saveBtn:hover{
+    background-color: #eee;
+    color: #429;
+}
+.saveBtn span{
+    margin-left: 5px;
 }

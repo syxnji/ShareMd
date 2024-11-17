@@ -9,7 +9,7 @@
 /* head */
 .outerHead{
     width: 100%;
-    margin-bottom: 50px;
+    margin-bottom: 15px;
 }
 .innerHead{
     display: flex;
@@ -17,9 +17,29 @@
     align-items: center;
     border-bottom: solid 1px #ddd;
 }
+.left{
+    display: flex;
+    align-items: center;
+}
 .left .title{
     font-size: 1.5rem;
     font-weight: bold;
+}
+.auth button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    margin-left: 10px;
+    padding: 5px;
+    border: none;
+    border-radius: 10px;
+    background-color: transparent;
+    transition: all 0.3s;
+}
+.auth button:hover{
+    background-color: #ddd;
 }
 .right{
     display: flex;
@@ -35,7 +55,7 @@
     justify-content: center;
     margin-right: 5px;
     border: solid 1px #aaa;
-    border-radius: 5px;
+    border-radius: 10px;
     transition: all 0.3s;
 }
 .layouts button:hover{
@@ -51,7 +71,7 @@
     font-weight: bold;
     background-color: #429;
     border: solid 1px #aaa;
-    border-radius: 5px;
+    border-radius: 10px;
     color: #fff;
     transition: all 0.3s;
 }
@@ -65,13 +85,14 @@
 
 /* search */
 .search{
+    width: 100%;
     margin-bottom: 10px;
 }
 .search form{
     display: flex;
 }
 .search input{
-    width: 50%;
+    width: 40%;
     height: 32px;
     padding-left: 5px;
     margin-right: 5px;
