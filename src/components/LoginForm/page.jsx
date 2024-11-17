@@ -1,66 +1,54 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import styles from "./login.module.css";
+import Link from "next/link";
 
-export default function LoginForm() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const router = useRouter()
+export default function Login(props) {
+  const [mailaddress, setMailaddress] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError('')
+    e.preventDefault();
 
     try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      })
-
-      if (response.ok) {
-        const { token } = await response.json()
-        localStorage.setItem('token', token)
-        router.push('/') // Redirect to home page after successful login
-      } else {
-        const data = await response.json()
-        setError(data.error || 'Login failed')
-      }
-    } catch (error) {
-      setError('An error occurred. Please try again.')
+      // const ここから！！
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="email" className="block mb-2">Email:</label>
+    <>
+    {/* <form onSubmit={handleSubmit} className={styles.form}> */}
+    <form onSubmit="" className={styles.form}>
+      <div className={styles.selectForm}>
+        <Link href={"/register"}>新規登録</Link>
+        <p>ログイン</p>
+      </div>
+      <div className={styles.formContent}>
+        <label htmlFor="mailaddress" className={styles.label}>Mailaddress:</label>
         <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="w-full px-3 py-2 border rounded"
+        id="mailaddress"
+        type="email"
+        value={mailaddress}
+        onChange={(e) => setMailaddress(e.target.value)}
+        required 
         />
       </div>
-      <div>
-        <label htmlFor="password" className="block mb-2">Password:</label>
+      <div className={styles.formContent}>
+        <label htmlFor="password" className={styles.label}>Password:</label>
         <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="w-full px-3 py-2 border rounded"
+        id="password"
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required 
         />
       </div>
-      {error && <p className="text-red-500">{error}</p>}
-      <button type="submit" className="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-        Login
-      </button>
+      <div className={styles.formContent}>
+        <button type='submit'>{props.btn}</button>
+      </div>
     </form>
-  )
+    {/* {message && <p className={styles.message}>{message}</p>} */}
+    </>
+  );
 }

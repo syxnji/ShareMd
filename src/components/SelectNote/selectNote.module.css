@@ -1,6 +1,5 @@
 .link{
     width: 32%;
-    /* flex: 1 1 30%; */
 }
 .link{
     color: #333;
@@ -34,7 +33,7 @@
 }
 .history{
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
 }
 .history p{
     color: #aaa;

@@ -1,5 +1,5 @@
-import styles from "./selectNote.module.css"
-import Link from "next/link"
+import styles from "./selectNote.module.css";
+import Link from "next/link";
 
 export function Notes() {
     return(

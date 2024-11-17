@@ -1,76 +1,85 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import styles from "./register.module.css";
+import Link from "next/link";
 
-export default function RegisterForm() {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const router = useRouter()
+export default function Register(props) {
+  const [username, setUsername] = useState('');
+  const [mailaddress, setMailaddress] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setError('')
+    e.preventDefault();
 
     try {
-      const response = await fetch('/api/register', {
+      const res = await fetch('/api/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
-      })
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, mailaddress, password }),
+      });
 
-      if (response.ok) {
-        router.push('/login') // Redirect to login page after successful registration
+      const data = await res.json();
+
+      if (res.ok) {
+        console.log(`ID:${data.id} へ登録されました`);
+        setUsername('');
+        setMailaddress('');
+        setPassword('');
       } else {
-        const data = await response.json()
-        setError(data.error || 'Registration failed')
+        console.log(`エラー:${data.error}`);
       }
     } catch (error) {
-      setError('An error occurred. Please try again.')
+      setMessage('予期しないエラー');
+      console.error(error);
     }
-  }
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="name" className="block mb-2">Name:</label>
+    <>
+    <form onSubmit={handleSubmit} className={styles.form}>
+      <div className={styles.selectForm}>
+        <p>新規登録</p>
+        <Link href={"/login"}>ログイン</Link>
+      </div>
+      <div className={styles.formContent}>
+        <label htmlFor="username" className={styles.label}>Username:</label>
         <input
-          type="text"
-          id="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          className="w-full px-3 py-2 border rounded"
+        id="username"
+        type="text"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        required 
         />
       </div>
-      <div>
-        <label htmlFor="email" className="block mb-2">Email:</label>
+      <div className={styles.formContent}>
+        <label htmlFor="mailaddress" className={styles.label}>Mailaddress:</label>
         <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="w-full px-3 py-2 border rounded"
+        id="mailaddress"
+        type="email"
+        value={mailaddress}
+        onChange={(e) => setMailaddress(e.target.value)}
+        required 
         />
       </div>
-      <div>
-        <label htmlFor="password" className="block mb-2">Password:</label>
+      <div className={styles.formContent}>
+        <label htmlFor="password" className={styles.label}>Password:</label>
         <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="w-full px-3 py-2 border rounded"
+        id="password"
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required 
         />
       </div>
-      {error && <p className="text-red-500">{error}</p>}
-      <button type="submit" className="w-full px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-        Register
-      </button>
+      <div className={styles.formContent}>
+        <button type='submit'>{props.btn}</button>
+      </div>
     </form>
-  )
+    {/* {message && <p className={styles.message}>{message}</p>} */}
+    </>
+  );
 }
