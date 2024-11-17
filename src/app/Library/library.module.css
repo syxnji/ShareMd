@@ -2,6 +2,7 @@
     display: flex;
 }
 .content{
+    padding: 10px;
     width: 100%;
 }
 
@@ -11,10 +12,10 @@
     margin-bottom: 50px;
 }
 .innerHead{
-    padding: 5px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: solid 1px #ddd;
 }
 .left .title{
     font-size: 1.5rem;
@@ -35,6 +36,11 @@
     margin-right: 5px;
     border: solid 1px #aaa;
     border-radius: 5px;
+    transition: all 0.3s;
+}
+.layouts button:hover{
+    background-color: #333;
+    color: #fff;
 }
 .addNote button{
     height: 32px;
@@ -42,10 +48,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    font-weight: bold;
     background-color: #429;
     border: solid 1px #aaa;
     border-radius: 5px;
     color: #fff;
+    transition: all 0.3s;
+}
+.addNote button:hover{
+    background-color: #eee;
+    color: #429;
 }
 .addNote button span{
     margin-left: 5px;
@@ -53,7 +65,7 @@
 
 /* search */
 .search{
-    margin: 5px;
+    margin-bottom: 10px;
 }
 .search form{
     display: flex;
@@ -72,13 +84,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: #fff;
     border: solid 2px #aaa;
     border-radius: 10px;
+    transition: all 0.3s;
+}
+.search button:hover{
+    border: solid 2px #333;
 }
 
 /* notes */
 .notes{
-    padding: 5px;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;

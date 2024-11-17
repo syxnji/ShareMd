@@ -1,13 +1,24 @@
+.link{
+    width: 32%;
+    /* flex: 1 1 30%; */
+}
+.link{
+    color: #333;
+    text-decoration: none;
+}
 .note{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    flex: 1 1 25%;
     height: 130px;
     padding: 10px;
     background-color: #fff;
     border: solid 1px #ddd;
     border-radius: 10px;
+    transition: all 0.3s;
+}
+.note:hover{
+    border: solid 1px #333;
 }
 .title p{
     font-size: 1.2rem;

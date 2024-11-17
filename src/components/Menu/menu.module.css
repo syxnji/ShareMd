@@ -1,6 +1,6 @@
 .outerMenu{
     position: relative;
-    width: 25%;
+    width: 33%;
     background-color: #fff;
     border-right: solid 1px #999;
 }
@@ -16,12 +16,27 @@
     align-items: center;
     justify-content: space-between;
 }
+.head svg{
+    border-radius: 10px;
+    padding: 5px;
+    transition: all 0.3s;
+}
+.head svg:hover{
+    background-color: #777;
+    color: #fff;
+}
 .head p{
     font-size: 1.5rem;
     font-weight: bold;
 }
 .category{
+    padding: 10px;
     margin-top: 10px;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+.category:hover{
+    background-color: #eee;
 }
 .category p{
     color: #555;
@@ -30,6 +45,14 @@
 }
 .notes{
     margin-left: 1rem;
+}
+.note{
+    border-radius: 10px;
+    padding: 5px 10px;
+    transition: all 0.3s;
+}
+.note:hover{
+    background-color: #ddd;
 }
 .note p{
     color: #aaa;
@@ -44,6 +67,10 @@
     justify-content: center;
     background-color: #333;
     border-radius: 100px;
+    transition: all 0.3s;
+}
+.foot:hover{
+    background-color: #666;
 }
 .foot p{
     font-size: 0.7rem;
