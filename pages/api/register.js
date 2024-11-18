@@ -8,7 +8,7 @@ export default async function handler(req, res) {
         const {username, mailaddress, password} = req.body;
 
         if (!username || !mailaddress || !password) {
-            return res.status(400).json({error: 'api/register error 1'})
+            return res.status(400).json({error: 'api/register nothing data error'})
         }
 
         try {

@@ -3,15 +3,22 @@
 import { useState } from 'react'
 import styles from "./register.module.css";
 import Link from "next/link";
+import bcrypt from 'bcryptjs';
 
 export default function Register(props) {
   const [username, setUsername] = useState('');
   const [mailaddress, setMailaddress] = useState('');
   const [password, setPassword] = useState('');
+  const [hashedPassword, setHashedPassword] = useState('');
   const [message, setMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // ハッシュ化
+    const saltRounds = 10;
+    const hashed = bcrypt.hashSync(password, saltRounds);
+    setHashedPassword(hashed);
 
     try {
       const res = await fetch('/api/register', {
@@ -19,7 +26,7 @@ export default function Register(props) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, mailaddress, password }),
+        body: JSON.stringify({ username, mailaddress, password: hashed }),
       });
 
       const data = await res.json();
