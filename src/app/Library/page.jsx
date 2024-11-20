@@ -1,14 +1,40 @@
+import Link from "next/link";
+// component
 import { Menu } from "../../components/Menu/page.jsx";
 import { Notes } from "../../components/SelectNote/page.jsx";
+import { GroupHeadline } from "../../components/GroupHeadline/page.jsx";
+// icon
 import { BsGrid3X3 } from "react-icons/bs";
 import { BsFileEarmarkPlus } from "react-icons/bs";
 import { BsSearch } from "react-icons/bs";
 import { BsList } from "react-icons/bs";
-import styles from "./library.module.css";
 import { LuListChecks } from "react-icons/lu";
-
+// style
+import styles from "./library.module.css";
 
 export default function Library() {
+    // GroupHeadline
+    const headLeft = (
+        <div className={styles.auth}>
+            <button>
+                <Link href={"/Permission"}>
+                    <LuListChecks size={25} color="#333" />
+                </Link>
+            </button>
+        </div>
+    )
+    const headRight =(
+        <div className={styles.right}>
+            <div className={styles.layouts}>
+                <button><BsGrid3X3 /></button>
+                <button><BsList /></button>
+            </div>
+            <div className={styles.addNote}>
+                <button><BsFileEarmarkPlus /> <span>New Note</span></button>
+            </div>
+        </div>
+    )
+
     return(
         <>
             <main className={styles.main}>
@@ -16,30 +42,8 @@ export default function Library() {
                 <Menu />
 
                 <div className={styles.content}>
-                    {/* head */}
-                    <div className={styles.outerHead}>
-                        <div className={styles.innerHead}>
-                            <div className={styles.left}>
-                                <p className={styles.title}>
-                                    Category Name
-                                </p>
-                                <div className={styles.auth}>
-                                    <button>
-                                        <LuListChecks size={25} /> 
-                                    </button>
-                                </div>
-                            </div>
-                            <div className={styles.right}>
-                                <div className={styles.layouts}>
-                                    <button><BsGrid3X3 /></button>
-                                    <button><BsList /></button>
-                                </div>
-                                <div className={styles.addNote}>
-                                    <button><BsFileEarmarkPlus /> <span>New Note</span></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {/* headline */}
+                    <GroupHeadline headLeft={headLeft} headRight={headRight} />
 
                     {/* search */}
                     <div className={styles.search}>

@@ -13,7 +13,7 @@ export function Menu() {
                     </div>
                     <div className={styles.categories}>
                         <div className={styles.category}>
-                            <p>Category ..</p>
+                            <p>Group Name</p>
                             <div className={styles.notes}>
                                 <div className={styles.note}>
                                     <p>予定</p>
@@ -24,7 +24,7 @@ export function Menu() {
                             </div>
                         </div>
                         <div className={styles.category}>
-                            <p>Category ..</p>
+                            <p>Group Name</p>
                             <div className={styles.notes}>
                                 <div className={styles.note}>
                                     <p>予定</p>

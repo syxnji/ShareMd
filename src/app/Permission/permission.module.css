@@ -1,0 +1,51 @@
+.backBtn button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background-color: transparent;
+    border: none;
+    border-radius: 10px;
+    transition: all 0.3s;
+}
+.backBtn button:hover{
+    background-color: #ddd;
+}
+.addPermission{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: solid 1px #777 ;
+}
+.left{
+    display: flex;
+    width: 100%;
+}
+.role{
+    width: 50%;
+}
+.role input{
+    width: 90%;
+    padding: 5px;
+    border: solid 1px #777;
+    border-radius: 5px;
+}
+.permit{
+    margin-left: 10px;
+}
+.select{
+    padding: 5px;
+    border-radius: 5px;
+}
+.deleteBtn button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background-color: #fff;
+    border: solid 1px #ccc;
+    border-radius: 10px;
+}
