@@ -50,7 +50,7 @@ export default function Register(props) {
     <form onSubmit={handleSubmit} className={styles.form}>
       <div className={styles.selectForm}>
         <p>新規登録</p>
-        <Link href={"/login"}>ログイン</Link>
+        <Link href={"/Login"}>ログイン</Link>
       </div>
       <div className={styles.formContent}>
         <label htmlFor="username" className={styles.label}>Username:</label>

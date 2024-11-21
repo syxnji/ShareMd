@@ -40,7 +40,7 @@ export default function Login(props) {
     <>
     <form onSubmit={handleSubmit} className={styles.form}>
       <div className={styles.selectForm}>
-        <Link href={"/register"}>新規登録</Link>
+        <Link href={"/Register"}>新規登録</Link>
         <p>ログイン</p>
       </div>
       <div className={styles.formContent}>

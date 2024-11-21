@@ -14,16 +14,22 @@
 }
 .role input{
     width: 90%;
-    padding: 5px;
-    border: solid 1px #777;
+    padding: 10px;
+    border: solid 1px #ccc;
     border-radius: 5px;
 }
 .permit{
     margin-left: 10px;
 }
 .select{
-    padding: 5px;
+    padding: 10px;
+    border: solid 1px #ccc;
     border-radius: 5px;
+}
+.right{
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .deleteBtn button{
     display: flex;

@@ -10,7 +10,7 @@ export function Header() {
       <Link href={"/"}>Top</Link>
       <Link href={"/Library"}>Library</Link>
       <Link href={"/Permission"}>Permission</Link>
-      <Link href={"/Editer"}>Editer</Link>
+      <Link href={"/Editor"}>Editor</Link>
     </header>
   );
 }

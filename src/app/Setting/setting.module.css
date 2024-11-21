@@ -1,0 +1,13 @@
+.settings{
+    display: flex;
+}
+.profile{
+    width: 33%;
+    background-color: #eee;
+    padding: 10px;
+}
+.groups{
+    width: 66%;
+    background-color: #eee;
+    padding: 10px;
+}

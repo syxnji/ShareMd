@@ -14,25 +14,25 @@ export function Menu() {
                     <div className={styles.categories}>
                         <div className={styles.category}>
                             <p>Group Name</p>
-                            <div className={styles.notes}>
+                            {/* <div className={styles.notes}>
                                 <div className={styles.note}>
                                     <p>予定</p>
                                 </div>
                                 <div className={styles.note}>
                                     <p>買い物</p>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                         <div className={styles.category}>
                             <p>Group Name</p>
-                            <div className={styles.notes}>
+                            {/* <div className={styles.notes}>
                                 <div className={styles.note}>
                                     <p>予定</p>
                                 </div>
                                 <div className={styles.note}>
                                     <p>買い物</p>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

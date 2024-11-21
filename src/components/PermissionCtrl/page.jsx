@@ -13,9 +13,9 @@ export function PermissionCtrl() {
                     </div>
                     <div className={styles.permit}>
                         <select name="" id="" className={styles.select}>
-                            <option value="">閲覧のみ</option>
-                            <option value="">編集可能</option>
-                            <option value="">全て</option>
+                            <option value="viewer">閲覧のみ</option>
+                            <option value="editor">編集可能</option>
+                            <option value="all">全て</option>
                         </select>
                     </div>
                 </div>
