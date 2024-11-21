@@ -9,7 +9,7 @@ export function PermissionCtrl() {
             <div className={styles.permission}>
                 <div className={styles.left}>
                     <div className={styles.role}>
-                        <input type="text" placeholder="ロール名(変更)" value="Role Name" />
+                        <input type="text" placeholder="ロール名(変更)" value="Role Name" readOnly/>
                     </div>
                     <div className={styles.permit}>
                         <select name="" id="" className={styles.select}>

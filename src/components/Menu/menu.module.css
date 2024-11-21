@@ -1,9 +1,24 @@
-.outerMenu{
-    position: relative;
+/* open */
+.open{
+    /* position: relative; */
     width: 33%;
     background-color: #fff;
     border-right: solid 1px #999;
+    transition: all 0.3s;
 }
+
+/* close */
+.close{
+    width: 52px;
+    background-color: #fff;
+    border-right: solid 1px #999;
+    transition: all 0.3s;
+}
+.close p{
+    display: none;
+}
+
+/* common */
 .innerMenu{
     height: 100vh;
     display: flex;
@@ -18,12 +33,17 @@
     border-bottom: solid 1px #ddd;
     margin-bottom: 15px;
 }
-.head svg{
+.head button{
+    width: 32px;
+    height: 32px;
     border-radius: 10px;
     padding: 5px;
+    margin: 3px;
     transition: all 0.3s;
+    background-color: transparent;
+    border: none;
 }
-.head svg:hover{
+.head button:hover{
     background-color: #ddd;
 }
 .head p{
@@ -43,23 +63,9 @@
     color: #555;
     font-size: 1rem;
     font-weight: bold;
+    text-wrap: nowrap;
+    overflow: hidden;
 }
-/* .notes{
-    margin-left: 1rem;
-}
-.note{
-    border-radius: 10px;
-    padding: 5px 10px;
-    transition: all 0.3s;
-}
-.note:hover{
-    background-color: #ddd;
-}
-.note p{
-    color: #aaa;
-    font-size: 0.8rem;
-    font-weight: normal;
-} */
 .foot{
     width: 100%;
     display: flex;

@@ -18,4 +18,6 @@
 .left .title{
     font-size: 1.5rem;
     font-weight: bold;
+    text-wrap: nowrap;
+    overflow: hidden;
 }

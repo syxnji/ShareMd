@@ -7,7 +7,7 @@ export function GroupHeadline({ headLeft, headRight }) {
             <div className={styles.innerHead}>
                 <div className={styles.left}>
                     <p className={styles.title}>
-                        Group Name
+                        Marketing Team
                     </p>
                     { headLeft }
                 </div>
