@@ -1,13 +1,80 @@
 .settings{
+    height: 100vh;
     display: flex;
 }
+
+/* profile */
 .profile{
     width: 33%;
-    background-color: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    padding: 10px;
+    border-right: solid 1px #777 ;
+}
+.form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.figure{
+    width: 150px;
+    height: 150px;
+    border-radius: 100px;
+    background-color: #ddd;
+    margin-bottom: 10px;
+}
+.profile input{
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+}
+.profile button{
+    width: 100%;
+    padding: 10px;
+    background-color: #fff;
+    border: solid 2px #f44;
+    border-radius: 10px;
+}
+
+/* groups */
+.groups{
+    width: 100%;
+    background-color: #fff;
     padding: 10px;
 }
-.groups{
-    width: 66%;
-    background-color: #eee;
+.head{
+    width: 100%;
+    border-bottom: solid 1px #ccc;
+}
+.head p{
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #777;
+}
+.group{
+    display: flex;
+    justify-content: space-between;
     padding: 10px;
+    border-bottom: solid 1px #777;
+}
+.left{
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+.groupName{
+    width: 50%;
+}
+.groupSize{
+    margin-left: 10px;
+}
+.right button{
+    width: 32px;
+    height: 32px;
+    background-color: #fff;
+    border-radius: 10px;
+    border: solid 2px #f99;
 }

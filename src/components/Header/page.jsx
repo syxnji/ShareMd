@@ -7,6 +7,7 @@ export function Header() {
     <header className={styles.header}>
       <Link href={"/Register"}>Register</Link>
       <Link href={"/Login"}>Login</Link>
+      <Link href={"/Setting"}>Setting</Link>
       <Link href={"/"}>Top</Link>
       <Link href={"/Library"}>Library</Link>
       <Link href={"/Permission"}>Permission</Link>
