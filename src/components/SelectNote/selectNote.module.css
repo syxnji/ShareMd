@@ -1,15 +1,35 @@
-.link{
+/* grid */
+.grid{
     width: 32%;
-}
-.link{
     color: #333;
     text-decoration: none;
 }
+.grid .note{
+    flex-direction: column;
+    height: 25vh;
+}
+
+/* list */
+.list{
+    width: 66%;
+    color: #333;
+    text-decoration: none;
+}
+.list .top{
+    display: flex;
+}
+.list .preview{
+    display: none;
+}
+.list .bottom{
+    display: flex;
+    align-items: flex-end;
+}
+
+/* common */
 .note{
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
-    height: 25vh;
     padding: 10px;
     background-color: #fff;
     border: solid 1px #ddd;

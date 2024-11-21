@@ -1,3 +1,5 @@
+'use client'
+import { useState } from 'react';
 import Link from "next/link";
 // component
 import { Menu } from "../../components/Menu/page.jsx";
@@ -11,8 +13,18 @@ import { BsList } from "react-icons/bs";
 import { LuListChecks } from "react-icons/lu";
 // style
 import styles from "./library.module.css";
+import styleNotes from "@/components/SelectNote/selectNote.module.css"
 
 export default function Library() {
+    // grid toggle
+    const [isGridView, setIsGridView] = useState(true);
+    const [isNotesClass, setIsNotesClass] = useState(true);
+  
+    const toggleView = () => {
+      setIsGridView(!isGridView);
+      setIsNotesClass(!isNotesClass);
+    };
+
     // GroupHeadline
     const headLeft = (
         <div className={styles.auth}>
@@ -26,8 +38,11 @@ export default function Library() {
     const headRight =(
         <div className={styles.right}>
             <div className={styles.layouts}>
-                <button><BsGrid3X3 /></button>
-                <button><BsList /></button>
+                {/* toggleView */}
+                <button onClick={toggleView}>
+                    {isGridView ? <BsList/> : <BsGrid3X3/>}
+
+                </button>
             </div>
             <div className={styles.addNote}>
                 <button><BsFileEarmarkPlus /> <span>New Note</span></button>
@@ -54,12 +69,12 @@ export default function Library() {
                     </div>
 
                     {/* notes */}
-                    <div className={styles.notes}>
-                        <Notes />
-                        <Notes />
-                        <Notes />
-                        <Notes />
-                        <Notes />
+                    <div className={isNotesClass ? styles.grid : styles.list}>
+                        <Notes className={isNotesClass ? styleNotes.grid : styleNotes.list} />
+                        <Notes className={isNotesClass ? styleNotes.grid : styleNotes.list} />
+                        <Notes className={isNotesClass ? styleNotes.grid : styleNotes.list} />
+                        <Notes className={isNotesClass ? styleNotes.grid : styleNotes.list} />
+                        <Notes className={isNotesClass ? styleNotes.grid : styleNotes.list} />
                     </div>
                 </div>
             </main>

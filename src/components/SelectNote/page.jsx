@@ -1,9 +1,9 @@
 import styles from "./selectNote.module.css";
 import Link from "next/link";
 
-export function Notes() {
+export function Notes({className}) {
     return(
-        <Link href={"/Editor"} className={styles.link}>
+        <Link href={"/Editor"} className={className}>
             <div className={styles.note}>
                 
                 <div className={styles.top}>
