@@ -1,7 +1,7 @@
 import styles from "./selectNote.module.css";
 import Link from "next/link";
 
-export function Notes({className}) {
+export function Notes({className, title, preview, last}) {
     return(
         <Link href={"/Editor"} className={className}>
             <div className={styles.note}>
@@ -9,12 +9,12 @@ export function Notes({className}) {
                 <div className={styles.top}>
                     <div className={styles.title}>
                         <p>
-                            Note Title
+                            {title}
                         </p>
                     </div>
                     <div className={styles.preview}>
                         <p>
-                            This is preview ...
+                            {preview} ...
                         </p>
                     </div>
                 </div>
@@ -24,7 +24,7 @@ export function Notes({className}) {
                             Last Edited:
                         </p>
                         <p>
-                            1 Days ago
+                            {last} ago
                         </p>
                     </div>
                 </div>

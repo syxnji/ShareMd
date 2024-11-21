@@ -56,8 +56,8 @@ export default function Permission() {
                                 </div>
                                 <div className={stylePermit.permit}>
                                     <select name="" id="" className={stylePermit.select}>
-                                        <option value="viewonly">閲覧のみ</option>
-                                        <option value="editer">編集可能</option>
+                                        <option value="viewer">閲覧のみ</option>
+                                        <option value="editor">編集可能</option>
                                         <option value="all">全て</option>
                                     </select>
                                 </div>

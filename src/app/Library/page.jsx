@@ -16,16 +16,30 @@ import styles from "./library.module.css";
 import styleNotes from "@/components/SelectNote/selectNote.module.css"
 
 export default function Library() {
-    // grid toggle
+    // TODO:仮データ
+    const notes = [
+        { id: 1, title: 'Meeting Notes', preview: 'Discussed project milestones.\nAssigned tasks to team.', last: '2 hours' },
+        { id: 2, title: 'App Improvements', preview: 'Quick ideas for app improvement.\nAdd dark mode.', last: '15 minutes' },
+        { id: 3, title: 'Shopping List', preview: '1. Milk\n2. Bread\n3. Butter', last: '3 years' },
+        { id: 4, title: 'Travel Plans', preview: 'Plan trip to Kyoto.\nVisit Arashiyama and Kinkakuji.', last: '300 seconds' },
+        { id: 5, title: 'Project Draft', preview: null, last: '5 days' }, // previewがnull
+        { id: 6, title: 'Birthday Ideas', preview: 'Surprise party at a cafe.\nOrder cake.', last: undefined },
+        { id: 7, title: 'Workout Routine', preview: '1. Morning jog\n2. Weightlifting', last: '1 week' },
+        { id: 8, title: 123, preview: 'Draft blog post.\nTopic: Productivity tips.', last: '45 minutes' },
+        { id: 9, title: 'Recipe Notes', preview: '1. Tomato soup recipe.\n2. Add basil for flavor.', last: '' },
+        { id: 10, title: 'Code Snippets', preview: 'function add(a, b) {\n  return a + b;\n}', last: '7 months' }
+    ];
+      
+    // MARK:ToggleGrid/List
     const [isGridView, setIsGridView] = useState(true);
     const [isNotesClass, setIsNotesClass] = useState(true);
-  
     const toggleView = () => {
       setIsGridView(!isGridView);
       setIsNotesClass(!isNotesClass);
     };
 
-    // GroupHeadline
+    // MARK:GroupHeadline
+    // left
     const headLeft = (
         <div className={styles.auth}>
             <button>
@@ -35,49 +49,54 @@ export default function Library() {
             </button>
         </div>
     )
+    // right
     const headRight =(
         <div className={styles.right}>
             <div className={styles.layouts}>
-                {/* toggleView */}
+                {/* MARK:toggleView */}
                 <button onClick={toggleView}>
+                    {/* isGridViewによってiconsの切り替え */}
                     {isGridView ? <BsList/> : <BsGrid3X3/>}
-
                 </button>
             </div>
             <div className={styles.addNote}>
-                <button><BsFileEarmarkPlus /> <span>New Note</span></button>
+                <button><BsFileEarmarkPlus/> <span>New Note</span></button>
             </div>
         </div>
     )
 
     return(
-        <>
-            <main className={styles.main}>
+        <main className={styles.main}>
 
-                <Menu />
+            <Menu />
 
-                <div className={styles.content}>
-                    {/* headline */}
-                    <GroupHeadline headLeft={headLeft} headRight={headRight} />
+            <div className={styles.content}>
+                {/* MARK:headline */}
+                <GroupHeadline headLeft={headLeft} headRight={headRight} />
 
-                    {/* search */}
-                    <div className={styles.search}>
-                        <form action="">
-                            <input placeholder="Note name ..." type="search" name="" id="" />
-                            <button type="submit"><BsSearch /></button>
-                        </form>
-                    </div>
-
-                    {/* notes */}
-                    <div className={isNotesClass ? styles.grid : styles.list}>
-                        <Notes className={isNotesClass ? styleNotes.grid : styleNotes.list} />
-                        <Notes className={isNotesClass ? styleNotes.grid : styleNotes.list} />
-                        <Notes className={isNotesClass ? styleNotes.grid : styleNotes.list} />
-                        <Notes className={isNotesClass ? styleNotes.grid : styleNotes.list} />
-                        <Notes className={isNotesClass ? styleNotes.grid : styleNotes.list} />
-                    </div>
+                {/* MARK:search */}
+                <div className={styles.search}>
+                    <form action="">
+                        <input placeholder="Note name ..." type="search" name="" id="" />
+                        <button type="submit"><BsSearch/></button>
+                    </form>
                 </div>
-            </main>
-        </>
+
+                {/* MARK:notes */}
+                {/* isNotesClassによってclassNameの切り替え */}
+                <div className={isNotesClass ? styles.grid : styles.list}>
+                    {/* isNotesClassによってclassNameの切り替え */}
+                    {notes.map((note) => (
+                        <Notes
+                            className={isNotesClass ? styleNotes.grid : styleNotes.list}
+                            key={note.id}
+                            title={note.title}
+                            preview={note.preview}
+                            last={note.last}
+                        />
+                    ))}
+                </div>
+            </div>
+        </main>
     )
 }

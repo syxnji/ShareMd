@@ -40,8 +40,11 @@
     border: solid 1px #333;
 }
 .title p{
+    display: flex;
     font-size: 1.2rem;
     font-weight: bold;
+    text-wrap: nowrap;
+    overflow-x: hidden;
 }
 .preview{
     border-radius: 5px;
