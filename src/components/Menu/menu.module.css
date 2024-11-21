@@ -1,7 +1,6 @@
 /* open */
 .open{
-    /* position: relative; */
-    width: 33%;
+    width: 25%;
     background-color: #fff;
     border-right: solid 1px #999;
     transition: all 0.3s;

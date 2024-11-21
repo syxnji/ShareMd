@@ -1,6 +1,6 @@
 /* grid */
 .grid{
-    width: 32%;
+    width: calc((100% - 20px) / 3);
     color: #333;
     text-decoration: none;
 }
