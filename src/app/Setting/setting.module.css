@@ -6,12 +6,19 @@
 /* profile */
 .profile{
     width: 33%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background-color: #fff;
     padding: 10px;
     border-right: solid 1px #777 ;
+}
+.profileHead{
+    width: 100%;
+    border-bottom: solid 1px #ccc;
+    margin-bottom: 30px;
+}
+.profileHead p{
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #777;
 }
 .form{
     display: flex;
@@ -26,13 +33,13 @@
     margin-bottom: 10px;
 }
 .profile input{
-    width: 100%;
+    width: 90%;
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 10px;
 }
 .profile button{
-    width: 100%;
+    width: 90%;
     padding: 10px;
     background-color: #fff;
     border: solid 2px #f44;
@@ -45,36 +52,12 @@
     background-color: #fff;
     padding: 10px;
 }
-.head{
+.groupHead{
     width: 100%;
     border-bottom: solid 1px #ccc;
 }
-.head p{
+.groupHead p{
     font-weight: bold;
     font-size: 1.5rem;
     color: #777;
-}
-.group{
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border-bottom: solid 1px #777;
-}
-.left{
-    width: 100%;
-    display: flex;
-    align-items: center;
-}
-.groupName{
-    width: 50%;
-}
-.groupSize{
-    margin-left: 10px;
-}
-.right button{
-    width: 32px;
-    height: 32px;
-    background-color: #fff;
-    border-radius: 10px;
-    border: solid 2px #f99;
 }

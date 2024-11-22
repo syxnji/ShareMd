@@ -74,7 +74,7 @@ export default function MarkdownEditor() {
                 onClick={() => {/* ここに保存ロジックを追加 */}}
                 className={styles.saveBtn}
                 >
-                <IoSaveOutline size={17} />
+                <IoSaveOutline size={17} className={styles.svg}/>
                 <span>Save</span>
                 </button>
             </div>

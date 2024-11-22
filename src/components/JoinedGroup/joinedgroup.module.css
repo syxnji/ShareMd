@@ -1,0 +1,37 @@
+.group{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: solid 1px #777;
+}
+.left{
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+.groupName{
+    width: 50%;
+}
+.groupName input{
+    width: 90%;
+    padding: 10px;
+    border-radius: 5px;
+    border: solid 1px #ccc;
+}
+.groupSize{
+    margin-left: 10px;
+}
+.right{
+    display: flex;
+    align-items: center;
+}
+.right .button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    background-color: #fff;
+    border-radius: 10px;
+    border: solid 1px #ccc;
+}

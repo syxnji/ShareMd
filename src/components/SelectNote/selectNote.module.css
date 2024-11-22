@@ -3,6 +3,7 @@
     width: calc((100% - 20px) / 3);
     color: #333;
     text-decoration: none;
+    transition: all 0.5s;
 }
 .grid .note{
     flex-direction: column;
@@ -11,9 +12,10 @@
 
 /* list */
 .list{
-    width: 66%;
+    width: 100%;
     color: #333;
     text-decoration: none;
+    transition: all 0.5s;
 }
 .list .top{
     display: flex;
@@ -34,7 +36,7 @@
     background-color: #fff;
     border: solid 1px #ddd;
     border-radius: 10px;
-    transition: all 0.3s;
+    transition: all 0.5s;
 }
 .note:hover{
     border: solid 1px #333;
