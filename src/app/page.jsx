@@ -25,17 +25,23 @@ export default function MarkdownEditor() {
   return (
       <main>
         <div className={styles.contents}>
-          <div className={styles.bookshelf}>
-            {booksTop.map((color, index) => (
-              <div
-              className={styles.book}
-              key={index}
-              style={{
-                backgroundColor: color
-              }}
-              />
-            ))}
+          {/* top 本棚 */}
+          <div className={styles.top}>
+            <div className={styles.bookshelf}>
+              {booksTop.map((color, index) => (
+                <div
+                className={styles.book}
+                key={index}
+                style={{
+                  backgroundColor: color
+                }}
+                />
+              ))}
+              </div>
+            <div className={styles.trapezoidTop}></div>
           </div>
+
+          {/* middle new note */}
           <div className={styles.middle}>
             <p className={styles.siteName}>
               {/* ShereText */}
@@ -55,8 +61,10 @@ export default function MarkdownEditor() {
               <button>New Note</button>
             </form>
           </div>
+
+          {/* bottom本棚 */}
           <div className={styles.bottom}>
-            <div className={styles.trapezoid}>a</div>
+            <div className={styles.trapezoidBottom}></div>
             <div className={styles.bookshelf}>
               {booksBottom.map((color, index) => (
                 <div
