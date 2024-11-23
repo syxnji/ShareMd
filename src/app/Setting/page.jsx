@@ -38,7 +38,7 @@ export default function Setting() {
                     <div className={styles.groups}>
                         {groups.map((group) => (
                             <JoinedGroup 
-                                id={group.id}
+                                key={group.id}
                                 group={group.group}
                                 member={group.member}
                             />

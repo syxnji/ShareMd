@@ -3,7 +3,6 @@ import { useState } from "react";
 // icon
 import { BsArrowBarLeft } from "react-icons/bs";
 import { BsArrowBarRight } from "react-icons/bs";
-import { IoSettingsOutline } from "react-icons/io5";
 // style
 import styles from "./menu.module.css";
 
@@ -31,27 +30,19 @@ export function Menu() {
         // <div className={styles.outerMenu} >
         <div className={isMenu ? styles.open : styles.close }>
             <div className={styles.innerMenu}>
-                <div className={styles.top}>
-                    <div className={styles.head}>
-                        <p>Books</p>
-                        <button onClick={toggleMenu}>
-                            {isMenu ? <BsArrowBarLeft size={20}/> : <BsArrowBarRight size={20}/>}
-                        </button>
-                    </div>
-                    {/* groupsを繰り返し表示 */}
-                    <div className={styles.categories}>
-                        {groups.map((group) => (
-                            <div className={styles.category} key={group.id}>
-                                <p>{group.group}</p>
-                            </div>
-                        ))}
-                    </div>
+                <div className={styles.head}>
+                    <p>Books</p>
+                    <button onClick={toggleMenu}>
+                        {isMenu ? <BsArrowBarLeft size={20}/> : <BsArrowBarRight size={20}/>}
+                    </button>
                 </div>
-                <div className={styles.bottom}>
-                    <div className={styles.foot}>
-                        <IoSettingsOutline color="#fff" />
-                        <p>設定</p>
-                    </div>
+                {/* groupsを繰り返し表示 */}
+                <div className={styles.categories}>
+                    {groups.map((group) => (
+                        <div className={styles.category} key={group.id}>
+                            <p>{group.group}</p>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>

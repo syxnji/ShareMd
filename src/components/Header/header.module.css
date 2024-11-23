@@ -1,6 +1,8 @@
 .header{
     background-color: #eee;
     color: #333;
+    display: flex;
+    justify-content: end;
 }
 .header a{
     margin-left: 10px;
