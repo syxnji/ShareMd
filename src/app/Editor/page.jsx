@@ -65,53 +65,36 @@ export default function MarkdownEditor() {
             </div>
 
             <div className={styles.mdContent}>
-                {/* editor */}
-                {/* showEditor toggle */}
-                <div className={showEditor ? styles.showEditor : styles.hideEditor}>
-                    <div className={styles.mdInput}>
-                        <div className={styles.mdHead}>
-                            <button
-                                onClick={toggleScreen}
-                                className={styles.toggleScreenButton}>
-                                {showViewer ? <BsFullscreen/> : <BsFullscreenExit/> }
-                            </button>
-                            <p className={styles.mdTitle}>Editor</p>
-                            <button
-                                onClick={toggleEditor}
-                                className={styles.toggleShowButton}>
-                                {showEditor ? <FiEye/> : <FiEyeOff/>}
-                            </button>
-                        </div>
+                <div className={styles.mdHeads}>
+                    <button className={showEditor ? styles.showEditorButton : styles.hideEditorButton}
+                    onClick={toggleEditor}>
+                        Editor
+                    </button>
+                    <button className={showViewer ? styles.showViewerButton : styles.hideViewerButton}
+                    onClick={toggleViewer}>
+                        Viewer
+                    </button>
+                </div>
+                <div className={styles.areas}>
+                    <div className={showEditor ? styles.showEditorArea : styles.hideEditorArea}>
                         <textarea
                             value={markdown}
                             onChange={(e) => setMarkdown(e.target.value)}
-                            className={styles.mdInputArea}
+                            className={styles.showInputArea}
                         />
+                        <button className={styles.screen}>
+                            a
+                        </button>
                     </div>
-                </div>
-
-                {/* viewer */}
-                {/* showViewer toggle */}
-                <div className={showViewer ? styles.showViewer : styles.hideViewer}>
-                    <div className={styles.mdPreview}>
-                        <div className={styles.mdHead}>
-                            <button
-                                onClick={toggleScreen}
-                                className={styles.toggleScreenButton}>
-                                {showViewer ? <BsFullscreen/> : <BsFullscreenExit/> }
-                            </button>
-                            <p className={styles.mdTitle}>Preview</p>
-                            <button
-                                onClick={toggleViewer}
-                                className={styles.toggleShowButton}>
-                                {showViewer ? <FiEye/> : <FiEyeOff/>}
-                            </button>
-                        </div>
-                        <div className={styles.mdPreviewArea}>
+                    <div className={showViewer ? styles.showViewerArea : styles.hideViewerArea}>
+                        <div className={styles.showPreviewArea}>
                             <ReactMarkdown components={MarkdownComponents}>
                                 {markdown}
                             </ReactMarkdown>
                         </div>
+                        <button className={styles.screen}>
+                            a
+                        </button>
                     </div>
                 </div>
 

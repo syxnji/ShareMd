@@ -20,130 +20,139 @@
     font-weight: bold;
 }
 
-/* md */
-.mdContent{
+/* common */
+.mdHeads{
+    width: 100%;
     display: flex;
     gap: 10px;
 }
-.innerContent{
+
+/* btn */
+.showEditorButton{
     width: 50%;
-}
-
-/* editor toggle */
-.showEditor{
-    width: 100%;
-    transition: all 0.3s;
-}
-.hideEditor{
-    width: 52px;
-    transition: all 0.3s;
-}
-.hideEditor .mdHead{
-    border-radius: 10px;
-}
-.hideEditor .mdTitle{
-    display: none;
-}
-.hideEditor .toggleScreenButton{
-    display: none;
-}
-.hideEditor .mdInputArea{
-    display: none;
-}
-
-/* viewer toggle */
-.showViewer{
-    width: 100%;
-    transition: all 0.3s;
-}
-.hideViewer{
-    width: 52px;
-    transition: all 0.3s;
-}
-.hideViewer .mdHead{
-    border-radius: 10px;
-}
-.hideViewer .mdTitle{
-    display: none;
-}
-.hideViewer .toggleScreenButton{
-    display: none;
-}
-.hideViewer .mdPreviewArea{
-    display: none;
-}
-
-.mdHead{
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 10px 10px;
+    color: #fff;
+    font-weight: bold;
     background-color: #333;
+    padding: 10px;
+    border: none;
+    border: solid 1px #777;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    transition: all 0.3s;
+}
+.showEditorButton:hover{
+    background-color: #777;
+    color: #333;
+}
+.hideEditorButton{
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+    color: #333;
+    font-weight: bold;
+    background-color: #ddd;
+    padding: 10px;
+    border: solid 1px #777;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    transition: all 0.3s;
+}
+.showViewerButton{
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+    color: #fff;
+    font-weight: bold;
+    background-color: #333;
+    padding: 10px;
+    border: solid 1px #777;
     border-radius: 10px 10px 0 0;
 }
-.toggleShowButton{
-    width: 32px;
-    height: 32px;
+.showViewerButton:hover{
+    background-color: #777;
+    color: #333;
+}
+.hideViewerButton{
+    width: 50%;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    background-color: transparent;
-    border: none;
-    padding: 10px;
-    transition: all 0.3s;
-}
-.toggleShowButton:hover{
-    color: #77f;
-}
-.toggleScreenButton{
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    background-color: transparent;
-    border: none;
-    padding: 10px;
-    transition: all 0.3s;
-}
-.toggleScreenButton:hover{
-    color: #77f;
-}
-.mdInput{
-    width: 100%;
-}
-.mdPreview{
-    width: 100%;
-}
-.mdTitle{
+    justify-content: space-between;
+    color: #333;
     font-weight: bold;
-    font-size: 0.7rem;
-    color: #aaa;
+    background-color: #ddd;
+    padding: 10px;
+    border: solid 1px #777;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    transition: all 0.3s;
 }
-.mdInputArea{
-    box-sizing: border-box;
-    height: 70vh;
+
+.mdTitle{
+    color: #fff;
+    font-weight: bold;
+}
+.areas{
+    display: flex;
+    gap: 10px;
+}
+
+/* editor */
+.showEditorArea{
+    position: relative;
     width: 100%;
-    resize: vertical;
-    background-color: #fff;
-    border: solid 1px #888;
-    border-radius: 0 0 10px 10px;
+    height: 80vh;
+    overflow: scroll;
+    scrollbar-width: none;
 }
-.mdPreviewArea{
-    height: 70vh;
-    overflow-y: auto;
+.showInputArea{
+    position: absolute;
+    inset: 0;
+    height: 80vh;
+    padding: 10px 0;
+    border: solid 1px #333;
+    border-radius: 0 0 10px 10px;
+    resize: none;
+}
+.hideEditorArea{
+    display: none;
+}
+
+/* viewer */
+.showViewerArea{
+    position: relative;
+    width: 100%;
+    height: 80vh;
+    overflow: scroll;
+    scrollbar-width: none;
+}
+.showPreviewArea{
+    height: 80vh;
+    border: solid 1px #333;
+    border-radius: 0 0 10px 10px;
+    overflow: scroll;
+    scrollbar-width: none;
+}
+.hideViewerArea{
+    display: none;
+}
+
+.screen{
+    width: 32px;
+    height: 32px;
     background-color: #fff;
-    border: solid 1px #888;
-    border-radius: 0 0 5px 5px;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    border-radius: 7px;
 }
 .saveBtn{
+    height: 32px;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 32px;
     padding: 5px 10px;
+    margin-top: 10px;
     font-weight: bold;
     color: #fff;
     background-color: #429;
