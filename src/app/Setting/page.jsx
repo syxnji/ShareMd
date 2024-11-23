@@ -31,7 +31,7 @@ export default function Setting() {
                         <button type="submit">ログアウト</button>
                     </form>
                 </div>
-                <div className={styles.groups}>
+                <div className={styles.groupContent}>
                     <div className={styles.groupHead}>
                         <p>Joined Groups</p>
                     </div>

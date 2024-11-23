@@ -1,14 +1,19 @@
 .settings{
-    height: 100vh;
+    /* height: 100vh; */
     display: flex;
 }
 
 /* profile */
 .profile{
     width: 33%;
+    height: 100vh;
+    position: sticky;
+    top: 0;
     background-color: #fff;
     padding: 10px;
     border-right: solid 1px #777 ;
+    overflow-y: scroll;
+    scrollbar-width:none;
 }
 .profileHead{
     width: 100%;
@@ -47,10 +52,13 @@
 }
 
 /* groups */
-.groups{
+.groupContent{
     width: 100%;
     background-color: #fff;
     padding: 10px;
+}
+.groups{
+    width: 100%;
 }
 .groupHead{
     width: 100%;

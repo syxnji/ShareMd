@@ -37,6 +37,7 @@
     border: solid 1px #ddd;
     border-radius: 10px;
     transition: all 0.5s;
+    overflow: hidden;
 }
 .note:hover{
     border: solid 1px #333;
