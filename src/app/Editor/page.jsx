@@ -1,13 +1,13 @@
 'use client'
-import { Menu } from "../../components/Menu/page.jsx";
 import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
+import { Menu } from "../../components/Menu/page.jsx";
+// style
 import styles from "./editor.module.css"
+// icon
 import { IoSaveOutline } from "react-icons/io5";
-// 表示/非表示
 import { FiEye } from "react-icons/fi";
 import { FiEyeOff } from "react-icons/fi";
-// 拡大/縮小
 import { BsFullscreen } from "react-icons/bs";
 import { BsFullscreenExit } from "react-icons/bs";
 
@@ -24,61 +24,106 @@ const MarkdownComponents = {
 export default function MarkdownEditor() {
   const [markdown, setMarkdown] = useState('# Hello, Markdown!\n\nThis is a live preview.')
 
+  const [showEditor, setShowEditor] = useState(true)
+  const [showViewer, setShowViewer] = useState(true)
+
+  const toggleEditor = () => {
+    if (showEditor && !showViewer) {
+        return
+    }
+    setShowEditor(!showEditor)
+  }
+
+  const toggleViewer = () => {
+    if (!showEditor && showViewer) {
+        return
+    }
+    setShowViewer(!showViewer)
+  }
+
+  const toggleScreen = () => {
+    console.log('toggle')
+  }
+
   return (
-      // React.Fragment
-      <>
-        <main className={styles.main}>
-            <Menu />
-            <div className={styles.content}> 
-                <div className={styles.head}>
-                    <p className={styles.title}>
-                        Note Title
-                    </p>
-                    <button
-                    onClick={() => {/* ここに保存ロジックを追加 */}}
-                    className={styles.saveBtn}
-                    >
-                    <IoSaveOutline size={17} />
-                    <span>Save</span>
-                    </button>
-                </div>
-                <div className={styles.mdContent}>
-                    <div className={styles.innerContent}>
-                        <div className={styles.mdInput}>
-                            <div className={styles.mdHead}>
-                                <BsFullscreen />
-                                <p className={styles.mdTitle}>Editor</p>
-                                <FiEyeOff />
-                            </div>
-                            <textarea
-                            value={markdown}
-                            onChange={(e) => setMarkdown(e.target.value)}
-                            className={styles.mdInputArea}
-                            />
-                        </div>
-                    </div>
-                    <div className={styles.innerContent}>
-                        <div className={styles.mdPreview}>
-                            <div className={styles.mdHead}>
-                                <BsFullscreen />
-                                <p className={styles.mdTitle}>Preview</p>
-                                <FiEyeOff />
-                            </div>
-                            <div className={styles.mdPreviewArea}>
-                            <ReactMarkdown components={MarkdownComponents}>{markdown}</ReactMarkdown>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <main className={styles.main}>
+        <Menu />
+
+        {/* head */}
+        <div className={styles.content}> 
+            <div className={styles.head}>
+                <p className={styles.title}>
+                    Note Title
+                </p>
                 <button
                 onClick={() => {/* ここに保存ロジックを追加 */}}
                 className={styles.saveBtn}
                 >
-                <IoSaveOutline size={17} className={styles.svg}/>
+                <IoSaveOutline size={17} />
                 <span>Save</span>
                 </button>
             </div>
-        </main>
-      </>
+
+            <div className={styles.mdContent}>
+                {/* editor */}
+                {/* showEditor toggle */}
+                <div className={showEditor ? styles.showEditor : styles.hideEditor}>
+                    <div className={styles.mdInput}>
+                        <div className={styles.mdHead}>
+                            <button
+                                onClick={toggleScreen}
+                                className={styles.toggleScreenButton}>
+                                {showViewer ? <BsFullscreen/> : <BsFullscreenExit/> }
+                            </button>
+                            <p className={styles.mdTitle}>Editor</p>
+                            <button
+                                onClick={toggleEditor}
+                                className={styles.toggleShowButton}>
+                                {showEditor ? <FiEye/> : <FiEyeOff/>}
+                            </button>
+                        </div>
+                        <textarea
+                            value={markdown}
+                            onChange={(e) => setMarkdown(e.target.value)}
+                            className={styles.mdInputArea}
+                        />
+                    </div>
+                </div>
+
+                {/* viewer */}
+                {/* showViewer toggle */}
+                <div className={showViewer ? styles.showViewer : styles.hideViewer}>
+                    <div className={styles.mdPreview}>
+                        <div className={styles.mdHead}>
+                            <button
+                                onClick={toggleScreen}
+                                className={styles.toggleScreenButton}>
+                                {showViewer ? <BsFullscreen/> : <BsFullscreenExit/> }
+                            </button>
+                            <p className={styles.mdTitle}>Preview</p>
+                            <button
+                                onClick={toggleViewer}
+                                className={styles.toggleShowButton}>
+                                {showViewer ? <FiEye/> : <FiEyeOff/>}
+                            </button>
+                        </div>
+                        <div className={styles.mdPreviewArea}>
+                            <ReactMarkdown components={MarkdownComponents}>
+                                {markdown}
+                            </ReactMarkdown>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <button
+                onClick={() => {/* ここに保存ロジックを追加 */}}
+                className={styles.saveBtn}
+            >
+                <IoSaveOutline size={17} className={styles.svg}/>
+                <span>Save</span>
+            </button>
+        </div>
+    </main>
   )
 }

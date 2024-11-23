@@ -28,6 +28,51 @@
 .innerContent{
     width: 50%;
 }
+
+/* editor toggle */
+.showEditor{
+    width: 100%;
+    transition: all 0.3s;
+}
+.hideEditor{
+    width: 52px;
+    transition: all 0.3s;
+}
+.hideEditor .mdHead{
+    border-radius: 10px;
+}
+.hideEditor .mdTitle{
+    display: none;
+}
+.hideEditor .toggleScreenButton{
+    display: none;
+}
+.hideEditor .mdInputArea{
+    display: none;
+}
+
+/* viewer toggle */
+.showViewer{
+    width: 100%;
+    transition: all 0.3s;
+}
+.hideViewer{
+    width: 52px;
+    transition: all 0.3s;
+}
+.hideViewer .mdHead{
+    border-radius: 10px;
+}
+.hideViewer .mdTitle{
+    display: none;
+}
+.hideViewer .toggleScreenButton{
+    display: none;
+}
+.hideViewer .mdPreviewArea{
+    display: none;
+}
+
 .mdHead{
     display: flex;
     align-items: center;
@@ -36,11 +81,34 @@
     background-color: #333;
     border-radius: 10px 10px 0 0;
 }
-.mdHead svg{
+.toggleShowButton{
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #fff;
+    background-color: transparent;
+    border: none;
+    padding: 10px;
     transition: all 0.3s;
 }
-.mdHead svg:hover{
+.toggleShowButton:hover{
+    color: #77f;
+}
+.toggleScreenButton{
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background-color: transparent;
+    border: none;
+    padding: 10px;
+    transition: all 0.3s;
+}
+.toggleScreenButton:hover{
     color: #77f;
 }
 .mdInput{
