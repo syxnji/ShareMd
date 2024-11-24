@@ -26,8 +26,27 @@
     display: flex;
     gap: 10px;
 }
+.mdTitle{
+    color: #fff;
+    font-weight: bold;
+}
+.areas{
+    display: flex;
+    gap: 10px;
+}
+.screen{
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}
+.bottom{
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    margin-top: 10px;
+}
 
-/* btn */
+/* editor */
 .showEditorButton{
     width: 50%;
     display: flex;
@@ -43,7 +62,7 @@
     transition: all 0.3s;
 }
 .showEditorButton:hover{
-    background-color: #777;
+    background-color: #fff;
     color: #333;
 }
 .hideEditorButton{
@@ -52,52 +71,13 @@
     justify-content: space-between;
     color: #333;
     font-weight: bold;
-    background-color: #ddd;
+    background-color: #eee;
     padding: 10px;
     border: solid 1px #777;
     border-bottom: none;
     border-radius: 10px 10px 0 0;
     transition: all 0.3s;
 }
-.showViewerButton{
-    width: 50%;
-    display: flex;
-    justify-content: space-between;
-    color: #fff;
-    font-weight: bold;
-    background-color: #333;
-    padding: 10px;
-    border: solid 1px #777;
-    border-radius: 10px 10px 0 0;
-}
-.showViewerButton:hover{
-    background-color: #777;
-    color: #333;
-}
-.hideViewerButton{
-    width: 50%;
-    display: flex;
-    justify-content: space-between;
-    color: #333;
-    font-weight: bold;
-    background-color: #ddd;
-    padding: 10px;
-    border: solid 1px #777;
-    border-bottom: none;
-    border-radius: 10px 10px 0 0;
-    transition: all 0.3s;
-}
-
-.mdTitle{
-    color: #fff;
-    font-weight: bold;
-}
-.areas{
-    display: flex;
-    gap: 10px;
-}
-
-/* editor */
 .showEditorArea{
     position: relative;
     width: 100%;
@@ -119,6 +99,34 @@
 }
 
 /* viewer */
+.showViewerButton{
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+    color: #fff;
+    font-weight: bold;
+    background-color: #333;
+    padding: 10px;
+    border: solid 1px #777;
+    border-radius: 10px 10px 0 0;
+}
+.showViewerButton:hover{
+    background-color: #fff;
+    color: #333;
+}
+.hideViewerButton{
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+    color: #333;
+    font-weight: bold;
+    background-color: #eee;
+    padding: 10px;
+    border: solid 1px #777;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    transition: all 0.3s;
+}
 .showViewerArea{
     position: relative;
     width: 100%;
@@ -135,16 +143,4 @@
 }
 .hideViewerArea{
     display: none;
-}
-
-.screen{
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-}
-.bottom{
-    width: 100%;
-    display: flex;
-    justify-content: end;
-    margin-top: 10px;
 }
