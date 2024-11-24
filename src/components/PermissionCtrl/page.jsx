@@ -1,3 +1,5 @@
+// component
+import { ImgBtn } from "@/components/UI/ImgBtn/page";
 // style
 import styles from "./permission.module.css"
 // icon
@@ -21,7 +23,7 @@ export function PermissionCtrl() {
                 </div>
                 <div className={styles.right}>
                     <div className={styles.deleteBtn}>
-                        <button type="submit"><FaMinus /></button>
+                        <ImgBtn img={<FaMinus/>} />
                     </div>
                 </div>
             </div>

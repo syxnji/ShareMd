@@ -1,15 +1,15 @@
 'use client'
 import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
-import { Menu } from "../../components/Menu/page.jsx";
+// component
+import { Menu } from "@/components/Menu/page.jsx";
+import { MainBtn } from '@/components/UI/MainBtn/page.jsx';
+import { ImgBtn } from '@/components/UI/ImgBtn/page.jsx';
 // style
 import styles from "./editor.module.css"
 // icon
 import { IoSaveOutline } from "react-icons/io5";
-import { FiEye } from "react-icons/fi";
-import { FiEyeOff } from "react-icons/fi";
 import { BsFullscreen } from "react-icons/bs";
-import { BsFullscreenExit } from "react-icons/bs";
 
 const MarkdownComponents = {
   h1: ({ children }) => <h1 style={{ fontSize: '2em', fontWeight: 'bold', marginBottom: '0.5em' }}>{children}</h1>,
@@ -55,13 +55,9 @@ export default function MarkdownEditor() {
                 <p className={styles.title}>
                     Note Title
                 </p>
-                <button
-                onClick={() => {/* ここに保存ロジックを追加 */}}
-                className={styles.saveBtn}
-                >
-                <IoSaveOutline size={17} />
-                <span>Save</span>
-                </button>
+                <div className={styles.saveBtn}>
+                    <MainBtn img={<IoSaveOutline/>} text="Save"/>
+                </div>
             </div>
 
             <div className={styles.mdContent}>
@@ -82,9 +78,9 @@ export default function MarkdownEditor() {
                             onChange={(e) => setMarkdown(e.target.value)}
                             className={styles.showInputArea}
                         />
-                        <button className={styles.screen}>
-                            a
-                        </button>
+                        <div className={styles.screen}>
+                            <ImgBtn img={<BsFullscreen />} />
+                        </div>
                     </div>
                     <div className={showViewer ? styles.showViewerArea : styles.hideViewerArea}>
                         <div className={styles.showPreviewArea}>
@@ -92,20 +88,18 @@ export default function MarkdownEditor() {
                                 {markdown}
                             </ReactMarkdown>
                         </div>
-                        <button className={styles.screen}>
-                            a
-                        </button>
+                        <div className={styles.screen}>
+                            <ImgBtn img={<BsFullscreen />} />
+                        </div>
                     </div>
                 </div>
 
             </div>
-            <button
-                onClick={() => {/* ここに保存ロジックを追加 */}}
-                className={styles.saveBtn}
-            >
-                <IoSaveOutline size={17} className={styles.svg}/>
-                <span>Save</span>
-            </button>
+            <div className={styles.bottom}>
+                <div className={styles.saveBtn}>
+                    <MainBtn img={<IoSaveOutline/>} text="Save"/>
+                </div>
+            </div>
         </div>
     </main>
   )

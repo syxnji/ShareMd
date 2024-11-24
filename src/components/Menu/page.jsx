@@ -1,5 +1,7 @@
 'use client'
 import { useState } from "react";
+// component
+import { ImgBtn } from "@/components/UI/ImgBtn/page";
 // icon
 import { BsArrowBarLeft } from "react-icons/bs";
 import { BsArrowBarRight } from "react-icons/bs";
@@ -32,9 +34,7 @@ export function Menu() {
             <div className={styles.innerMenu}>
                 <div className={styles.head}>
                     <p>Books</p>
-                    <button onClick={toggleMenu}>
-                        {isMenu ? <BsArrowBarLeft size={20}/> : <BsArrowBarRight size={20}/>}
-                    </button>
+                    <ImgBtn click={toggleMenu} img={isMenu ? <BsArrowBarLeft/> : <BsArrowBarRight/>}/>
                 </div>
                 {/* groupsを繰り返し表示 */}
                 <div className={styles.categories}>

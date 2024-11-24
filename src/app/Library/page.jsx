@@ -2,18 +2,20 @@
 import { useState } from 'react';
 import Link from "next/link";
 // component
-import { Menu } from "../../components/Menu/page.jsx";
-import { Notes } from "../../components/SelectNote/page.jsx";
-import { GroupHeadline } from "../../components/GroupHeadline/page.jsx";
+import { Menu } from "@/components/Menu/page.jsx";
+import { Notes } from "@/components/SelectNote/page.jsx";
+import { GroupHeadline } from "@/components/GroupHeadline/page.jsx";
+import { MainBtn } from "@/components/UI/MainBtn/page.jsx"
+import { ImgBtn } from '@/components/UI/ImgBtn/page';
+import styleNotes from "@/components/SelectNote/selectNote.module.css"
 // icon
 import { BsGrid3X3 } from "react-icons/bs";
 import { BsFileEarmarkPlus } from "react-icons/bs";
 import { BsSearch } from "react-icons/bs";
 import { BsList } from "react-icons/bs";
-import { LuListChecks } from "react-icons/lu";
+import { BsPeople } from "react-icons/bs";
 // style
 import styles from "./library.module.css";
-import styleNotes from "@/components/SelectNote/selectNote.module.css"
 
 export default function Library() {
     // TODO:仮データ
@@ -42,11 +44,9 @@ export default function Library() {
     // left
     const headLeft = (
         <div className={styles.auth}>
-            <button>
-                <Link href={"/Permission"}>
-                    <LuListChecks size={25} color="#333" />
-                </Link>
-            </button>
+            <Link href={"/Permission"}>
+                <ImgBtn img={<BsPeople />} />
+            </Link>
         </div>
     )
     // right
@@ -54,13 +54,10 @@ export default function Library() {
         <div className={styles.right}>
             <div className={styles.layouts}>
                 {/* MARK:toggleView */}
-                <button onClick={toggleView}>
-                    {/* isGridViewによってiconsの切り替え */}
-                    {isGridView ? <BsList/> : <BsGrid3X3/>}
-                </button>
+                <ImgBtn img={isGridView ? <BsList/> : <BsGrid3X3/>} click={toggleView}/>
             </div>
             <div className={styles.addNote}>
-                <button><BsFileEarmarkPlus/> <span>New Note</span></button>
+                <MainBtn img={<BsFileEarmarkPlus/>} text="New Note"/>
             </div>
         </div>
     )
@@ -78,7 +75,7 @@ export default function Library() {
                 <div className={styles.search}>
                     <form action="">
                         <input placeholder="Note name ..." type="search" name="" id="" />
-                        <button type="submit"><BsSearch/></button>
+                        <ImgBtn img={<BsSearch/>} />
                     </form>
                 </div>
 

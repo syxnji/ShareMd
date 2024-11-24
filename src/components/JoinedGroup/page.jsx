@@ -1,4 +1,5 @@
 // style
+import { ImgBtn } from "@/components/UI/ImgBtn/page";
 import styles from "./joinedgroup.module.css"
 // icon
 import { FaMinus } from "react-icons/fa6";
@@ -14,9 +15,7 @@ export function JoinedGroup(group) {
                     <p className={styles.groupSize}>{group.member} 人</p>
                 </div>
                 <div className={styles.right}>
-                    <button className={styles.button} type="submit">
-                        <FaMinus/>
-                    </button>
+                    <ImgBtn img={<FaMinus/>} />
                 </div>
             </div>
         </form>

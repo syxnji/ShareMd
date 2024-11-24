@@ -3,12 +3,14 @@
 import { Menu } from "@/components/Menu/page.jsx";
 import { GroupHeadline } from "@/components/GroupHeadline/page.jsx";
 import { PermissionCtrl } from "@/components/PermissionCtrl/page.jsx";
+import { MainBtn } from "@/components/UI/MainBtn/page";
+import { ImgBtn } from "@/components/UI/ImgBtn/page";
 // style
 import styles from "../Library/library.module.css";
 import stylePermit from "./permission.module.css";
 // icon
 import { FaPlus } from "react-icons/fa6";
-import { IoReturnDownBack } from "react-icons/io5";
+import { IoReturnDownBack, IoSaveOutline } from "react-icons/io5";
 
 export default function Permission() {
     
@@ -25,9 +27,7 @@ export default function Permission() {
     const headRight =(
         <div className={styles.right}>
             <div className={stylePermit.backBtn}>
-                <button onClick={handleBack}>
-                    <IoReturnDownBack size={17}/>
-                </button>
+                <ImgBtn img={<IoReturnDownBack/>} click={handleBack} />
             </div>
         </div>
     )
@@ -64,11 +64,16 @@ export default function Permission() {
                             </div>
                             <div className={stylePermit.right}>
                                 <div className={stylePermit.deleteBtn}>
-                                    <button type="submit"><FaPlus /></button>
+                                    <ImgBtn img={<FaPlus />} />
                                 </div>
                             </div>
                         </div>
                     </form>
+
+                    {/* saveBtn */}
+                    <div className={stylePermit.saveBtn}>
+                        <MainBtn img={<IoSaveOutline/>} text="Save"/>
+                    </div>
 
                 </div>
             </main>

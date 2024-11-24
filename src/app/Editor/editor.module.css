@@ -138,32 +138,13 @@
 }
 
 .screen{
-    width: 32px;
-    height: 32px;
-    background-color: #fff;
     position: absolute;
     bottom: 5px;
     right: 5px;
-    border-radius: 7px;
 }
-.saveBtn{
-    height: 32px;
+.bottom{
+    width: 100%;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 5px 10px;
+    justify-content: end;
     margin-top: 10px;
-    font-weight: bold;
-    color: #fff;
-    background-color: #429;
-    border: solid 1px #ccc;
-    border-radius: 10px;
-    transition: all 0.3s;
-}
-.saveBtn:hover{
-    background-color: #eee;
-    color: #429;
-}
-.saveBtn span{
-    margin-left: 5px;
 }

@@ -7,21 +7,8 @@
 }
 
 /* leftBtn */
-.auth button{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 32px;
-    height: 32px;
+.auth {
     margin-left: 10px;
-    padding: 5px;
-    border: none;
-    border-radius: 10px;
-    background-color: transparent;
-    transition: all 0.3s;
-}
-.auth button:hover{
-    background-color: #ddd;
 }
 
 /* rightBtn */
@@ -29,42 +16,7 @@
     display: flex;
 }
 .layouts{
-    display: flex;
-}
-.layouts button{
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 5px;
-    border: solid 1px #aaa;
-    border-radius: 10px;
-    transition: all 0.3s;
-}
-.layouts button:hover{
-    background-color: #333;
-    color: #fff;
-}
-.addNote button{
-    height: 32px;
-    padding: 0 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    background-color: #429;
-    border: solid 1px #aaa;
-    border-radius: 10px;
-    color: #fff;
-    transition: all 0.3s;
-}
-.addNote button:hover{
-    background-color: #eee;
-    color: #429;
-}
-.addNote button span{
-    margin-left: 5px;
+    margin-right: 10px;
 }
 
 /* search */
@@ -78,24 +30,10 @@
 .search input{
     width: 40%;
     height: 32px;
-    padding-left: 5px;
-    margin-right: 5px;
-    border: solid 2px #aaa;
+    padding: 10px;
+    margin-right: 10px;
+    border: solid 1px #ddd;
     border-radius: 10px;
-}
-.search button{
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #fff;
-    border: solid 2px #aaa;
-    border-radius: 10px;
-    transition: all 0.3s;
-}
-.search button:hover{
-    border: solid 2px #333;
 }
 
 /* notes */

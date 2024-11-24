@@ -1,0 +1,21 @@
+.ImgBtn{
+    /* layout */
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* style */
+    background-color: transparent;
+    color: #333;
+    border: solid 1px #ddd;
+    border-radius: 10px;
+
+    /* move */
+    transition: all 0.3s;
+}
+.ImgBtn:hover{
+    background-color: #333;
+    color: #fff;
+}

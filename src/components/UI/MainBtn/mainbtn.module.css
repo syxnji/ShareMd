@@ -1,0 +1,25 @@
+.mainBtn{
+    /* layout */
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+
+    /* design */
+    border: solid 1px #429 ;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: bold;
+    background-color: #429;
+
+    /* move */
+    transition: all 0.3s;
+}
+.mainBtn svg{
+    margin-right: 5px;
+}
+.mainBtn:hover{
+    color: #429;
+    background-color: #fff;
+}

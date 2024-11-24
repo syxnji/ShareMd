@@ -69,3 +69,10 @@
     font-size: 1.5rem;
     color: #777;
 }
+
+.saveBtn{
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    margin-top: 10px;
+}

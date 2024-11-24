@@ -1,6 +1,10 @@
+// component
 import { JoinedGroup } from "@/components/JoinedGroup/page.jsx";
+import { MainBtn } from "@/components/UI/MainBtn/page";
 // style
 import styles from "./setting.module.css"
+// icon
+import { IoSaveOutline } from "react-icons/io5";
 
 export default function Setting() {
     // TODO:仮データ
@@ -43,6 +47,9 @@ export default function Setting() {
                                 member={group.member}
                             />
                         ))}
+                    </div>
+                    <div className={styles.saveBtn}>
+                        <MainBtn img={<IoSaveOutline/>} text="Save"/>
                     </div>
                 </div>
             </div>
