@@ -11,7 +11,7 @@
 
 /* close */
 .close{
-    width: 52px;
+    width: 72px;
     height: 100vh;
     position: sticky;
     top: 0;
@@ -31,7 +31,7 @@
     overflow-y: scroll;
     scrollbar-width:none;
 }
-.head{
+/* .head{
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -40,6 +40,10 @@
 }
 .head p{
     font-size: 1.5rem;
+    font-weight: bold;
+} */
+.booksTitle{
+    font-size: 1.3rem;
     font-weight: bold;
 }
 .category{

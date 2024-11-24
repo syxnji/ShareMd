@@ -1,3 +1,8 @@
+.auth{
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #333;
+}
 .addPermission{
     display: flex;
     justify-content: space-between;

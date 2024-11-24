@@ -2,6 +2,7 @@
 import { useState } from "react";
 // component
 import { ImgBtn } from "@/components/UI/ImgBtn/page";
+import { GroupHeadline } from "@/components/GroupHeadline/page";
 // icon
 import { BsArrowBarLeft } from "react-icons/bs";
 import { BsArrowBarRight } from "react-icons/bs";
@@ -28,14 +29,23 @@ export function Menu() {
         setIsMenu(!isMenu);
     };
 
+    // GroupHeadline
+    const headLeft = (
+        <p className={styles.booksTitle}>Books</p>
+    )
+    const headRight =(
+        <ImgBtn click={toggleMenu} img={isMenu ? <BsArrowBarLeft/> : <BsArrowBarRight/>}/>
+    )
+
     return(
         // <div className={styles.outerMenu} >
         <div className={isMenu ? styles.open : styles.close }>
             <div className={styles.innerMenu}>
-                <div className={styles.head}>
+                <GroupHeadline headLeft={headLeft} headRight={headRight}/>
+                {/* <div className={styles.head}>
                     <p>Books</p>
                     <ImgBtn click={toggleMenu} img={isMenu ? <BsArrowBarLeft/> : <BsArrowBarRight/>}/>
-                </div>
+                </div> */}
                 {/* groupsを繰り返し表示 */}
                 <div className={styles.categories}>
                     {groups.map((group) => (

@@ -5,13 +5,19 @@ export function GroupHeadline({ headLeft, headRight }) {
     return(
         <div className={styles.outerHead}>
             <div className={styles.innerHead}>
-                <div className={styles.left}>
+                {/* <div className={styles.left}>
                     <p className={styles.title}>
                         Marketing Team
                     </p>
                     { headLeft }
                 </div>
-                { headRight }
+                { headRight } */}
+                <div className={styles.left}>
+                    {headLeft}
+                </div>
+                <div className={styles.right}>
+                    {headRight}
+                </div>
             </div>
         </div>
     )

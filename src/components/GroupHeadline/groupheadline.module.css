@@ -5,11 +5,12 @@
     margin-bottom: 15px;
 }
 .innerHead{
+    height: 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: solid 1px #ddd;
-    padding: 0 10px;
+    padding: 5px 10px;
 }
 .left{
     display: flex;

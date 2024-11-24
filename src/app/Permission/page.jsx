@@ -16,19 +16,16 @@ export default function Permission() {
     
     // BackBtn
     const handleBack = () => {
-        window.history.back(); // 前のページに戻る
+        window.history.back();
     };
 
     // GroupHeadline
     const headLeft = (
-        <div className={styles.auth}>
-        </div>
+        <p className={stylePermit.auth}>Marketing Team</p>
     )
     const headRight =(
-        <div className={styles.right}>
-            <div className={stylePermit.backBtn}>
-                <ImgBtn img={<IoReturnDownBack/>} click={handleBack} />
-            </div>
+        <div className={stylePermit.backBtn}>
+            <ImgBtn img={<IoReturnDownBack/>} click={handleBack} />
         </div>
     )
 
