@@ -31,20 +31,10 @@
     overflow-y: scroll;
     scrollbar-width:none;
 }
-/* .head{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: solid 1px #ddd;
-    margin-bottom: 15px;
-}
-.head p{
-    font-size: 1.5rem;
-    font-weight: bold;
-} */
 .booksTitle{
     font-size: 1.3rem;
     font-weight: bold;
+    color: #333;
 }
 .category{
     padding: 5px;

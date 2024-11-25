@@ -1,10 +1,13 @@
+'use client'
 // component
 import { JoinedGroup } from "@/components/JoinedGroup/page.jsx";
 import { MainBtn } from "@/components/UI/MainBtn/page";
+import { GroupHeadline } from "@/components/GroupHeadline/page";
+import { ImgBtn } from "@/components/UI/ImgBtn/page";
 // style
 import styles from "./setting.module.css"
 // icon
-import { IoSaveOutline } from "react-icons/io5";
+import { IoReturnDownBack, IoSaveOutline } from "react-icons/io5";
 
 export default function Setting() {
     // TODO:仮データ
@@ -21,13 +24,30 @@ export default function Setting() {
         { id: 10, group: 'Logistics and Supply Chain', member: 14 }
     ];
 
+    // MARK:GroupHeadline
+    // left
+    const headLeftProfile = (
+        <p className={styles.headTitle}>Profile</p>
+    )
+    const headLeftGroup = (
+        <p className={styles.headTitle}>Joined Groups</p>
+    )
+    
+    // BackBtn
+    const handleBack = () => {
+        window.history.back();
+    };
+    const headRight =(
+        <div className={styles.backBtn}>
+            <ImgBtn img={<IoReturnDownBack/>} click={handleBack} />
+        </div>
+    )
+
     return(
         <main>
             <div className={styles.settings}>
                 <div className={styles.profile}>
-                    <div className={styles.profileHead}>
-                        <p>Profile</p>
-                    </div>
+                    <GroupHeadline headLeft={headLeftProfile}/>
                     <form action="" method="post" className={styles.form}>
                         <figure className={styles.figure}></figure>
                         <input type="text" placeholder="ユーザー名"/>
@@ -36,9 +56,7 @@ export default function Setting() {
                     </form>
                 </div>
                 <div className={styles.groupContent}>
-                    <div className={styles.groupHead}>
-                        <p>Joined Groups</p>
-                    </div>
+                    <GroupHeadline headLeft={headLeftGroup} headRight={headRight}/>
                     <div className={styles.groups}>
                         {groups.map((group) => (
                             <JoinedGroup 

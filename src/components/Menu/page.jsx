@@ -38,14 +38,9 @@ export function Menu() {
     )
 
     return(
-        // <div className={styles.outerMenu} >
         <div className={isMenu ? styles.open : styles.close }>
             <div className={styles.innerMenu}>
                 <GroupHeadline headLeft={headLeft} headRight={headRight}/>
-                {/* <div className={styles.head}>
-                    <p>Books</p>
-                    <ImgBtn click={toggleMenu} img={isMenu ? <BsArrowBarLeft/> : <BsArrowBarRight/>}/>
-                </div> */}
                 {/* groupsを繰り返し表示 */}
                 <div className={styles.categories}>
                     {groups.map((group) => (

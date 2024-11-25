@@ -5,6 +5,7 @@ import ReactMarkdown from 'react-markdown'
 import { Menu } from "@/components/Menu/page.jsx";
 import { MainBtn } from '@/components/UI/MainBtn/page.jsx';
 import { ImgBtn } from '@/components/UI/ImgBtn/page.jsx';
+import { GroupHeadline } from '@/components/GroupHeadline/page';
 // style
 import styles from "./editor.module.css"
 // icon
@@ -44,6 +45,20 @@ export default function MarkdownEditor() {
   const toggleScreen = () => {
     console.log('toggle')
   }
+  
+// MARK:GroupHeadline
+// left
+const headLeft = (
+    <p className={styles.title}>
+        Note Title
+    </p>
+)
+// right
+const headRight =(
+    <div className={styles.saveBtn}>
+        <MainBtn img={<IoSaveOutline/>} text="Save"/>
+    </div>
+)
 
   return (
     <main className={styles.main}>
@@ -51,14 +66,7 @@ export default function MarkdownEditor() {
 
         {/* head */}
         <div className={styles.content}> 
-            <div className={styles.head}>
-                <p className={styles.title}>
-                    Note Title
-                </p>
-                <div className={styles.saveBtn}>
-                    <MainBtn img={<IoSaveOutline/>} text="Save"/>
-                </div>
-            </div>
+            <GroupHeadline headLeft={headLeft} headRight={headRight}/>
 
             <div className={styles.mdContent}>
                 <div className={styles.mdHeads}>

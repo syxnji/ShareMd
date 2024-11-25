@@ -13,8 +13,12 @@
     padding: 5px 10px;
 }
 .left{
+    width: 35vw;
     display: flex;
     align-items: center;
+}
+.right{
+    display: flex;
 }
 .left .title{
     font-size: 1.5rem;

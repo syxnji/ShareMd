@@ -43,23 +43,24 @@ export default function Library() {
     // MARK:GroupHeadline
     // left
     const headLeft = (
-        <div className={styles.auth}>
-            <Link href={"/Permission"}>
-                <ImgBtn img={<BsPeople />} />
-            </Link>
-        </div>
+        <>
+        <p className={styles.groupName}>Marketing Team</p>
+        <Link href={"/Permission"}>
+            <ImgBtn img={<BsPeople />} />
+        </Link>
+        </>
     )
     // right
     const headRight =(
-        <div className={styles.right}>
-            <div className={styles.layouts}>
-                {/* MARK:toggleView */}
-                <ImgBtn img={isGridView ? <BsList/> : <BsGrid3X3/>} click={toggleView}/>
-            </div>
-            <div className={styles.addNote}>
-                <MainBtn img={<BsFileEarmarkPlus/>} text="New Note"/>
-            </div>
+        <>
+        <div className={styles.layouts}>
+            {/* MARK:toggleView */}
+            <ImgBtn img={isGridView ? <BsList/> : <BsGrid3X3/>} click={toggleView}/>
         </div>
+        <div className={styles.addNote}>
+            <MainBtn img={<BsFileEarmarkPlus/>} text="New Note"/>
+        </div>
+        </>
     )
 
     return(
