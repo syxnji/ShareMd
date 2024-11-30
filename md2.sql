@@ -12,6 +12,14 @@ CREATE TABLE users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
+-- -- 仮account
+-- CREATE TABLE Users (
+--     userId INT AUTO_INCREMENT PRIMARY KEY,
+--     username VARCHAR(50) NOT NULL,
+--     mailaddress VARCHAR(100) NOT NULL UNIQUE,
+--     password VARCHAR(255) NOT NULL
+-- );
+
 -- Groups table
 CREATE TABLE `groups` (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -150,7 +158,8 @@ INSERT INTO role_permissions (role_id, permission_id) VALUES
 INSERT INTO user_group_memberships (user_id, group_id, role_id) VALUES
 (1, 1, 1), (2, 1, 2), (3, 2, 1), (4, 2, 2),
 (5, 3, 1), (6, 3, 2), (7, 4, 1), (8, 4, 2),
-(9, 5, 1), (10, 5, 2);
+(9, 5, 1), (10, 5, 2),
+(1, 2, 1),(1, 3, 1),(1, 4, 1);
 
 -- Insert sample data into notes table
 INSERT INTO notes (title, content, group_id, created_by) VALUES

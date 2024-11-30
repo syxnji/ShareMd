@@ -1,5 +1,6 @@
 'use client'
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getGroups } from "pages/api/myGroups";
 // component
 import { ImgBtn } from "@/components/UI/ImgBtn/page";
 import { GroupHeadline } from "@/components/GroupHeadline/page";
@@ -10,20 +11,18 @@ import { BsArrowBarRight } from "react-icons/bs";
 import styles from "./menu.module.css";
 
 export function Menu() {
-    // TODO:仮データ
-    const groups = [
-        { id: 1, group: 'Marketing Team' },
-        { id: 2, group: 'Development Team' },
-        { id: 3, group: 'Design Group' },
-        { id: 4, group: 'Human Resources' },
-        { id: 5, group: 'Sales Division' },
-        { id: 6, group: 'Customer Support' },
-        { id: 7, group: 'Research and Innovation' },
-        { id: 8, group: 'Product Management' },
-        { id: 9, group: 'Finance and Accounting' },
-        { id: 10, group: 'Logistics and Supply Chain' }
-    ];
 
+    // DBから取得
+    const [groups, setGroups] = useState([]);
+    useEffect(() => {
+        async function loadGroups() {
+            const fetchedGroups = await getGroups();
+            setGroups(fetchedGroups);
+        }
+        loadGroups();
+    }, []);
+
+    // 表示/非表示
     const [isMenu, setIsMenu] = useState(true);
     const toggleMenu = () => {
         setIsMenu(!isMenu);
@@ -45,7 +44,8 @@ export function Menu() {
                 <div className={styles.categories}>
                     {groups.map((group) => (
                         <div className={styles.category} key={group.id}>
-                            <p>{group.group}</p>
+                            {/* <p>{group.group}</p> */}
+                            <p>{group.name}</p>
                         </div>
                     ))}
                 </div>
