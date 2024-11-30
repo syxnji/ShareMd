@@ -24,7 +24,7 @@ export function Notes({className, title, preview, last}) {
                             Last Edited:
                         </p>
                         <p>
-                            {last} ago
+                            {last}
                         </p>
                     </div>
                 </div>

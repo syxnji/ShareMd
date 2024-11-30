@@ -172,4 +172,5 @@ INSERT INTO notes (title, content, group_id, created_by) VALUES
 ('Research Findings: AI in Healthcare', 'Findings from AI in healthcare research...', 7, 4),
 ('Legal Brief: Intellectual Property', 'Brief on recent IP case...', 8, 6),
 ('Executive Summary: Company Direction', 'Summary of company direction for next 5 years...', 9, 8),
-('IT Infrastructure Upgrade Plan', 'Plan for upgrading company IT infrastructure...', 10, 10);
+('IT Infrastructure Upgrade Plan', 'Plan for upgrading company IT infrastructure...', 10, 10),
+('Test Note', 'Thsi is test note...', 1, 1);

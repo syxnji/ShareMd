@@ -5,8 +5,8 @@ import pool from "pages/db"
 export async function getNotes() {
     try {
         const [rows] = await pool.query(
-            `SELECT * 
-             FROm notes 
+            `SELECT notes.id, notes.title, notes.content, notes.updated_at, groups.name
+             FROM notes 
              JOIN \`groups\` 
                ON notes.group_id = groups.id
              JOIN user_group_memberships

@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react';
 import Link from "next/link";
+// api
 import { getNotes } from 'pages/api/groupInNotes';
 // component
 import { Menu } from "@/components/Menu/page.jsx";
@@ -20,7 +21,7 @@ import styles from "./library.module.css";
 
 export default function Library() {
 
-    // DBから取得
+    // MARK:DBから取得
     const [notes, setNotes] = useState([]);
     useEffect(() => {
         async function loadNotes() {
@@ -29,20 +30,6 @@ export default function Library() {
         }
         loadNotes();
     },[]);
-
-    // TODO:仮データ
-    // const notes = [
-    //     { id: 1, title: 'Meeting Notes', preview: 'Discussed project milestones.\nAssigned tasks to team.', last: '2 hours' },
-    //     { id: 2, title: 'App Improvements', preview: 'Quick ideas for app improvement.\nAdd dark mode.', last: '15 minutes' },
-    //     { id: 3, title: 'Shopping List', preview: '1. Milk\n2. Bread\n3. Butter', last: '3 years' },
-    //     { id: 4, title: 'Travel Plans', preview: 'Plan trip to Kyoto.\nVisit Arashiyama and Kinkakuji.', last: '300 seconds' },
-    //     { id: 5, title: 'Project Draft', preview: null, last: '5 days' }, // previewがnull
-    //     { id: 6, title: 'Birthday Ideas', preview: 'Surprise party at a cafe.\nOrder cake.', last: undefined },
-    //     { id: 7, title: 'Workout Routine', preview: '1. Morning jog\n2. Weightlifting', last: '1 week' },
-    //     { id: 8, title: 123, preview: 'Draft blog post.\nTopic: Productivity tips.', last: '45 minutes' },
-    //     { id: 9, title: 'Recipe Notes', preview: '1. Tomato soup recipe.\n2. Add basil for flavor.', last: '' },
-    //     { id: 10, title: 'Code Snippets', preview: 'function add(a, b) {\n  return a + b;\n}', last: '7 months' }
-    // ];
       
     // MARK:ToggleGrid/List
     const [isGridView, setIsGridView] = useState(true);
@@ -63,7 +50,7 @@ export default function Library() {
         </>
     )
     // right
-    const headRight =(
+    const headRight = (
         <>
         <div className={styles.layouts}>
             {/* MARK:toggleView */}
@@ -73,6 +60,10 @@ export default function Library() {
             <MainBtn img={<BsFileEarmarkPlus/>} text="New Note"/>
         </div>
         </>
+    )
+    // group_left
+    const group_headLeft = (
+        <p className={styles.groupName}>Recently Updated</p>
     )
 
     return(
@@ -93,6 +84,7 @@ export default function Library() {
                 </div>
 
                 {/* MARK:notes */}
+                <GroupHeadline headLeft={group_headLeft} />
                 {/* isNotesClassによってclassNameの切り替え */}
                 <div className={isNotesClass ? styles.grid : styles.list}>
                     {/* isNotesClassによってclassNameの切り替え */}

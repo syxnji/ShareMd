@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from "react";
+// api
 import { getGroups } from "pages/api/myGroups";
 // component
 import { ImgBtn } from "@/components/UI/ImgBtn/page";
