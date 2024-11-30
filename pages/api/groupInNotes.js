@@ -5,10 +5,13 @@ import pool from "pages/db"
 export async function getNotes() {
     try {
         const [rows] = await pool.query(
-            `select * 
-             from notes 
-             join \`groups\` 
-               on notes.group_id = groups.id`
+            `SELECT * 
+             FROm notes 
+             JOIN \`groups\` 
+               ON notes.group_id = groups.id
+             JOIN user_group_memberships
+               ON notes.group_id = user_group_memberships.group_id
+             WHERE user_id = 1`
         );
         return rows;
     } catch (error) {
