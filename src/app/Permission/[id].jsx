@@ -1,4 +1,5 @@
 'use client'
+import { useRouter } from "next/router";
 // component
 import { Menu } from "@/components/Menu/page.jsx";
 import { GroupHeadline } from "@/components/GroupHeadline/page.jsx";
@@ -13,7 +14,11 @@ import { FaPlus } from "react-icons/fa6";
 import { IoReturnDownBack, IoSaveOutline } from "react-icons/io5";
 
 export default function Permission() {
-    
+    const router = useRouter();
+    const { id } = router.query;
+  
+    console.log('Current id:', id);
+
     // BackBtn
     const handleBack = () => {
         window.history.back();
@@ -21,12 +26,12 @@ export default function Permission() {
 
     // GroupHeadline
     const headLeft = (
-        <p className={stylePermit.auth}>Marketing Team</p>
-    )
-    const headRight =(
+        <>
+        <p className={stylePermit.auth}>{ id }</p>
         <div className={stylePermit.backBtn}>
             <ImgBtn img={<IoReturnDownBack/>} click={handleBack} />
         </div>
+        </>
     )
 
     return(
@@ -37,7 +42,7 @@ export default function Permission() {
 
                 <div className={styles.content}>
                     {/* headline */}
-                    <GroupHeadline headLeft={headLeft} headRight={headRight} />
+                    <GroupHeadline headLeft={headLeft} />
 
                     {/* permissions */}
                     <PermissionCtrl />

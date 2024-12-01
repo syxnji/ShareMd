@@ -33,12 +33,12 @@ export default function Library() {
 
     // MARK:選択されたグループ内ノート
     const [notesInGroup, setNotesInGroup] = useState([]);
-    const [groupName, setGroupName] = useState(null);
+    const [group, setGroup] = useState(null);
     const handleGroupClick = async (groupId) => {
         try {
-            const { notes, groupName } = await getNotesInGroup(groupId);
+            const { notes, group } = await getNotesInGroup(groupId);
             setNotesInGroup(notes);
-            setGroupName(groupName);
+            setGroup(group);
         } catch (error) {
             console.log('Failed to fetch notes:', error);
         }
@@ -55,10 +55,13 @@ export default function Library() {
     // MARK:ヘッドライン指定
     const headLeft = (
         <>
-        <p className={styles.groupName}>Marketing Team</p>
-        <Link href={"/Permission"}>
-            <ImgBtn img={<BsPeople />} />
-        </Link>
+        {/* MARK:検索 */}
+        <div className={styles.search}>
+            <form action="">
+                <input placeholder="Note name ..." type="search" name="" id="" />
+                <ImgBtn img={<BsSearch/>} />
+            </form>
+        </div>
         </>
     )
     const headRight = (
@@ -72,10 +75,19 @@ export default function Library() {
         </>
     )
     const recently_headLeft = (
-        <p className={styles.groupName}>Recently Updated</p>
+        <p className={styles.groupName}>最近の更新</p>
     )
     const select_headLeft = (
-        <p className={styles.groupName}>{groupName}</p>
+        <>
+        {group && (
+            <>
+            <p className={styles.groupName}>{group.name}</p>
+            <Link href={`/Permission/${group.id}`}>
+                <ImgBtn img={<BsPeople />} />
+            </Link>
+            </>
+        )}
+        </>
     )
 
     return(
@@ -87,14 +99,6 @@ export default function Library() {
         <div className={styles.content}>
             {/* MARK:ヘッドライン */}
             <GroupHeadline headLeft={headLeft} headRight={headRight} />
-
-            {/* MARK:検索 */}
-            <div className={styles.search}>
-                <form action="">
-                    <input placeholder="Note name ..." type="search" name="" id="" />
-                    <ImgBtn img={<BsSearch/>} />
-                </form>
-            </div>
 
             {/* MARK:選択したグループ内のノート */}
             <NotesInGroup 

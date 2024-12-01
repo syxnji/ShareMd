@@ -2,7 +2,7 @@
     background-color: #eee;
     color: #333;
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
 }
 .header a{
     margin-left: 10px;
