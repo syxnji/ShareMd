@@ -1,0 +1,50 @@
+.hideContent{
+    display: none;
+}
+.backBtn{
+    margin-left: 10px;
+}
+.auth{
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #333;
+}
+.addPermission{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: solid 1px #777 ;
+}
+.left{
+    display: flex;
+    width: 100%;
+}
+.role{
+    width: 50%;
+}
+.role input{
+    width: 90%;
+    padding: 10px;
+    border: solid 1px #ccc;
+    border-radius: 5px;
+}
+.permit{
+    margin-left: 10px;
+}
+.select{
+    padding: 10px;
+    border: solid 1px #ccc;
+    border-radius: 5px;
+}
+.right{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.saveBtn{
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    margin-top: 10px;
+}

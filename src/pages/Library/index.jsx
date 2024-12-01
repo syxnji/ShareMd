@@ -7,6 +7,7 @@ import { GroupHeadline } from "@/components/GroupHeadline";
 import { NotesInGroup } from '@/components/NotesInGroup';
 import { MainBtn } from "@/components/UI/MainBtn"
 import { ImgBtn } from '@/components/UI/ImgBtn';
+import { Permission } from '@/components/Permission';
 // icon
 import { BsGrid3X3 } from "react-icons/bs";
 import { BsFileEarmarkPlus } from "react-icons/bs";
@@ -51,6 +52,11 @@ export default function Library() {
       setIsNotesClass(!isNotesClass);
     };
 
+    const [displayNotes, setDisplayNotes] = useState(true);
+    const toggleGroupContent = () => {
+        setDisplayNotes(!displayNotes);
+    };
+
     // MARK:ヘッドライン指定
     const headLeft = (
         <>
@@ -81,9 +87,12 @@ export default function Library() {
         {selectedGroupNotes.length > 0 && (
             <>
             <p className={styles.groupName}>{selectedGroupNotes[0].groupName}</p>
-            <Link href={`/Permission/atode`}>
+            {/* <Link href={`/Permission/${selectedGroupNotes[0].groupId}`}>
                 <ImgBtn img={<BsPeople />} />
-            </Link>
+            </Link> */}
+            <button className={styles.permissionBtn} onClick={toggleGroupContent}>
+                <ImgBtn img={<BsPeople />} />
+            </button>
             </>
         )}
         </>
@@ -95,23 +104,32 @@ export default function Library() {
         {/* MARK:メニュー */}
         <Menu setSelectedGroupId={setSelectedGroupId} />
 
-        <div className={styles.content}>
-            {/* MARK:ヘッドライン */}
-            <GroupHeadline headLeft={headLeft} headRight={headRight} />
+        <div className={styles.contents}>
 
-            {/* MARK:選択したグループ内のノート */}
-            <NotesInGroup 
-                notes={selectedGroupNotes} 
-                isNotesClass={isNotesClass} 
-                head={select_headLeft} 
-            />
-                    
-            {/* MARK:最近更新されたノート */}
-            <NotesInGroup 
-                notes={allNotes} 
-                isNotesClass={isNotesClass} 
-                head={recently_headLeft} 
-            />
+            {/* MARK:ノート */}
+            <div className={ displayNotes ? styles.content : styles.hideContent }>
+                {/* MARK:ヘッドライン */}
+                <GroupHeadline headLeft={headLeft} headRight={headRight} />
+
+                {/* MARK:選択したグループ内のノート */}
+                <NotesInGroup 
+                    notes={selectedGroupNotes} 
+                    isNotesClass={isNotesClass} 
+                    head={select_headLeft} 
+                    />
+                        
+                {/* MARK:最近更新されたノート */}
+                <NotesInGroup 
+                    notes={allNotes} 
+                    isNotesClass={isNotesClass} 
+                    head={recently_headLeft} 
+                    />
+            </div>
+            
+            {/* MARK:権限 */}
+            {selectedGroupNotes.length > 0 && (
+                <Permission display={displayNotes} group={selectedGroupNotes[0].groupName} />
+            )}
         </div>
         </main>
     )

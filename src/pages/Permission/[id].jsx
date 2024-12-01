@@ -1,4 +1,5 @@
 'use client'
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 // component
 import { Menu } from "@/components/Menu/index.jsx";
@@ -16,8 +17,17 @@ import { IoReturnDownBack, IoSaveOutline } from "react-icons/io5";
 export default function Permission() {
     const router = useRouter();
     const { id } = router.query;
-  
-    console.log('Current id:', id);
+
+    // MARK:グループ権限
+    const [roles, setRoles] = useState([]);
+    useEffect(() => {
+        const fetchRoles = async () => {
+            const response = await fetch(`/api/db?table=groupRole`);
+            const allNotes = await response.json();
+            setRoles(roles);
+        };
+        fetchRoles();
+    }, []);
 
     // BackBtn
     const handleBack = () => {

@@ -62,6 +62,21 @@ export default function handler(req, res) {
                 }
             }
         );
+    } else if (req.query.table === 'groupRole') {
+        const groupId = req.query.groupId;
+        pool.query(
+            `SELECT *
+             FROM roles
+             WHERE notes.group_id = ?
+            `, [groupId], 
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json(results);
+                }
+            }
+        );
     } else {
             res.status(400).json({ error: 'Invalid table specified' });
     }

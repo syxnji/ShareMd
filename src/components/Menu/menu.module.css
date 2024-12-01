@@ -36,7 +36,13 @@
     font-weight: bold;
     color: #333;
 }
+.groups{
+    display: flex;
+    flex-direction: column;
+}
 .group{
+    display: flex;
+    justify-content: flex-start;
     padding: 10px;
     margin-bottom: 2px;
     color: #555;
