@@ -1,7 +1,6 @@
 /* grid */
 .grid{
     width: calc((100% - 20px) / 3);
-    color: #333;
     text-decoration: none;
     transition: all 0.5s;
 }
@@ -13,7 +12,6 @@
 /* list */
 .list{
     width: 100%;
-    color: #333;
     text-decoration: none;
     transition: all 0.5s;
 }
@@ -44,16 +42,19 @@
 }
 .title p{
     display: flex;
-    font-size: 1.2rem;
+    color: #555;
+    font-size: 1rem;
     font-weight: bold;
     text-wrap: nowrap;
     overflow-x: hidden;
 }
 .preview{
+    margin-top: 5px;
     border-radius: 5px;
     background-color: #eee;
 }
 .preview p{
+    color: #777;
     padding: 5px;
     font-size: 0.7rem;
 }

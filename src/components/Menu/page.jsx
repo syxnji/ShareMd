@@ -11,7 +11,7 @@ import { BsArrowBarRight } from "react-icons/bs";
 // style
 import styles from "./menu.module.css";
 
-export function Menu() {
+export function Menu({ onGroupClick }) {
 
     // DBから取得
     const [groups, setGroups] = useState([]);
@@ -42,12 +42,11 @@ export function Menu() {
             <div className={styles.innerMenu}>
                 <GroupHeadline headLeft={headLeft} headRight={headRight}/>
                 {/* groupsを繰り返し表示 */}
-                <div className={styles.categories}>
+                <div className={styles.groups}>
                     {groups.map((group) => (
-                        <div className={styles.category} key={group.id}>
-                            {/* <p>{group.group}</p> */}
-                            <p>{group.name}</p>
-                        </div>
+                        <button className={styles.group} key={group.id} onClick={() => onGroupClick(group.id)}>
+                            {group.name}
+                        </button>
                     ))}
                 </div>
             </div>

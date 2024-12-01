@@ -4,7 +4,7 @@ import pool from "pages/db"
 export async function getGroups() {
     try {
         const [rows] = await pool.query(
-            `SELECT * 
+            `SELECT groups.id, name 
              FROM \`groups\` 
              JOIN user_group_memberships 
                ON groups.id = user_group_memberships.group_id 

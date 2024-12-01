@@ -3,13 +3,13 @@ import { useEffect, useState } from 'react';
 import Link from "next/link";
 // api
 import { getNotes } from 'pages/api/groupInNotes';
+import { getNotesInGroup } from 'pages/api/selectGroup';
 // component
 import { Menu } from "@/components/Menu/page.jsx";
-import { Notes } from "@/components/SelectNote/page.jsx";
 import { GroupHeadline } from "@/components/GroupHeadline/page.jsx";
 import { MainBtn } from "@/components/UI/MainBtn/page.jsx"
 import { ImgBtn } from '@/components/UI/ImgBtn/page';
-import styleNotes from "@/components/SelectNote/selectNote.module.css"
+import { NotesInGroup } from '@/components/NotesInGroup/page';
 // icon
 import { BsGrid3X3 } from "react-icons/bs";
 import { BsFileEarmarkPlus } from "react-icons/bs";
@@ -30,8 +30,21 @@ export default function Library() {
         }
         loadNotes();
     },[]);
+
+    // MARK:選択されたグループ内ノート
+    const [notesInGroup, setNotesInGroup] = useState([]);
+    const [groupName, setGroupName] = useState(null);
+    const handleGroupClick = async (groupId) => {
+        try {
+            const { notes, groupName } = await getNotesInGroup(groupId);
+            setNotesInGroup(notes);
+            setGroupName(groupName);
+        } catch (error) {
+            console.log('Failed to fetch notes:', error);
+        }
+    };
       
-    // MARK:ToggleGrid/List
+    // MARK:切替え グリッド/リスト
     const [isGridView, setIsGridView] = useState(true);
     const [isNotesClass, setIsNotesClass] = useState(true);
     const toggleView = () => {
@@ -39,8 +52,7 @@ export default function Library() {
       setIsNotesClass(!isNotesClass);
     };
 
-    // MARK:GroupHeadline
-    // left
+    // MARK:ヘッドライン指定
     const headLeft = (
         <>
         <p className={styles.groupName}>Marketing Team</p>
@@ -49,11 +61,9 @@ export default function Library() {
         </Link>
         </>
     )
-    // right
     const headRight = (
         <>
         <div className={styles.layouts}>
-            {/* MARK:toggleView */}
             <ImgBtn img={isGridView ? <BsList/> : <BsGrid3X3/>} click={toggleView}/>
         </div>
         <div className={styles.addNote}>
@@ -61,44 +71,45 @@ export default function Library() {
         </div>
         </>
     )
-    // group_left
-    const group_headLeft = (
+    const recently_headLeft = (
         <p className={styles.groupName}>Recently Updated</p>
+    )
+    const select_headLeft = (
+        <p className={styles.groupName}>{groupName}</p>
     )
 
     return(
         <main className={styles.main}>
 
-            <Menu />
+        {/* MARK:メニュー */}
+        <Menu onGroupClick={handleGroupClick} />
 
-            <div className={styles.content}>
-                {/* MARK:headline */}
-                <GroupHeadline headLeft={headLeft} headRight={headRight} />
+        <div className={styles.content}>
+            {/* MARK:ヘッドライン */}
+            <GroupHeadline headLeft={headLeft} headRight={headRight} />
 
-                {/* MARK:search */}
-                <div className={styles.search}>
-                    <form action="">
-                        <input placeholder="Note name ..." type="search" name="" id="" />
-                        <ImgBtn img={<BsSearch/>} />
-                    </form>
-                </div>
-
-                {/* MARK:notes */}
-                <GroupHeadline headLeft={group_headLeft} />
-                {/* isNotesClassによってclassNameの切り替え */}
-                <div className={isNotesClass ? styles.grid : styles.list}>
-                    {/* isNotesClassによってclassNameの切り替え */}
-                    {notes.map((note) => (
-                        <Notes
-                            className={isNotesClass ? styleNotes.grid : styleNotes.list}
-                            key={note.id}
-                            title={note.title}
-                            preview={note.content}
-                            last={note.updated_at.toLocaleString()}
-                        />
-                    ))}
-                </div>
+            {/* MARK:検索 */}
+            <div className={styles.search}>
+                <form action="">
+                    <input placeholder="Note name ..." type="search" name="" id="" />
+                    <ImgBtn img={<BsSearch/>} />
+                </form>
             </div>
+
+            {/* MARK:選択したグループ内のノート */}
+            <NotesInGroup 
+                notes={notesInGroup} 
+                isNotesClass={isNotesClass} 
+                head={select_headLeft} 
+            />
+                    
+            {/* MARK:最近更新されたノート */}
+            <NotesInGroup 
+                notes={notes} 
+                isNotesClass={isNotesClass} 
+                head={recently_headLeft} 
+            />
+        </div>
         </main>
     )
 }

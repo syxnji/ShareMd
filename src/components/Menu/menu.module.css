@@ -19,7 +19,7 @@
     border-right: solid 1px #999;
     transition: all 0.3s;
 }
-.close p{
+.close p,.close .groups{
     display: none;
 }
 
@@ -36,19 +36,19 @@
     font-weight: bold;
     color: #333;
 }
-.category{
-    padding: 5px;
-    margin-bottom: 5px;
-    border-radius: 10px;
-    transition: 0.2s;
-}
-.open .category:hover{
-    background-color: #eee;
-}
-.category p{
+.group{
+    padding: 10px;
+    margin-bottom: 2px;
     color: #555;
     font-size: 1rem;
     font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    background-color: transparent;
     text-wrap: nowrap;
     overflow: hidden;
+    transition: 0.2s;
+}
+.open .group:hover{
+    background-color: #eee;
 }
