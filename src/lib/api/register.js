@@ -1,4 +1,4 @@
-import pool from "../db";
+import pool from "../../pages/api/db";
 
 export default async function handler(req, res) {
     console.log('Request Method:', req.method);

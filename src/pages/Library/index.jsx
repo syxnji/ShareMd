@@ -1,15 +1,12 @@
 'use client'
 import { useEffect, useState } from 'react';
 import Link from "next/link";
-// api
-import { getNotes } from 'pages/api/groupInNotes';
-import { getNotesInGroup } from 'pages/api/selectGroup';
 // component
-import { Menu } from "@/components/Menu/page.jsx";
-import { GroupHeadline } from "@/components/GroupHeadline/page.jsx";
-import { MainBtn } from "@/components/UI/MainBtn/page.jsx"
-import { ImgBtn } from '@/components/UI/ImgBtn/page';
-import { NotesInGroup } from '@/components/NotesInGroup/page';
+import { Menu } from '@/components/Menu';
+import { GroupHeadline } from "@/components/GroupHeadline";
+import { NotesInGroup } from '@/components/NotesInGroup';
+import { MainBtn } from "@/components/UI/MainBtn"
+import { ImgBtn } from '@/components/UI/ImgBtn';
 // icon
 import { BsGrid3X3 } from "react-icons/bs";
 import { BsFileEarmarkPlus } from "react-icons/bs";
@@ -21,28 +18,30 @@ import styles from "./library.module.css";
 
 export default function Library() {
 
-    // MARK:DBから取得
-    const [notes, setNotes] = useState([]);
+    // MARK:全てのノート
+    const [allNotes, setAllNotes] = useState([]);
     useEffect(() => {
-        async function loadNotes() {
-            const fetchedNotes = await getNotes();
-            setNotes(fetchedNotes);
-        }
-        loadNotes();
-    },[]);
+        const fetchNotes = async () => {
+            const response = await fetch(`/api/db?table=allNotes`);
+            const allNotes = await response.json();
+            setAllNotes(allNotes);
+        };
+        fetchNotes();
+    }, []);
 
-    // MARK:選択されたグループ内ノート
-    const [notesInGroup, setNotesInGroup] = useState([]);
-    const [group, setGroup] = useState(null);
-    const handleGroupClick = async (groupId) => {
-        try {
-            const { notes, group } = await getNotesInGroup(groupId);
-            setNotesInGroup(notes);
-            setGroup(group);
-        } catch (error) {
-            console.log('Failed to fetch notes:', error);
-        }
-    };
+    // MARK:選択したグリープのノート
+    const [selectedGroupId, setSelectedGroupId] = useState(null);
+    const [selectedGroupNotes, setSelectedGroupNotes] = useState([]);
+    useEffect(() => {
+        const fetchNotes = async () => {
+            if (selectedGroupId) {
+                const response = await fetch(`/api/db?table=selectedGroup&groupId=${selectedGroupId}`);
+                const notes = await response.json();
+                setSelectedGroupNotes(notes);
+            }
+        };
+        fetchNotes();
+    }, [selectedGroupId]);
       
     // MARK:切替え グリッド/リスト
     const [isGridView, setIsGridView] = useState(true);
@@ -79,10 +78,10 @@ export default function Library() {
     )
     const select_headLeft = (
         <>
-        {group && (
+        {selectedGroupNotes.length > 0 && (
             <>
-            <p className={styles.groupName}>{group.name}</p>
-            <Link href={`/Permission/${group.id}`}>
+            <p className={styles.groupName}>{selectedGroupNotes[0].groupName}</p>
+            <Link href={`/Permission/atode`}>
                 <ImgBtn img={<BsPeople />} />
             </Link>
             </>
@@ -94,7 +93,7 @@ export default function Library() {
         <main className={styles.main}>
 
         {/* MARK:メニュー */}
-        <Menu onGroupClick={handleGroupClick} />
+        <Menu setSelectedGroupId={setSelectedGroupId} />
 
         <div className={styles.content}>
             {/* MARK:ヘッドライン */}
@@ -102,14 +101,14 @@ export default function Library() {
 
             {/* MARK:選択したグループ内のノート */}
             <NotesInGroup 
-                notes={notesInGroup} 
+                notes={selectedGroupNotes} 
                 isNotesClass={isNotesClass} 
                 head={select_headLeft} 
             />
                     
             {/* MARK:最近更新されたノート */}
             <NotesInGroup 
-                notes={notes} 
+                notes={allNotes} 
                 isNotesClass={isNotesClass} 
                 head={recently_headLeft} 
             />

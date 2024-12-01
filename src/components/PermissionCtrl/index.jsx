@@ -1,5 +1,5 @@
 // component
-import { ImgBtn } from "@/components/UI/ImgBtn/page";
+import { ImgBtn } from "@/components/UI/ImgBtn";
 // style
 import styles from "./permission.module.css"
 // icon

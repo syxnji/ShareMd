@@ -2,10 +2,10 @@
 import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 // component
-import { Menu } from "@/components/Menu/page.jsx";
-import { MainBtn } from '@/components/UI/MainBtn/page.jsx';
-import { ImgBtn } from '@/components/UI/ImgBtn/page.jsx';
-import { GroupHeadline } from '@/components/GroupHeadline/page';
+import { Menu } from "@/components/Menu/index.jsx";
+import { MainBtn } from '@/components/UI/MainBtn/index.jsx';
+import { ImgBtn } from '@/components/UI/ImgBtn/index.jsx';
+import { GroupHeadline } from '@/components/GroupHeadline';
 // style
 import styles from "./editor.module.css"
 // icon

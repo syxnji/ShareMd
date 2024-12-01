@@ -1,6 +1,6 @@
 // component
-import { GroupHeadline } from "../GroupHeadline/page"
-import { Notes } from "../SelectNote/page"
+import { GroupHeadline } from "../GroupHeadline"
+import { Notes } from "../SelectNote"
 // style
 import styles from "./notesInGroup.module.css"
 import styleNotes from "@/components/SelectNote/selectNote.module.css"

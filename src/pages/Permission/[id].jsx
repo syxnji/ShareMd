@@ -1,11 +1,11 @@
 'use client'
 import { useRouter } from "next/router";
 // component
-import { Menu } from "@/components/Menu/page.jsx";
-import { GroupHeadline } from "@/components/GroupHeadline/page.jsx";
-import { PermissionCtrl } from "@/components/PermissionCtrl/page.jsx";
-import { MainBtn } from "@/components/UI/MainBtn/page";
-import { ImgBtn } from "@/components/UI/ImgBtn/page";
+import { Menu } from "@/components/Menu/index.jsx";
+import { GroupHeadline } from "@/components/GroupHeadline/index.jsx";
+import { PermissionCtrl } from "@/components/PermissionCtrl/index.jsx";
+import { MainBtn } from "@/components/UI/MainBtn";
+import { ImgBtn } from "@/components/UI/ImgBtn";
 // style
 import styles from "../Library/library.module.css";
 import stylePermit from "./permission.module.css";

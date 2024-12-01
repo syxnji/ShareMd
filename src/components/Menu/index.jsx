@@ -1,27 +1,31 @@
 'use client'
 import { useEffect, useState } from "react";
-// api
-import { getGroups } from "pages/api/myGroups";
 // component
-import { ImgBtn } from "@/components/UI/ImgBtn/page";
-import { GroupHeadline } from "@/components/GroupHeadline/page";
+import { ImgBtn } from "@/components/UI/ImgBtn";
+import { GroupHeadline } from "@/components/GroupHeadline";
 // icon
 import { BsArrowBarLeft } from "react-icons/bs";
 import { BsArrowBarRight } from "react-icons/bs";
 // style
 import styles from "./menu.module.css";
 
-export function Menu({ onGroupClick }) {
+export function Menu({ setSelectedGroupId }) {
 
-    // DBから取得
-    const [groups, setGroups] = useState([]);
+    // グループ表示
+    const [allGroups, setAllGroups] = useState([]);
     useEffect(() => {
-        async function loadGroups() {
-            const fetchedGroups = await getGroups();
-            setGroups(fetchedGroups);
-        }
-        loadGroups();
+        const fetchGroup = async () => {
+            const response = await fetch(`/api/db?table=joinedGroups`);
+            const allGroups = await response.json();
+            setAllGroups(allGroups);
+        };
+      fetchGroup();
     }, []);
+
+    // グループクリック
+    const groupClick = (id) => {
+        setSelectedGroupId(id);
+    }
 
     // 表示/非表示
     const [isMenu, setIsMenu] = useState(true);
@@ -43,8 +47,8 @@ export function Menu({ onGroupClick }) {
                 <GroupHeadline headLeft={headLeft} headRight={headRight}/>
                 {/* groupsを繰り返し表示 */}
                 <div className={styles.groups}>
-                    {groups.map((group) => (
-                        <button className={styles.group} key={group.id} onClick={() => onGroupClick(group.id)}>
+                    {allGroups.map((group) => (
+                        <button className={styles.group} key={group.id} onClick={() => groupClick(group.id)}>
                             {group.name}
                         </button>
                     ))}

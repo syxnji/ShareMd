@@ -1,9 +1,9 @@
 'use client'
 // component
-import { JoinedGroup } from "@/components/JoinedGroup/page.jsx";
-import { MainBtn } from "@/components/UI/MainBtn/page";
-import { GroupHeadline } from "@/components/GroupHeadline/page";
-import { ImgBtn } from "@/components/UI/ImgBtn/page";
+import { JoinedGroup } from "@/components/JoinedGroup/index.jsx";
+import { MainBtn } from "@/components/UI/MainBtn";
+import { GroupHeadline } from "@/components/GroupHeadline";
+import { ImgBtn } from "@/components/UI/ImgBtn";
 // style
 import styles from "./setting.module.css"
 // icon

@@ -1,5 +1,5 @@
 // style
-import { ImgBtn } from "@/components/UI/ImgBtn/page";
+import { ImgBtn } from "@/components/UI/ImgBtn";
 import styles from "./joinedgroup.module.css"
 // icon
 import { FaMinus } from "react-icons/fa6";
