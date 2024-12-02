@@ -31,33 +31,9 @@ export function Permission({display, group}) {
     //     window.history.back();
     // };
 
-
-    // MARK:ヘッドライン指定
-    const headRight = (
-        <>
-        <div className={styles.addNote}>
-            <MainBtn img={<BsFileEarmarkPlus/>} text="New Note"/>
-        </div>
-        </>
-    )
-    const headLeft = (
-        <>
-        <p className={stylePermit.auth}>{group}</p>
-        {/* <div className={stylePermit.backBtn}>
-            <ImgBtn img={<IoReturnDownBack/>} click={handleBack} />
-        </div> */}
-        </>
-    )
-
     return(
         <>
         <div className={ display ? styles.hideContent : styles.content }>
-
-            {/* headline */}
-            <GroupHeadline headRight={headRight} />
-
-            {/* headline */}
-            <GroupHeadline headLeft={headLeft} />
 
             {/* permissions */}
             <PermissionCtrl />
