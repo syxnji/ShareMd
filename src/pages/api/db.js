@@ -4,7 +4,7 @@ const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
   password: 'P@ssw0rd',
-  database: 'md2',
+  database: 'md',
 });
 
 // APIリクエストのハンドリング
@@ -65,9 +65,11 @@ export default function handler(req, res) {
     } else if (req.query.table === 'groupRole') {
         const groupId = req.query.groupId;
         pool.query(
-            `SELECT *
-             FROM roles
-             WHERE notes.group_id = ?
+            `SELECT roles.id, roles.name, group_roles.group_id 
+             FROM roles 
+             JOIN group_roles 
+             ON roles.id = group_roles.role_id
+             WHERE group_roles.group_id = ?
             `, [groupId], 
             (err, results) => {
                 if (err) {
