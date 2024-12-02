@@ -90,9 +90,9 @@ export default function Library() {
         {selectedGroupNotes.length > 0 && (
             <>
             <p className={styles.groupName}>{selectedGroupNotes[0].groupName}</p>
-            <button className={styles.permissionBtn} onClick={toggleGroupContent}>
-                <ImgBtn img={ displayNotes ? <BsPeople/> : <RiBook2Line/> } />
-            </button>
+            {/* <button className={styles.permissionBtn} onClick={toggleGroupContent}> */}
+                <ImgBtn img={ displayNotes ? <BsPeople/> : <RiBook2Line/> } click={toggleGroupContent} />
+            {/* </button> */}
             </>
         )}
         </>
@@ -115,7 +115,7 @@ export default function Library() {
 
             {/* MARK:権限 */}
             {selectedGroupNotes.length > 0 && (
-                <Permission display={displayNotes} group={selectedGroupNotes[0].groupName} />
+                <Permission display={displayNotes} id={selectedGroupNotes[0].groupId} />
             )}
 
             {/* MARK:ノート */}

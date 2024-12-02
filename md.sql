@@ -129,10 +129,10 @@ INSERT INTO roles (name, description) VALUES
 ('Auditor', 'すべての文書および活動ログを閲覧できる');
 
 -- Insert sample data into permissions table
-INSERT INTO permissions (id, name, description) VALUES
-(1, '閲覧のみ', '文書を読む権限'),
-(2, '編集可能', '文書を作成、編集、削除する権限'),
-(3, '管理者', '文書の管理および設定の管理を行う権限');
+INSERT INTO permissions (name, description) VALUES
+('閲覧のみ', '文書を読む権限'),
+('編集可能', '文書を作成、編集、削除する権限'),
+('管理者', '文書の管理および設定の管理を行う権限');
 
 -- Insert sample data into group_roles table
 INSERT INTO group_roles (group_id, role_id) VALUES
@@ -142,10 +142,9 @@ INSERT INTO group_roles (group_id, role_id) VALUES
 
 -- Insert sample data into role_permissions table
 INSERT INTO role_permissions (role_id, permission_id) VALUES
-(1, 1), (2, 1), (2, 2), (3, 1), (3, 2), (3, 3),
-(4, 1), (4, 2), (4, 3), (4, 4), (4, 5), (4, 6),
-(5, 1), (5, 2), (6, 1), (6, 2), (6, 3),
-(7, 1), (8, 1), (8, 9), (9, 1), (9, 2), (9, 6);
+    (1, 1),(2, 2),(3, 2),(4, 2),
+    (5, 2),(6, 2),(7, 2),(8, 2),
+    (9, 2),(10, 3);
 
 -- Insert sample data into user_group_memberships table
 INSERT INTO user_group_memberships (user_id, group_id, role_id) VALUES
@@ -162,8 +161,8 @@ INSERT INTO notes (title, content, group_id, created_by) VALUES
 ('Financial Report 2023', 'Annual financial report details...', 4, 7),
 ('Sales Targets Q3', 'Sales targets for Q3...', 5, 9),
 ('顧客フィードバック分析', '最近の顧客フィードバックの分析...', 6, 2),
-('研究結果：AIと医療', '医療におけるAIの研究結果...', 7, 4),
-('法的要約：知的財産', '最近の知的財産関連の事例の要約...', 8, 6),
-('経営概要：会社の方向性', '今後5年間の会社の方向性についての要約...', 9, 8),
+('研究結果:AIと医療', '医療におけるAIの研究結果...', 7, 4),
+('法的要約:知的財産', '最近の知的財産関連の事例の要約...', 8, 6),
+('経営概要:会社の方向性', '今後5年間の会社の方向性についての要約...', 9, 8),
 ('ITインフラのアップグレード計画', '会社のITインフラをアップグレードする計画...', 10, 10),
 ('Test Note', 'Thsi is test note...', 1, 1);

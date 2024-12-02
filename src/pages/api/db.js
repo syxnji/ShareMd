@@ -65,12 +65,29 @@ export default function handler(req, res) {
     } else if (req.query.table === 'groupRole') {
         const groupId = req.query.groupId;
         pool.query(
-            `SELECT roles.id, roles.name, group_roles.group_id 
+            `SELECT roles.id, roles.name, 
+             group_roles.group_id, role_permissions.permission_id
              FROM roles 
              JOIN group_roles 
              ON roles.id = group_roles.role_id
+             JOIN role_permissions
+             ON roles.id = role_permissions.role_id
              WHERE group_roles.group_id = ?
             `, [groupId], 
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json(results);
+                }
+            }
+        );
+    } else if (req.query.table === 'permissions') {
+        pool.query(
+            `SELECT id, name 
+             FROM permissions
+             ORDER BY id ASC
+            `,
             (err, results) => {
                 if (err) {
                     res.status(500).json({ error: err.message });

@@ -13,45 +13,40 @@ import { FaPlus } from "react-icons/fa6";
 import { IoReturnDownBack, IoSaveOutline } from "react-icons/io5";
 import { BsFileEarmarkPlus, BsPeople } from "react-icons/bs";
 
-export function Permission({display, group}) {
+export function Permission({ display, id }) {
     
-    // MARK:グループ権限
+    // MARK:グループロール
     const [roles, setRoles] = useState([]);
     useEffect(() => {
         const fetchRoles = async () => {
-            const response = await fetch(`/api/db?table=groupRole`);
+            const response = await fetch(`/api/db?table=groupRole&groupId=${id}`);
             const roles = await response.json();
             setRoles(roles);
         };
         fetchRoles();
-    }, []);
-
-    // BackBtn
-    // const handleBack = () => {
-    //     window.history.back();
-    // };
+    }, [id]);
 
     return(
         <>
         <div className={ display ? styles.hideContent : styles.content }>
 
-            {/* permissions */}
-            <PermissionCtrl />
-            <PermissionCtrl />
-            <PermissionCtrl />
+            {/* MARK:ロール表示 */}
+            {roles.map((role) => (
+                <PermissionCtrl key={role.id} id={role.id} name={role.name}/>
+            ))}
 
-            {/* add permission */}
+            {/* MARK:新規ロール */}
             <form action="" method="post">
                 <div className={stylePermit.addPermission}>
                     <div className={stylePermit.left}>
                         <div className={stylePermit.role}>
-                            <input type="text" placeholder="ロール名" />
+                            <input type="text" placeholder="ロール名を入力" />
                         </div>
                         <div className={stylePermit.permit}>
                             <select name="" id="" className={stylePermit.select}>
-                                <option value="viewer">閲覧のみ</option>
-                                <option value="editor">編集可能</option>
-                                <option value="all">全て</option>
+                                <option value="1">閲覧のみ</option>
+                                <option value="2">編集可能</option>
+                                <option value="3">全て</option>
                             </select>
                         </div>
                     </div>

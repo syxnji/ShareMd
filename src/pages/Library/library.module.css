@@ -31,7 +31,6 @@
 /* search */
 .search{
     width: 100%;
-    margin-bottom: 10px;
 }
 .search form{
     display: flex;
@@ -43,12 +42,6 @@
     margin-right: 10px;
     border: solid 1px #ddd;
     border-radius: 10px;
-}
-
-/* permission */
-.permissionBtn{
-    background-color: transparent;
-    border: none;
 }
 
 /* notes */
