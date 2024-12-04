@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 // component
 import { GroupHeadline } from "@/components/GroupHeadline/index.jsx";
 import { PermissionCtrl } from "@/components/PermissionCtrl/index.jsx";
@@ -10,21 +10,24 @@ import styles from "@/pages/Library/library.module.css";
 import stylePermit from "./permission.module.css";
 // icon
 import { FaPlus } from "react-icons/fa6";
-import { IoReturnDownBack, IoSaveOutline } from "react-icons/io5";
-import { BsFileEarmarkPlus, BsPeople } from "react-icons/bs";
+import { IoSaveOutline } from "react-icons/io5";
 
 export function Permission({ display, id }) {
     
     // MARK:グループロール
     const [roles, setRoles] = useState([]);
-    useEffect(() => {
-        const fetchRoles = async () => {
-            const response = await fetch(`/api/db?table=groupRole&groupId=${id}`);
-            const roles = await response.json();
-            setRoles(roles);
-        };
-        fetchRoles();
+
+    const fetchRoles = useCallback(async () => {
+      const response = await fetch(`/api/db?table=groupRole&groupId=${id}`);
+      const roles = await response.json();
+      setRoles(roles);
     }, [id]);
+  
+    useEffect(() => {
+      fetchRoles();
+    }, [fetchRoles]);
+    
+    console.log(roles)
 
     return(
         <>
@@ -32,7 +35,13 @@ export function Permission({ display, id }) {
 
             {/* MARK:ロール表示 */}
             {roles.map((role) => (
-                <PermissionCtrl key={role.id} id={role.id} name={role.name}/>
+                <PermissionCtrl 
+                 key={role.id} 
+                 id={role.id} 
+                 permissionName={role.name} 
+                 permissionId={role.permission_id}
+                 permissionUpdate={fetchRoles}
+                />
             ))}
 
             {/* MARK:新規ロール */}

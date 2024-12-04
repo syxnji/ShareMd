@@ -96,6 +96,22 @@ export default function handler(req, res) {
                 }
             }
         );
+    } else if (req.query.table === 'updPermission') {
+        const newId = req.query.new;
+        const id = req.query.id;
+        pool.query(
+            `UPDATE role_permissions
+             SET permission_id = ?
+             WHERE role_id = ?
+            `, [newId, id], 
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ message: 'Permission updated successfully', results });
+                }
+            }
+        );
     } else {
             res.status(400).json({ error: 'Invalid table specified' });
     }
