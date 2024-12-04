@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 // component
 import { ImgBtn } from "@/components/UI/ImgBtn";
+import { ModalWindow } from "@/components/ModalWindow";
 // style
 import styles from "./permission.module.css"
 // icon
 import { FaMinus } from "react-icons/fa6";
-import { BsCaretRightFill } from "react-icons/bs";
 
 export function PermissionCtrl({ id, permissionName, permissionId, permissionUpdate }) {
     
@@ -20,7 +20,6 @@ export function PermissionCtrl({ id, permissionName, permissionId, permissionUpd
         fetchPermissions();
     }, [id]);
 
-    // TODO: グループごとにAIでオリジナルロールの生成
     // TODO: クリックでロール削除
     // TODO: Option変更で権限変更
     // TODO: 新しいロールのINSERT
@@ -53,32 +52,17 @@ export function PermissionCtrl({ id, permissionName, permissionId, permissionUpd
 
     return(
         <>  
+        {/* MARK:モーダル */}
         {openModal && (
-            <div className={styles.modal}>
-                <p className={styles.message}>本当に変更しますか？</p>
-                <div className={styles.modalRole}>{permissionName}</div>
-                <div className={styles.changes}>
-                    <p className={styles.change}>
-                        {beforeName}
-                    </p>
-                    <BsCaretRightFill />
-                    <p className={styles.change}>
-                        {afterName}
-                    </p>
-                </div>
-                <div className={styles.modalBtns}>
-                    <button 
-                     className={styles.modalNo} 
-                     onClick={handleModalNo}
-                    >いいえ</button>
-                    <button 
-                     className={styles.modalYes} 
-                     onClick={handleModalYes}
-                    >はい</button>
-                </div>
-            </div>
+            <ModalWindow 
+             permissionName={permissionName} 
+             beforeName={beforeName} 
+             afterName={afterName} 
+             handleModalNo={handleModalNo} 
+             handleModalYes={handleModalYes} 
+            />
         )}
-        {/* <form action="" method="post"> */}
+
         <div className={styles.permission}>
             <div className={styles.left}>
                 <div className={styles.role}>
@@ -112,8 +96,6 @@ export function PermissionCtrl({ id, permissionName, permissionId, permissionUpd
                 </div>
             </div>
         </div>
-        {/* </form> */}
-          
         </>
     )
 }
