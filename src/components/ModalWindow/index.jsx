@@ -3,38 +3,44 @@ import styles from "./modalWindow.module.css"
 // icon
 import { BsCaretRightFill } from "react-icons/bs"
 
-export function ModalWindow({ permissionName, beforeName, afterName, handleModalNo, handleModalYes }) {
+export function ModalWindow({ msg, name, before, after, No, Yes }) {
     return(
         <>
         <div className={styles.modal}>
+
             {/* メッセージ */}
-            <p className={styles.message}>本当に変更しますか？</p>
+            <p className={styles.message}>{msg}</p>
 
             {/* ロール名 */}
             <div className={styles.modalRole}>
-                {permissionName}
+                {name}
             </div>
 
             {/* 変更内容 */}
-            <div className={styles.changes}>
-                <p className={styles.change}>
-                    {beforeName}
-                </p>
-                <BsCaretRightFill />
-                <p className={styles.change}>
-                    {afterName}
-                </p>
-            </div>
+            {(before || after) && (
+                <div className={styles.changes}>
+                    <p className={styles.change}>
+                        {before}
+                    </p>
+                    <BsCaretRightFill />
+                    <p className={styles.change}>
+                        {after}
+                    </p>
+                </div>
+            )}
+
             
             {/* ボタン */}
             <div className={styles.modalBtns}>
+
                 <button 
                  className={styles.modalNo} 
-                 onClick={handleModalNo}
+                 onClick={No}
                 >いいえ</button>
+
                 <button 
                  className={styles.modalYes} 
-                 onClick={handleModalYes}
+                 onClick={Yes}
                 >はい</button>
             </div>
         </div>

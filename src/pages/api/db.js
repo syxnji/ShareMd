@@ -108,7 +108,21 @@ export default function handler(req, res) {
                 if (err) {
                     res.status(500).json({ error: err.message });
                 } else {
-                    res.status(200).json({ message: 'Permission updated successfully', results });
+                    res.status(200).json({ results });
+                }
+            }
+        );
+    } else if (req.query.table === 'deleteRole') {
+        const id = req.query.id;
+        pool.query(
+            `DELETE FROM roles 
+             WHERE id = ?
+            `, [id], 
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
                 }
             }
         );

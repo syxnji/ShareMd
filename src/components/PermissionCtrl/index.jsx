@@ -8,6 +8,8 @@ import styles from "./permission.module.css"
 import { FaMinus } from "react-icons/fa6";
 
 export function PermissionCtrl({ id, permissionName, permissionId, permissionUpdate }) {
+    // TODO: クリックでロール削除
+    // TODO: 新しいロールのINSERT
     
     // MARK:グループロール
     const [permissions, setPermissions] = useState([]);
@@ -20,28 +22,42 @@ export function PermissionCtrl({ id, permissionName, permissionId, permissionUpd
         fetchPermissions();
     }, [id]);
 
-    // TODO: クリックでロール削除
-    // TODO: Option変更で権限変更
-    // TODO: 新しいロールのINSERT
-
-    // セレクトのオプション切替
+    // セレクトの表示値
     const [valueSelect, setValueSelect] = useState(id)
+    
+    // MARK: セレクト内オプションのトグル処理
+    const [openModal,setOpenModal] = useState(false)
     const handleChangeOption = (event) => {
         setOpenModal(true);
         setValueSelect(event.target.value);
-    };
-    
-    // モーダル YES/NO
-    const [openModal,setOpenModal] = useState(false)
-    const handleModalNo = () => {
-        setOpenModal(false);
-    };
+    }
+    // YES
     const handleModalYes = async () => {
         await fetch(`/api/db?table=updPermission&id=${id}&new=${valueSelect}`);
         setOpenModal(false);
         permissionUpdate();
     };
-
+    // NO
+    const handleModalNo = () => {
+        setOpenModal(false);
+    };
+    
+    // MARK: 削除ボタンクリック処理
+    const [openDeleteModal,setOpenDeleteModal] = useState(false)
+    const handleDeleteRole = async () => {
+        setOpenDeleteModal(true);
+    }
+    // YES
+    const handleModalDeleteYes = async () => {
+        await fetch(`/api/db?table=deleteRole&id=${id}`);
+        setOpenModal(false);
+        permissionUpdate();
+    };
+    // NO
+    const handleModalDeleteNo = () => {
+        setOpenDeleteModal(false);
+    };
+    
     // 選択前:id, 選択後:valueSelect のIDから権限名を取得
     const getName = id => (
         permissions.find(
@@ -49,17 +65,28 @@ export function PermissionCtrl({ id, permissionName, permissionId, permissionUpd
         ) || {}).name || '';
     const beforeName = getName(id);
     const afterName = getName(valueSelect);
-
+        
     return(
         <>  
         {/* MARK:モーダル */}
         {openModal && (
             <ModalWindow 
-             permissionName={permissionName} 
-             beforeName={beforeName} 
-             afterName={afterName} 
-             handleModalNo={handleModalNo} 
-             handleModalYes={handleModalYes} 
+             msg='本当に変更しますか？'
+             name={permissionName} 
+             before={beforeName} 
+             after={afterName} 
+             No={handleModalNo} 
+             Yes={handleModalYes} 
+            />
+        )}
+        {openDeleteModal && (
+            <ModalWindow 
+             msg='本当に削除しますか？'
+             name={permissionName} 
+             before={null}
+             after={null} 
+             No={handleModalDeleteNo} 
+             Yes={handleModalDeleteYes} 
             />
         )}
 
@@ -92,7 +119,7 @@ export function PermissionCtrl({ id, permissionName, permissionId, permissionUpd
             </div>
             <div className={styles.right}>
                 <div className={styles.deleteBtn}>
-                    <ImgBtn img={<FaMinus/>} />
+                    <ImgBtn img={<FaMinus/>} click={handleDeleteRole} />
                 </div>
             </div>
         </div>

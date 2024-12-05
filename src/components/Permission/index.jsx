@@ -26,8 +26,6 @@ export function Permission({ display, id }) {
     useEffect(() => {
       fetchRoles();
     }, [fetchRoles]);
-    
-    console.log(roles)
 
     return(
         <>
