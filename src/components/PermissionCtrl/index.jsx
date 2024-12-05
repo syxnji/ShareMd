@@ -7,8 +7,7 @@ import styles from "./permission.module.css"
 // icon
 import { FaMinus } from "react-icons/fa6";
 
-export function PermissionCtrl({ id, permissionName, permissionId, permissionUpdate }) {
-    // TODO: クリックでロール削除
+export function PermissionCtrl({ roleId, roleName, permissionId, updateData }) {
     // TODO: 新しいロールのINSERT
     
     // MARK:グループロール
@@ -20,42 +19,32 @@ export function PermissionCtrl({ id, permissionName, permissionId, permissionUpd
             setPermissions(permissions);
         };
         fetchPermissions();
-    }, [id]);
+    }, [roleId]);
 
-    // セレクトの表示値
-    const [valueSelect, setValueSelect] = useState(id)
+    // モーダルの状態管理
+    const [modalState, setModalState] = useState({ open: false, type: null });
+    const [valueSelect, setValueSelect] = useState(roleId);
     
-    // MARK: セレクト内オプションのトグル処理
-    const [openModal,setOpenModal] = useState(false)
+    // セレクト内オプションのトグル処理
     const handleChangeOption = (event) => {
-        setOpenModal(true);
+        setModalState({ open: true, type: "update" });
         setValueSelect(event.target.value);
-    }
-    // YES
-    const handleModalYes = async () => {
-        await fetch(`/api/db?table=updPermission&id=${id}&new=${valueSelect}`);
-        setOpenModal(false);
-        permissionUpdate();
     };
-    // NO
-    const handleModalNo = () => {
-        setOpenModal(false);
+    // 削除ボタンクリック処理
+    const handleDeleteRole = () => {
+        setModalState({ open: true, type: "delete" });
     };
     
-    // MARK: 削除ボタンクリック処理
-    const [openDeleteModal,setOpenDeleteModal] = useState(false)
-    const handleDeleteRole = async () => {
-        setOpenDeleteModal(true);
-    }
-    // YES
-    const handleModalDeleteYes = async () => {
-        await fetch(`/api/db?table=deleteRole&id=${id}`);
-        setOpenModal(false);
-        permissionUpdate();
-    };
-    // NO
-    const handleModalDeleteNo = () => {
-        setOpenDeleteModal(false);
+    // モーダルボタン「YES」のアクション
+    const handleModalAction = async (confirm) => {
+        if (confirm && modalState.type === "update") {
+            await fetch(`/api/db?table=updPermission&id=${roleId}&new=${valueSelect}`);
+            updateData();
+        } else if (confirm && modalState.type === "delete") {
+            await fetch(`/api/db?table=deleteRole&id=${roleId}`);
+            updateData();
+        }
+        setModalState({ open: false, type: null });
     };
     
     // 選択前:id, 選択後:valueSelect のIDから権限名を取得
@@ -63,31 +52,21 @@ export function PermissionCtrl({ id, permissionName, permissionId, permissionUpd
         permissions.find(
             permission => permission.id === parseInt(id)
         ) || {}).name || '';
-    const beforeName = getName(id);
+    const beforeName = getName(roleId);
     const afterName = getName(valueSelect);
         
     return(
         <>  
         {/* MARK:モーダル */}
-        {openModal && (
-            <ModalWindow 
-             msg='本当に変更しますか？'
-             name={permissionName} 
-             before={beforeName} 
-             after={afterName} 
-             No={handleModalNo} 
-             Yes={handleModalYes} 
-            />
-        )}
-        {openDeleteModal && (
-            <ModalWindow 
-             msg='本当に削除しますか？'
-             name={permissionName} 
-             before={null}
-             after={null} 
-             No={handleModalDeleteNo} 
-             Yes={handleModalDeleteYes} 
-            />
+        {modalState.open && (
+        <ModalWindow 
+            msg={modalState.type === "update" ? '本当に変更しますか？' : '本当に削除しますか？'}
+            name={roleName} 
+            before={modalState.type === "update" ? beforeName : null}
+            after={modalState.type === "update" ? afterName : null} 
+            No={() => setModalState({ open: false, type: null })}
+            Yes={() => handleModalAction(true)}
+        />
         )}
 
         <div className={styles.permission}>
@@ -96,7 +75,7 @@ export function PermissionCtrl({ id, permissionName, permissionId, permissionUpd
                     <input 
                      type="text" 
                      placeholder="ロール名(変更)" 
-                     value={permissionName} 
+                     value={roleName} 
                      readOnly
                     />
                 </div>

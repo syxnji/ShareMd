@@ -35,10 +35,10 @@ export function Permission({ display, id }) {
             {roles.map((role) => (
                 <PermissionCtrl 
                  key={role.id} 
-                 id={role.id} 
-                 permissionName={role.name} 
+                 roleId={role.id} 
+                 roleName={role.name} 
                  permissionId={role.permission_id}
-                 permissionUpdate={fetchRoles}
+                 updateData={fetchRoles}
                 />
             ))}
 
