@@ -27,6 +27,21 @@ export function Permission({ display, id }) {
       fetchRoles();
     }, [fetchRoles]);
 
+    // MARK: 新しいロール
+    const [addRole, setAddRole] = useState('')
+    const [addPermission, setAddPermission] = useState('1')
+
+    const fetchAddRole = async (id, addRole, addPermission) => {
+        const response = await fetch(`/api/db?table=insertRole&groupId=${id}&roleName=${addRole}&permissionId=${addPermission}`);
+        const result = await response.json();
+        setInsertRoles(result);
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        fetchAddRole(id, addRole, addPermission)
+    }
+
     return(
         <>
         <div className={ display ? styles.hideContent : styles.content }>
@@ -43,23 +58,36 @@ export function Permission({ display, id }) {
             ))}
 
             {/* MARK:新規ロール */}
-            <form action="" method="post">
+            <form onSubmit={handleSubmit}>
                 <div className={stylePermit.addPermission}>
                     <div className={stylePermit.left}>
                         <div className={stylePermit.role}>
-                            <input type="text" placeholder="ロール名を入力" />
+                            <input 
+                             type="text" 
+                             id="role"
+                             name="role"
+                             placeholder="ロール名を入力" 
+                             value={addRole} 
+                             onChange={(e) => setAddRole(e.target.value)} 
+                             required 
+                            />
                         </div>
                         <div className={stylePermit.permit}>
-                            <select name="" id="" className={stylePermit.select}>
-                                <option value="1">閲覧のみ</option>
-                                <option value="2">編集可能</option>
-                                <option value="3">全て</option>
+                            <select 
+                             className={stylePermit.select}
+                             value={addPermission}
+                             onChange={(e) => setAddPermission(e.target.value)}
+                             required
+                            >
+                                <option value='1'>閲覧のみ</option>
+                                <option value='2'>編集可能</option>
+                                <option value='3'>全て</option>
                             </select>
                         </div>
                     </div>
                     <div className={stylePermit.right}>
                         <div className={stylePermit.deleteBtn}>
-                            <ImgBtn img={<FaPlus />} />
+                            <ImgBtn img={<FaPlus/>} type="submit" />
                         </div>
                     </div>
                 </div>

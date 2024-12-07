@@ -26,6 +26,7 @@ export default function handler(req, res) {
             }
         );
 
+        // MARK: SELECT > ユーザー_ノート
     } else if (req.query.table === 'allNotes') {
         pool.query(
             `SELECT notes.id, notes.title, notes.content, notes.updated_at, groups.name
@@ -44,6 +45,8 @@ export default function handler(req, res) {
                 }
             }
         );
+
+        // MARK: SELECT > グループ_ノート
     } else if (req.query.table === 'selectedGroup') {
         const selectGroupId = req.query.groupId;
         pool.query(
@@ -62,6 +65,8 @@ export default function handler(req, res) {
                 }
             }
         );
+
+        // MARK: SELECT > ロール
     } else if (req.query.table === 'groupRole') {
         const groupId = req.query.groupId;
         pool.query(
@@ -82,6 +87,8 @@ export default function handler(req, res) {
                 }
             }
         );
+
+        // MARK: SELECT > 権限
     } else if (req.query.table === 'permissions') {
         pool.query(
             `SELECT id, name 
@@ -96,6 +103,8 @@ export default function handler(req, res) {
                 }
             }
         );
+
+        // MARK: UPDATE > ロール_権限
     } else if (req.query.table === 'updPermission') {
         const newId = req.query.new;
         const id = req.query.id;
@@ -112,6 +121,8 @@ export default function handler(req, res) {
                 }
             }
         );
+
+        // MARK: DELETE > ロール
     } else if (req.query.table === 'deleteRole') {
         const id = req.query.id;
         pool.query(
@@ -125,6 +136,23 @@ export default function handler(req, res) {
                     res.status(200).json({ results });
                 }
             }
+        );
+
+        // MARK: INSERT > グループ_ロール_権限
+    } else if (req.query.table === 'insertRole') {
+        const { roleName, groupId, permissionId } = req.query;
+        pool.query(
+            `INSERT INTO roles (name) VALUES (?);`, 
+            [roleName]
+        );
+        const roleId = roleResult.insertId;
+        pool.query(
+            `INSERT INTO group_roles (group_id, role_id) VALUES (?, ?);`,
+            [groupId, roleId]
+        );
+        pool.query(
+            `INSERT INTO role_permissions (role_id, permission_id) VALUES (?, ?);`, 
+            [roleId, permissionId]
         );
     } else {
             res.status(400).json({ error: 'Invalid table specified' });

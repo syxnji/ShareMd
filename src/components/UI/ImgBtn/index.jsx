@@ -1,8 +1,8 @@
 import styles from "./imgbtn.module.css"
 
-export function ImgBtn({img, click}) {
+export function ImgBtn({img, click, type}) {
     return(
-        <button className={styles.ImgBtn} onClick={click}>
+        <button className={styles.ImgBtn} onClick={click} type={type}>
             {img}
         </button>
     )
