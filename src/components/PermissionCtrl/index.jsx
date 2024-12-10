@@ -3,15 +3,16 @@ import { useEffect, useState } from "react";
 import { ImgBtn } from "@/components/UI/ImgBtn";
 import { ModalWindow } from "@/components/ModalWindow";
 // style
-import styles from "./permission.module.css"
+import styles from "./permission.module.css";
 // icon
 import { FaMinus } from "react-icons/fa6";
 
 export function PermissionCtrl({ roleId, roleName, permissionId, updateData }) {
-    // TODO: 新しいロールのINSERT
-    
-    // MARK:グループロール
     const [permissions, setPermissions] = useState([]);
+    const [modalState, setModalState] = useState({ open: false, type: null });
+    const [valueSelect, setValueSelect] = useState(roleId);
+
+    // 権限データの取得
     useEffect(() => {
         const fetchPermissions = async () => {
             const response = await fetch(`/api/db?table=permissions`);
@@ -21,43 +22,46 @@ export function PermissionCtrl({ roleId, roleName, permissionId, updateData }) {
         fetchPermissions();
     }, [roleId]);
 
-    // モーダルの状態管理
-    const [modalState, setModalState] = useState({ open: false, type: null });
-    const [valueSelect, setValueSelect] = useState(roleId);
-    
     // セレクト内オプションのトグル処理
     const handleChangeOption = (event) => {
-        setModalState({ open: true, type: "update" });
         setValueSelect(event.target.value);
+        setModalState({ open: true, type: "update" });
     };
+
     // 削除ボタンクリック処理
     const handleDeleteRole = () => {
         setModalState({ open: true, type: "delete" });
     };
-    
+
     // モーダルボタン「YES」のアクション
     const handleModalAction = async (confirm) => {
-        if (confirm && modalState.type === "update") {
-            await fetch(`/api/db?table=updPermission&id=${roleId}&new=${valueSelect}`);
-            updateData();
-        } else if (confirm && modalState.type === "delete") {
-            await fetch(`/api/db?table=deleteRole&id=${roleId}`);
-            updateData();
+        if (confirm) {
+            if (modalState.type === "update") {
+                await fetch(`/api/db?table=updPermission&id=${roleId}&new=${valueSelect}`);
+                updateData();
+            } else if (modalState.type === "delete") {
+                await fetch(`/api/db?table=deleteRole&id=${roleId}`);
+                updateData();
+            }
         }
         setModalState({ open: false, type: null });
     };
-    
+
+    useEffect(() => {
+        console.log('modalState updated:', modalState);
+    }, [modalState]);
+
     // 選択前:id, 選択後:valueSelect のIDから権限名を取得
-    const getName = id => (
-        permissions.find(
-            permission => permission.id === parseInt(id)
-        ) || {}).name || '';
+    const getName = (id) => (
+        permissions.find((permission) => permission.id === parseInt(id)) || {}
+    ).name || '';
+
     const beforeName = getName(roleId);
     const afterName = getName(valueSelect);
-        
-    return(
+
+    return (
         <>  
-        {/* MARK:モーダル */}
+        {/* モーダル */}
         {modalState.open && (
         <ModalWindow 
             msg={modalState.type === "update" ? '本当に変更しますか？' : '本当に削除しますか？'}
@@ -98,10 +102,10 @@ export function PermissionCtrl({ roleId, roleName, permissionId, updateData }) {
             </div>
             <div className={styles.right}>
                 <div className={styles.deleteBtn}>
-                    <ImgBtn img={<FaMinus/>} click={handleDeleteRole} />
+                    <ImgBtn img={<FaMinus />} click={handleDeleteRole} />
                 </div>
             </div>
         </div>
         </>
-    )
+    );
 }

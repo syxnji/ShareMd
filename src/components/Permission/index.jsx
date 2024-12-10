@@ -32,9 +32,10 @@ export function Permission({ display, id }) {
     const [addPermission, setAddPermission] = useState('1')
 
     const fetchAddRole = async (id, addRole, addPermission) => {
-        const response = await fetch(`/api/db?table=insertRole&groupId=${id}&roleName=${addRole}&permissionId=${addPermission}`);
-        const result = await response.json();
-        setInsertRoles(result);
+        await fetch(`/api/db?table=insertRole&groupId=${id}&roleName=${addRole}&permissionId=${addPermission}`);
+        fetchRoles();
+        setAddRole('');
+        setAddPermission('1');
     };
 
     const handleSubmit = (e) => {
