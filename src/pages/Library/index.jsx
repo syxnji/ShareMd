@@ -7,6 +7,7 @@ import { NotesInGroup } from '@/components/NotesInGroup';
 import { MainBtn } from "@/components/UI/MainBtn"
 import { ImgBtn } from '@/components/UI/ImgBtn';
 import { Permission } from '@/components/Permission';
+import { ModalWindow } from '@/components/ModalWindow';
 // icon
 import { BsSearch, BsList, BsPeople, BsFileEarmarkPlus, BsGrid3X3 } from "react-icons/bs";
 import { RiBook2Line } from "react-icons/ri";
@@ -14,6 +15,41 @@ import { RiBook2Line } from "react-icons/ri";
 import styles from "./library.module.css";
 
 export default function Library() {
+    const [modalState, setModalState] = useState({ open: false });
+    const [valueSelect, setValueSelect] = useState()
+    const [inputValue, setInputValue] = useState('')
+    const handleNewNote =() => {
+        setModalState({ open: true })
+    }
+    const handleChangeOption = (event) => {
+        setValueSelect(event.target.value);
+    }
+    const handleSubmit = () => {
+        console.log(valueSelect)
+        console.log(inputValue)
+    }
+
+    const formContent = (
+        <>
+        <div className={styles.inputs}>
+            <div className={styles.newNoteGroup}>
+                <select required onChange={handleChangeOption}>
+                    <option value="1">group - 1</option>
+                    <option value="2">group - 2</option>
+                    <option value="3">group - 3</option>
+                </select>
+            </div>
+            <div className={styles.newNoteName}>
+                <input 
+                 type="text" 
+                 placeholder='ノート名' 
+                 onChange={(e) => setInputValue(e.target.value)} 
+                 required 
+                />
+            </div>
+        </div>
+        </>
+    )
 
     // MARK:全てのノート
     const [allNotes, setAllNotes] = useState([]);
@@ -74,7 +110,7 @@ export default function Library() {
         </div>
         {/* 新規ノート */}
         <div className={styles.addNote}>
-            <MainBtn img={<BsFileEarmarkPlus/>} text="New Note"/>
+            <MainBtn img={<BsFileEarmarkPlus/>} click={handleNewNote} text="New Note"/>
         </div>
         </>
     )
@@ -100,6 +136,19 @@ export default function Library() {
 
     return(
         <main className={styles.main}>
+            
+        
+        {modalState.open && (
+            <form className={styles.formContent}>
+                <ModalWindow 
+                    msg={'+ New Note'}
+                    content={formContent}
+                    No={() => setModalState({ open: false})}
+                    Yes={() => handleSubmit()}
+                    type={'submit'}
+                />
+            </form>
+        )}
 
         {/* MARK:メニュー */}
         <Menu setSelectedGroupId={setSelectedGroupId} />

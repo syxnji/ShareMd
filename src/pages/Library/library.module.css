@@ -55,3 +55,22 @@
     flex-direction: column;
     gap: 10px;
 }
+
+/* new ノート モーダルウィンドウ */
+.inputs{
+    display: flex;
+    /* flex-direction: column; */
+    gap: 10px;
+}
+.newNoteGroup select{
+    width: 100px;
+    border: solid 1px #333;
+    border-radius: 10px;
+    padding: 10px;
+}
+.newNoteName input{
+    width: 300px;
+    border: solid 1px #333;
+    border-radius: 10px;
+    padding: 10px;
+}
