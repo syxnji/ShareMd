@@ -2,15 +2,18 @@
 import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 // component
+import { SidebarInNotes } from "@/components/SidebarInNotes/index";
 import { Menu } from "@/components/Menu/index.jsx";
+import { Markdown } from "@/components/Markdown/index";
 import { MainBtn } from '@/components/UI/MainBtn/index.jsx';
 import { ImgBtn } from '@/components/UI/ImgBtn/index.jsx';
 import { GroupHeadline } from '@/components/GroupHeadline';
 // style
 import styles from "./editor.module.css"
 // icon
-import { IoSaveOutline } from "react-icons/io5";
+import { IoLogoMarkdown, IoSaveOutline } from "react-icons/io5";
 import { BsFullscreen } from "react-icons/bs";
+import { MdArrowBackIos } from "react-icons/md";
 
 const MarkdownComponents = {
   h1: ({ children }) => <h1 style={{ fontSize: '2em', fontWeight: 'bold', marginBottom: '0.5em' }}>{children}</h1>,
@@ -49,26 +52,40 @@ export default function MarkdownEditor() {
 // MARK:GroupHeadline
 // left
 const headLeft = (
-    <p className={styles.title}>
-        Note Title
-    </p>
+    <>
+    <button className={styles.backBtn}>
+        <MdArrowBackIos />
+    </button>
+    <input className={styles.title} value={"NoteTitle"} />
+    </>
 )
 // right
 const headRight =(
-    <div className={styles.saveBtn}>
-        <MainBtn img={<IoSaveOutline/>} text="Save"/>
+    <>
+    <div className={styles.rights}>
+        <div className={styles.screenBtn}>
+            <ImgBtn img={<BsFullscreen />}/>
+        </div>
+        <div className={styles.viewBtn}>
+            <ImgBtn img={<IoLogoMarkdown />}/>
+        </div>
+        <div className={styles.saveBtn}>
+            <MainBtn img={<IoSaveOutline/>} text="Save"/>
+        </div>
     </div>
+    </>
 )
 
   return (
     <main className={styles.main}>
-        <Menu />
+        <SidebarInNotes/>
 
         {/* head */}
         <div className={styles.content}> 
             <GroupHeadline headLeft={headLeft} headRight={headRight}/>
 
-            <div className={styles.mdContent}>
+            <Markdown/>
+            {/* <div className={styles.mdContent}>
                 <div className={styles.mdHeads}>
                     <button className={showEditor ? styles.showEditorButton : styles.hideEditorButton}
                     onClick={toggleEditor}>
@@ -102,12 +119,12 @@ const headRight =(
                     </div>
                 </div>
 
-            </div>
-            <div className={styles.bottom}>
+            </div> */}
+            {/* <div className={styles.bottom}>
                 <div className={styles.saveBtn}>
                     <MainBtn img={<IoSaveOutline/>} text="Save"/>
                 </div>
-            </div>
+            </div> */}
         </div>
     </main>
   )
