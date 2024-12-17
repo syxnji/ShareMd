@@ -14,6 +14,8 @@
     gap: 10px;
 }
 .note p{
+    text-wrap: nowrap;
+    overflow: hidden;
     padding: 10px;
 }
 .active{

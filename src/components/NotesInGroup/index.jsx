@@ -16,6 +16,7 @@ export function NotesInGroup({ notes, isNotesClass }) {
                     <Notes
                         className={isNotesClass ? styleNotes.grid : styleNotes.list}
                         key={note.id}
+                        id={note.id}
                         title={note.title}
                         preview={note.content}
                         last={new Date(note.updated_at).toLocaleString()}
