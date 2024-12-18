@@ -4,6 +4,8 @@
     padding: 10px;
 }
 .groupName{
+    text-wrap: nowrap;
+    overflow: hidden;
     font-size: 1.4rem;
     font-weight: bold;
     color: #333;
@@ -12,6 +14,10 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+.note a{
+    color: #333;
+    text-decoration: none;
 }
 .note p{
     text-wrap: nowrap;

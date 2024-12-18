@@ -185,6 +185,80 @@ export default function handler(req, res) {
                     }
                 }
             );
+
+        // MARK: SELECT > グループ_ノート
+    } else if (req.query.table === 'group') {
+        const id = req.query.id;
+        pool.query(
+            `select groups.id, groups.name 
+             from notes
+             join \`groups\` 
+             on notes.group_id = groups.id 
+             where notes.id = ? ;
+            `, [id], 
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
+    } else if (req.query.table === 'notes') {
+        const id = req.query.id;
+        pool.query(
+            `SELECT notes.id, notes.title
+             FROM \`groups\`
+             JOIN notes
+             ON groups.id = notes.group_id
+             WHERE groups.id = ?
+            `, 
+            [id], 
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
+    } else if (req.query.table === 'note') {
+        const id = req.query.id;
+        pool.query(
+            `SELECT *
+             FROM notes
+             WHERE notes.id = ?
+            `, 
+            [id], 
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
+    } else if (req.query.table === 'updateNote') {
+        const id = req.query.id;
+        const title = req.query.title;
+        const content = req.query.content;
+        pool.query(
+            `UPDATE notes
+             SET 
+             title = ?,
+             content = ?,
+             updated_at = NOW()
+             WHERE id = ?;
+            `, 
+            [title, content, id], 
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
     } else {
             res.status(400).json({ error: 'Invalid table specified' });
     }

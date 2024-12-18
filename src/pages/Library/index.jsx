@@ -137,7 +137,6 @@ export default function Library() {
     return(
         <main className={styles.main}>
             
-        
         {modalState.open && (
             <form className={styles.formContent}>
                 <ModalWindow 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { GroupHeadline } from "../GroupHeadline";
 import styles from "./sidebarInNotes.module.css";
 export function SidebarInNotes({selectNoteId}){
@@ -58,10 +59,11 @@ export function SidebarInNotes({selectNoteId}){
                 <div className={styles.note}>
                     {Array.isArray(notes) && notes.length > 0 ? (
                         notes.map(note => (
-                            <p 
-                             key={note.id} 
-                             className={selectNoteId === String(note.id) ? styles.active : ''}
-                            >{note.title}</p>
+                            <Link href={`/Editor/${note.id}`} key={note.id} >
+                                <p className={selectNoteId === String(note.id) ? styles.active : ''}>
+                                    {note.title}
+                                </p>
+                            </Link>
                         ))
                         ) : (
                             <p>ノートがありません</p>

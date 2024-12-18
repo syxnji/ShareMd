@@ -1,9 +1,11 @@
 import styles from "./selectNote.module.css";
 import Link from "next/link";
 
-export function Notes({className, title, preview, last}) {
+export function Notes({id, className, title, preview, last}) {
     return(
-        <Link href={"/Editor"} className={className}>
+        // <Link href={"/Editor"} className={className}>
+        // <Link href={{ pathname: "/Editor/", query: { id } }} className={className}>
+        <Link href={`/Editor/${id}`} className={className}>
             <div className={styles.note}>
                 
                 <div className={styles.top}>

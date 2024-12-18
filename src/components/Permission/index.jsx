@@ -95,9 +95,9 @@ export function Permission({ display, id }) {
             </form>
 
             {/* saveBtn */}
-            <div className={stylePermit.saveBtn}>
+            {/* <div className={stylePermit.saveBtn}>
                 <MainBtn img={<IoSaveOutline/>} text="Save"/>
-            </div>
+            </div> */}
 
         </div>
         </>
