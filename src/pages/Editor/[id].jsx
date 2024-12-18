@@ -130,6 +130,14 @@ export default function MarkdownEditor({ id }) {
                     <GroupHeadline headLeft={headLeft} headRight={headRight}/>
 
                     <Markdown id={id} content={note?.content} change={handleChange} />
+                    <div className={styles.update}>
+                        <p className={styles.last}>
+                            Last update:
+                        </p>
+                        <p className={styles.date}>
+                            {note?.updated_at ? new Date(note.updated_at).toLocaleString() : 'N/A'}
+                        </p>
+                    </div>
                 </form>
                 {/* <div className={styles.mdContent}>
                     <div className={styles.mdHeads}>
