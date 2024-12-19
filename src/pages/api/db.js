@@ -241,7 +241,7 @@ export default function handler(req, res) {
     } else if (req.query.table === 'updateNote') {
         const id = req.query.id;
         const title = req.query.title;
-        const content = req.query.content;
+        const content = encodeURIComponent(req.query.content);
         pool.query(
             `UPDATE notes
              SET 
@@ -250,7 +250,7 @@ export default function handler(req, res) {
              updated_at = NOW()
              WHERE id = ?;
             `, 
-            [title, content, id], 
+            [title, decodeURIComponent(content), id], 
             (err, results) => {
                 if (err) {
                     res.status(500).json({ error: err.message });

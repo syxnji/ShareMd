@@ -82,7 +82,14 @@ export default function MarkdownEditor({ id }) {
         // update
         const fetchNoteUpd = async () => {
             try {
-                const updResponse = await fetch(`/api/db?table=updateNote&id=${id}&title=${note.title}&content=${note.content}`);
+                const encodedContent = encodeURIComponent(note.content);
+                const encodedTitle = encodeURIComponent(note.title);
+                const updResponse = await fetch(`/api/db?table=updateNote&id=${id}&title=${encodedTitle}&content=${encodedContent}`);
+                
+                if (!updResponse.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
             } catch (error) {
                 console.error('エラー(fetchNoteUpd):', error);
             }
