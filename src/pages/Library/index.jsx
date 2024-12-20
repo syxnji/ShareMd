@@ -16,27 +16,45 @@ import styles from "./library.module.css";
 
 export default function Library() {
     const [modalState, setModalState] = useState({ open: false });
-    const [valueSelect, setValueSelect] = useState()
+    const [valueSelect, setValueSelect] = useState(1)
     const [inputValue, setInputValue] = useState('')
+
+    // MARK:新規ノート
     const handleNewNote =() => {
         setModalState({ open: true })
     }
+    const [allGroups, setAllGroups] = useState([]);
+    useEffect(() => {
+        const fetchGroup = async () => {
+            const response = await fetch(`/api/db?table=joinedGroups`);
+            const allGroups = await response.json();
+            setAllGroups(allGroups);
+        };
+        fetchGroup();
+    }, []);
+
+    // MARK:グループ選択
     const handleChangeOption = (event) => {
         setValueSelect(event.target.value);
     }
-    const handleSubmit = () => {
-        console.log(valueSelect)
-        console.log(inputValue)
+
+    // MARK:インサート新規ノート
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const response = await fetch(`/api/db?table=newNote&groupId=${valueSelect}&noteName=${inputValue}`);
+        const result = await response.json();
+        window.location.assign(`/Editor/${result.results.insertId}`);
     }
 
+    // MARK:フォーム
     const formContent = (
         <>
         <div className={styles.inputs}>
             <div className={styles.newNoteGroup}>
                 <select required onChange={handleChangeOption}>
-                    <option value="1">group - 1</option>
-                    <option value="2">group - 2</option>
-                    <option value="3">group - 3</option>
+                    {allGroups.map((group) => (
+                        <option key={group.id} value={group.id}>{group.name}</option>
+                    ))}
                 </select>
             </div>
             <div className={styles.newNoteName}>
@@ -90,7 +108,7 @@ export default function Library() {
         setDisplayNotes(!displayNotes);
     };
 
-    // MARK:ヘッドライン指定
+    // MARK:ヘッドライン 左
     const headLeft = (
         <>
         {/* 検索 */}
@@ -102,6 +120,8 @@ export default function Library() {
         </div>
         </>
     )
+
+    // MARK:ヘッドライン 右
     const headRight = (
         <>
         {/* レイアウト */}
@@ -114,21 +134,24 @@ export default function Library() {
         </div>
         </>
     )
+    // MARK:ヘッドライン 左 最近更新
     const recently_headLeft = (
         <>
         {/* 最近更新 */}
         <p className={styles.groupName}>最近の更新</p>
         </>
     )
+
+    // MARK:ヘッドライン 左 選択グループ
     const select_headLeft = (
         <>
         {/* 選択されたグループ */}
         {selectedGroupNotes.length > 0 && (
             <>
-            <p className={styles.groupName}>{selectedGroupNotes[0].groupName}</p>
-            {/* <button className={styles.permissionBtn} onClick={toggleGroupContent}> */}
-                <ImgBtn img={ displayNotes ? <BsPeople/> : <RiBook2Line/> } click={toggleGroupContent} />
-            {/* </button> */}
+            <p className={styles.groupName}>
+                {selectedGroupNotes[0].groupName}
+            </p>
+            <ImgBtn img={ displayNotes ? <BsPeople/> : <RiBook2Line/> } click={toggleGroupContent} />
             </>
         )}
         </>
@@ -138,12 +161,12 @@ export default function Library() {
         <main className={styles.main}>
             
         {modalState.open && (
-            <form className={styles.formContent}>
+            <form className={styles.formContent} onSubmit={handleSubmit}>
                 <ModalWindow 
                     msg={'+ New Note'}
                     content={formContent}
                     No={() => setModalState({ open: false})}
-                    Yes={() => handleSubmit()}
+                    Yes={(e) => handleSubmit(e)}
                     type={'submit'}
                 />
             </form>

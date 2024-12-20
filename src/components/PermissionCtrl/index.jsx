@@ -47,10 +47,6 @@ export function PermissionCtrl({ roleId, roleName, permissionId, updateData }) {
         setModalState({ open: false, type: null });
     };
 
-    useEffect(() => {
-        console.log('modalState updated:', modalState);
-    }, [modalState]);
-
     // 選択前:id, 選択後:valueSelect のIDから権限名を取得
     const getName = (id) => (
         permissions.find((permission) => permission.id === parseInt(id)) || {}

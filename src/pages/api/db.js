@@ -212,8 +212,7 @@ export default function handler(req, res) {
              JOIN notes
              ON groups.id = notes.group_id
              WHERE groups.id = ?
-            `, 
-            [id], 
+            `, [id], 
             (err, results) => {
                 if (err) {
                     res.status(500).json({ error: err.message });
@@ -228,8 +227,7 @@ export default function handler(req, res) {
             `SELECT *
              FROM notes
              WHERE notes.id = ?
-            `, 
-            [id], 
+            `, [id], 
             (err, results) => {
                 if (err) {
                     res.status(500).json({ error: err.message });
@@ -246,11 +244,25 @@ export default function handler(req, res) {
             `UPDATE notes
              SET 
              title = ?,
-             content = ?,
+             content = ?,   
              updated_at = NOW()
              WHERE id = ?;
-            `, 
-            [title, decodeURIComponent(content), id], 
+            `, [title, decodeURIComponent(content), id], 
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
+    } else if (req.query.table === 'newNote') {
+        const groupId = req.query.groupId;
+        const noteName = req.query.noteName;
+        pool.query(
+            `INSERT INTO notes (title, group_id, created_by, created_at, updated_at)
+             VALUES (?, ?, 1, NOW(), NOW());
+            `, [noteName, groupId], 
             (err, results) => {
                 if (err) {
                     res.status(500).json({ error: err.message });
