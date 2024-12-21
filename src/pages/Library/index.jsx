@@ -15,9 +15,32 @@ import { RiBook2Line } from "react-icons/ri";
 import styles from "./library.module.css";
 
 export default function Library() {
+
+    // MARK:全てのノート
+    const [allNotes, setAllNotes] = useState([]);
+    useEffect(() => {
+        const fetchNotes = async () => {
+            const response = await fetch(`/api/db?table=allNotes`);
+            const allNotes = await response.json();
+            setAllNotes(allNotes);
+        };
+        fetchNotes();
+    }, []);
+
+    const [searchValue, setSearchValue] = useState('');
     const [modalState, setModalState] = useState({ open: false });
     const [valueSelect, setValueSelect] = useState(1)
     const [inputValue, setInputValue] = useState('')
+
+   
+    // MARK:検索
+    const handleSearch = (e) => {
+        e.preventDefault();
+        setSearchValue(e.target.value);
+    }
+    const filteredNotes = allNotes.filter(note =>
+      note.title.toLowerCase().includes(searchValue.toLowerCase())
+    );
 
     // MARK:新規ノート
     const handleNewNote =() => {
@@ -69,16 +92,6 @@ export default function Library() {
         </>
     )
 
-    // MARK:全てのノート
-    const [allNotes, setAllNotes] = useState([]);
-    useEffect(() => {
-        const fetchNotes = async () => {
-            const response = await fetch(`/api/db?table=allNotes`);
-            const allNotes = await response.json();
-            setAllNotes(allNotes);
-        };
-        fetchNotes();
-    }, []);
 
     // MARK:選択したグリープのノート
     const [selectedGroupId, setSelectedGroupId] = useState(null);
@@ -113,9 +126,13 @@ export default function Library() {
         <>
         {/* 検索 */}
         <div className={styles.search}>
-            <form action="">
-                <input placeholder="Note name ..." type="search" name="" id="" />
-                <ImgBtn img={<BsSearch/>} />
+            <form>
+                <input 
+                 placeholder="Note name ..." 
+                 type="search"
+                 onChange={handleSearch}
+                />
+                {/* <ImgBtn img={<BsSearch/>} type="submit" /> */}
             </form>
         </div>
         </>
@@ -138,7 +155,7 @@ export default function Library() {
     const recently_headLeft = (
         <>
         {/* 最近更新 */}
-        <p className={styles.groupName}>最近の更新</p>
+        <p className={styles.groupName}>検索結果</p>
         </>
     )
 
@@ -201,7 +218,7 @@ export default function Library() {
                 {/* MARK:最近更新されたノート */}
                 <GroupHeadline headLeft={recently_headLeft} />
                 <NotesInGroup 
-                 notes={allNotes} 
+                 notes={filteredNotes} 
                  isNotesClass={isNotesClass}
                 />
                 
