@@ -271,6 +271,59 @@ export default function handler(req, res) {
                 }
             }
         );
+    } else if (req.query.table === 'suggestUsers') {
+        const name = req.query.name;
+        pool.query(
+            `SELECT id, username
+             FROM users
+             WHERE username LIKE ?
+            `, [`%${name}%`],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
+    } else if (req.query.table === 'insertGroup') {
+        const name = req.query.name;
+        const memberIds = req.query.memberIds.split(',');
+
+        pool.query(
+            `INSERT INTO \`groups\` (name, created_at, updated_at)
+            VALUES (?, NOW(), NOW());
+            `, [name],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                    return;
+                }
+
+                const groupId = results.insertId;
+                console.log('Created group ID:', groupId);
+
+                Promise.all(memberIds.map(memberId => 
+                    new Promise((resolve, reject) => {
+                        pool.query(
+                            `INSERT INTO user_group_memberships (user_id, group_id, role_id)
+                             VALUES (?, ?, 1);
+                            `, [memberId, groupId],
+                            (err, results) => {
+                                if (err) reject(err);
+                                else resolve(results);
+                            }
+                        );
+                    })
+                ))
+                .then(() => {
+                    res.status(200).json({ success: true, groupId });
+                })
+                .catch(error => {
+                    res.status(500).json({ error: error.message });
+                });
+            }
+        );
     } else {
             res.status(400).json({ error: 'Invalid table specified' });
     }
