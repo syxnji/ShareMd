@@ -74,3 +74,108 @@
     border-radius: 10px;
     padding: 10px;
 }
+
+/* setting */
+.modalSettingWindow{
+    z-index: 100;
+    width: 600px;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    border: solid 1px #999;
+}
+
+/* モーダルウィンドウの閉じるボタン */
+.modalSettingClose{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+/* 切り替えボタン */
+.toggleSettingContent{
+    width: 500px;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    border-radius: 10px;
+    padding: 5px;
+    background-color: #eee;
+}
+.trueBtn{
+    width: 50%;
+    height: 32px;
+    border: none;
+    border-radius: 7px;
+    background-color: #eee;
+}
+.falseBtn{
+    width: 50%;
+    height: 32px;
+    border: none;
+    border-radius: 7px;
+    background-color: #fff;
+}
+
+/* メンバー */
+.memberContent{
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-radius: 10px;
+}
+.searchMember{
+    width: 500px;
+    border: solid 1px #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    outline: none;
+}
+.memberList{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: scroll;
+}
+.member{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: solid 1px #ddd;
+    padding: 10px;
+}
+.member select{
+    padding: 10px;
+    border: solid 1px #ddd;
+    border-radius: 5px;
+}
+.deleteBtn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: transparent;
+}
+
+/* プロジェクト */
+.projectContent{
+    overflow-y: scroll;
+}
+.project{
+    width: 500px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: solid 1px #ddd;
+    padding: 10px;
+}

@@ -9,7 +9,7 @@ import { ImgBtn } from '@/components/UI/ImgBtn';
 import { Permission } from '@/components/Permission';
 import { ModalWindow } from '@/components/ModalWindow';
 // icon
-import { BsSearch, BsList, BsPeople, BsFileEarmarkPlus, BsGrid3X3 } from "react-icons/bs";
+import { BsList, BsPeople, BsFileEarmarkPlus, BsGrid3X3, BsGear, BsX } from "react-icons/bs";
 import { RiBook2Line } from "react-icons/ri";
 // style
 import styles from "./library.module.css";
@@ -27,21 +27,39 @@ export default function Library() {
         fetchNotes();
     }, []);
 
-    const [searchValue, setSearchValue] = useState('');
     const [modalState, setModalState] = useState({ open: false });
-    const [valueSelect, setValueSelect] = useState(1)
     const [inputValue, setInputValue] = useState('')
-
-   
+    
     // MARK:検索
+    const [searchValue, setSearchValue] = useState('');
     const handleSearch = (e) => {
         e.preventDefault();
         setSearchValue(e.target.value);
     }
     const filteredNotes = allNotes.filter(note =>
-      note.title.toLowerCase().includes(searchValue.toLowerCase())
+        note.title.toLowerCase().includes(searchValue.toLowerCase())
     );
-
+    
+    // MARK:設定
+    const [modalSetting, setModalSetting] = useState(false);
+    const toggleModalSetting = () => {
+        setModalSetting(!modalSetting);
+    }
+    const [modalMember, setModalMember] = useState(true);
+    const toggleModalMember = () => {
+        setModalMember(true);
+        setModalProject(false);
+    }
+    const [modalProject, setModalProject] = useState(false);
+    const toggleModalProject = () => {
+        setModalProject(true);
+        setModalMember(false);
+    }
+    const [createMemberSuggest, setCreateMemberSuggest] = useState([]);
+    const handleCreateMember = (e) => {
+        setCreateMemberSuggest(e.target.value);
+    }
+    
     // MARK:新規ノート
     const handleNewNote =() => {
         setModalState({ open: true })
@@ -55,8 +73,9 @@ export default function Library() {
         };
         fetchGroup();
     }, []);
-
+    
     // MARK:グループ選択
+    const [valueSelect, setValueSelect] = useState(1)
     const handleChangeOption = (event) => {
         setValueSelect(event.target.value);
     }
@@ -92,7 +111,6 @@ export default function Library() {
         </>
     )
 
-
     // MARK:選択したグリープのノート
     const [selectedGroupId, setSelectedGroupId] = useState(null);
     const [selectedGroupNotes, setSelectedGroupNotes] = useState([]);
@@ -105,6 +123,28 @@ export default function Library() {
             }
         };
         fetchNotes();
+    }, [selectedGroupId]);
+
+    // MARK: メンバー
+    const [groupInMember, setGroupInMember] = useState([]);
+    useEffect(() => {
+        const fetchGroupInMember = async () => {
+            const response = await fetch(`/api/db?table=groupInMember&groupId=${selectedGroupId}`);
+            const members = await response.json();
+            setGroupInMember(members.results);
+        };
+        fetchGroupInMember();
+    }, [selectedGroupId]);
+
+    // MARK:グループのロール
+    const [groupRole, setGroupRole] = useState([]);
+    useEffect(() => {
+        const fetchGroupRole = async () => {
+            const response = await fetch(`/api/db?table=groupRole&groupId=${selectedGroupId}`);
+            const roles = await response.json();
+            setGroupRole(roles);
+        };
+        fetchGroupRole();
     }, [selectedGroupId]);
       
     // MARK:切替え グリッド/リスト
@@ -158,6 +198,94 @@ export default function Library() {
         <p className={styles.groupName}>検索結果</p>
         </>
     )
+    
+    // MARK:設定コンポーネント
+    const modalSettingWindow = (
+        <div className={styles.modalSettingWindow}>
+            {/* 閉じる */}
+            <div className={styles.modalSettingClose} onClick={toggleModalSetting}>
+                <BsX/>
+            </div>
+
+            {/* 設定切り替え */}
+            <div className={styles.toggleSettingContent}>
+                {modalMember ? (
+                    <button 
+                    className={styles.falseBtn}
+                    onClick={toggleModalMember}
+                    >メンバー</button>
+                ) : (
+                    <button 
+                    className={styles.trueBtn}
+                    onClick={toggleModalMember}
+                    >メンバー</button>
+                )}
+                {modalProject ? (
+                    <button
+                    className={styles.falseBtn}
+                    onClick={toggleModalProject}
+                    >プロジェクト</button>
+                ) : (
+                    <button 
+                    className={styles.trueBtn}
+                    onClick={toggleModalProject}
+                    >プロジェクト</button>
+                )}
+            </div>
+
+            {/* 設定内容 */}
+            <div className={styles.modalSettingContent}>
+                {modalMember ? (
+                    <div className={styles.memberContent}>
+                        {/* メンバー追加 */}
+                        <div className={styles.addMember}>
+                            <input 
+                             type="text"
+                             placeholder="メンバー"
+                             className={styles.searchMember}
+                             onChange={handleCreateMember}
+                             />
+                            {/* メンバー候補 */}
+                            {/* {createMemberSuggest.length > 0 ? (
+                                <div className={styles.suggestMemberBox}>
+                                {createMemberSuggest.map((user) => (
+                                    <button
+                                    className={styles.suggestMember}
+                                    key={user.id} 
+                                    onClick={(e) => handleAddMember(e, user)}
+                                    >
+                                    {user.username}
+                                    </button>
+                                    ))}
+                                    </div>
+                                    ) : null} */}
+                        </div>
+                        {/* メンバーリスト */}
+                        <div className={styles.memberList}>
+                            {groupInMember.map((member) => (
+                                <div className={styles.member} key={member.id}>
+                                    <p>{member.username}</p>
+                                    <select>
+                                        {groupRole.map((role) => (
+                                            <option key={role.id} value={role.id} selected={member.role_id === role.id}>{role.name}</option>
+                                        ))}
+                                    </select>
+                                    <button className={styles.deleteBtn}><BsX/></button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ) : (
+                    <div className={styles.projectContent}>
+                        <div className={styles.project}>
+                            <p>プロジェクト名</p>
+                            <button className={styles.deleteBtn}><BsX/></button>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    )
 
     // MARK:ヘッドライン 左 選択グループ
     const select_headLeft = (
@@ -169,6 +297,7 @@ export default function Library() {
                 {selectedGroupNotes[0].groupName}
             </p>
             <ImgBtn img={ displayNotes ? <BsPeople/> : <RiBook2Line/> } click={toggleGroupContent} />
+            <ImgBtn img={<BsGear/>} click={toggleModalSetting} />
             </>
         )}
         </>
@@ -188,6 +317,9 @@ export default function Library() {
                 />
             </form>
         )}
+
+        {/* MARK:設定 */}
+        {modalSetting ? modalSettingWindow : null}
 
         {/* MARK:メニュー */}
         <Menu setSelectedGroupId={setSelectedGroupId} />

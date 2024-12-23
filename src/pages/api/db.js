@@ -324,6 +324,44 @@ export default function handler(req, res) {
                 });
             }
         );
+    } else if (req.query.table === 'groupInMember') {
+        const groupId = req.query.groupId;
+        pool.query(
+            `SELECT users.id, users.username, user_group_memberships.role_id
+             FROM users
+             JOIN user_group_memberships
+             ON users.id = user_group_memberships.user_id
+             WHERE user_group_memberships.group_id = ?
+            `, [groupId],
+            (err, results) => {
+                if (err) {
+                    console.log('member??????');
+                    res.status(500).json({ error: err.message });
+                } else {
+                    console.log('member!!!!!!');
+                    res.status(200).json({ results });
+                }
+            }
+        );
+    } else if (req.query.table === 'groupRole') {
+        const groupId = req.query.groupId;
+        pool.query(
+            `SELECT roles.id, roles.name
+             FROM roles
+             JOIN group_roles
+             ON roles.id = group_roles.role_id
+             WHERE group_roles.group_id = ?
+            `, [groupId],
+            (err, results) => {
+                if (err) {
+                    console.log('??????');
+                    res.status(500).json({ error: err.message });
+                } else {
+                    console.log('!!!!!!');
+                    res.status(200).json({results});
+                }
+            }
+        );
     } else {
             res.status(400).json({ error: 'Invalid table specified' });
     }
