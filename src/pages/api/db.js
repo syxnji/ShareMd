@@ -389,6 +389,22 @@ export default function handler(req, res) {
                 }
             }
         );
+    } else if (req.query.table === 'addMember') {
+        const groupId = req.query.groupId;
+        const userId = req.query.userId;
+        pool.query(
+            `INSERT INTO user_group_memberships (user_id, group_id, role_id)
+             VALUES (?, ?, 1)
+             ON DUPLICATE KEY UPDATE \`delete\` = 0;
+            `, [userId, groupId],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({results});
+                }
+            }
+        );
     } else {
             res.status(400).json({ error: 'Invalid table specified' });
     }

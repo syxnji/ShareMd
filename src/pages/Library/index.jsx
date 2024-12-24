@@ -171,6 +171,38 @@ export default function Library() {
         await fetchGroupInMember();
     }
 
+    // MARK:ユーザー検索
+    const [searchUser, setSearchUser] = useState('');
+    const handleSearchUser = (e) => {
+        setSearchUser(e.target.value);
+    }
+
+    // メンバー候補
+    const [memberSuggest, setMemberSuggest] = useState([]);
+    useEffect(() => {
+        const fetchMemberSuggest = async () => {
+            if (searchUser.length > 0) {  
+                const response = await fetch(`/api/db?table=suggestUsers&name=${searchUser}`);
+                const suggestUsers = await response.json();
+                setMemberSuggest(suggestUsers.results);
+            } else {
+                setMemberSuggest([]);
+            }
+        };
+        fetchMemberSuggest();
+    }, [searchUser]);
+
+    // MARK:メンバー追加
+    const handleAddMember = async (e, user) => {
+        e.preventDefault();
+        const newMemberId = user.id;
+        const response = await fetch(`/api/db?table=addMember&groupId=${selectedGroupId}&userId=${newMemberId}`);
+        const result = await response.json();
+        setSearchUser('');
+        // メンバーリストを再取得
+        await fetchGroupInMember();
+    }
+
     // MARK:切替え グリッド/リスト
     const [isGridView, setIsGridView] = useState(true);
     const [isNotesClass, setIsNotesClass] = useState(true);
@@ -267,22 +299,22 @@ export default function Library() {
                              type="text"
                              placeholder="メンバー"
                              className={styles.searchMember}
-                             onChange={handleCreateMember}
+                             onChange={handleSearchUser}
                              />
                             {/* メンバー候補 */}
-                            {/* {createMemberSuggest.length > 0 ? (
+                            {memberSuggest.length > 0 ? (
                                 <div className={styles.suggestMemberBox}>
-                                {createMemberSuggest.map((user) => (
-                                    <button
-                                    className={styles.suggestMember}
-                                    key={user.id} 
-                                    onClick={(e) => handleAddMember(e, user)}
-                                    >
-                                    {user.username}
-                                    </button>
-                                    ))}
-                                    </div>
-                                    ) : null} */}
+                                    {memberSuggest.map((user) => (
+                                        <button
+                                        className={styles.suggestMember}
+                                        key={user.id} 
+                                        onClick={(e) => handleAddMember(e, user)}
+                                        >
+                                            {user.username}
+                                        </button>
+                                    ))} 
+                                </div>
+                            ) : null}
                         </div>
                         {/* メンバーリスト */}
                         <div className={styles.memberList}>
