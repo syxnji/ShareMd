@@ -113,15 +113,20 @@ export default function Library() {
 
     // MARK:選択したグリープのノート
     const [selectedGroupId, setSelectedGroupId] = useState(null);
+
     const [selectedGroupNotes, setSelectedGroupNotes] = useState([]);
+
+    // 選択したグループのノートを取得
+    const fetchNotes = async () => {
+        if (selectedGroupId) {
+            const response = await fetch(`/api/db?table=selectedGroup&groupId=${selectedGroupId}`);
+            const notes = await response.json();
+            setSelectedGroupNotes(notes);
+        }
+    };
+
+    // 選択したグループが変わったらノートを取得
     useEffect(() => {
-        const fetchNotes = async () => {
-            if (selectedGroupId) {
-                const response = await fetch(`/api/db?table=selectedGroup&groupId=${selectedGroupId}`);
-                const notes = await response.json();
-                setSelectedGroupNotes(notes);
-            }
-        };
         fetchNotes();
     }, [selectedGroupId]);
 
@@ -201,6 +206,13 @@ export default function Library() {
         setSearchUser('');
         // メンバーリストを再取得
         await fetchGroupInMember();
+    }
+
+    const handleDeleteProject = async (projectId) => {
+        const response = await fetch(`/api/db?table=deleteProject&projectId=${projectId}`);
+        const result = await response.json();
+        // メンバーリストを再取得
+        await fetchNotes();
     }
 
     // MARK:切替え グリッド/リスト
@@ -290,61 +302,63 @@ export default function Library() {
             </div>
 
             {/* 設定内容 */}
-            <div className={styles.modalSettingContent}>
-                {modalMember ? (
-                    <div className={styles.memberContent}>
-                        {/* メンバー追加 */}
-                        <div className={styles.addMember}>
-                            <input 
-                             type="text"
-                             placeholder="メンバー"
-                             className={styles.searchMember}
-                             onChange={handleSearchUser}
-                             />
-                            {/* メンバー候補 */}
-                            {memberSuggest.length > 0 ? (
-                                <div className={styles.suggestMemberBox}>
-                                    {memberSuggest.map((user) => (
-                                        <button
+            {modalMember ? (
+                <div className={styles.memberContent}>
+                    <div className={styles.addMember}>
+                        <input 
+                            type="text"
+                            placeholder="メンバー"
+                            className={styles.searchMember}
+                            onChange={handleSearchUser}
+                        />
+                        {/* メンバー候補 */}
+                        {memberSuggest.length > 0 && (
+                            <div className={styles.suggestMemberBox}>
+                                {memberSuggest.map((user) => (
+                                    <button
                                         className={styles.suggestMember}
                                         key={user.id} 
                                         onClick={(e) => handleAddMember(e, user)}
-                                        >
-                                            {user.username}
-                                        </button>
-                                    ))} 
-                                </div>
-                            ) : null}
-                        </div>
-                        {/* メンバーリスト */}
-                        <div className={styles.memberList}>
-                            {groupInMember.map((member) => (
-                                <div className={styles.member} key={member.id}>
-                                    <p>{member.username}</p>
-                                    <select 
-                                     onChange={(e) => handleChangeRole(e, member.id)}
-                                     value={member.role_id}
                                     >
-                                        {groupRole.map((role) => (
-                                            <option key={role.id} value={role.id}>{role.name}</option>
-                                        ))}
-                                    </select>
-                                    <button className={styles.deleteBtn} onClick={(e) => handleDeleteMember(e, member.id)}><BsX/></button>
-                                </div>
-                            ))}
-                        </div>
+                                        {user.username}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                     </div>
-                ) : (
-                    <div className={styles.projectContent}>
-                        <div className={styles.project}>
-                            <p>プロジェクト名</p>
-                            <button className={styles.deleteBtn}><BsX/></button>
-                        </div>
+                    <div className={styles.memberList}>
+                        {groupInMember.map((member) => (
+                            <div className={styles.member} key={member.id}>
+                                <p>{member.username}</p>
+                                <select 
+                                    onChange={(e) => handleChangeRole(e, member.id)}
+                                    value={member.role_id}
+                                >
+                                    {groupRole.map((role) => (
+                                        <option key={role.id} value={role.id}>
+                                            {role.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <button className={styles.deleteBtn} onClick={(e) => handleDeleteMember(e, member.id)}>
+                                    <BsX/>
+                                </button>
+                            </div>
+                        ))}
                     </div>
-                )}
-            </div>
+                </div>
+            ) : (
+                <div className={styles.projectContent}>
+                    {selectedGroupNotes.map((project) => (
+                        <div className={styles.project} key={project.id}>
+                            <p>{project.title}</p>
+                            <button className={styles.deleteBtn} onClick={() => handleDeleteProject(project.id)}><BsX/></button>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
-    )
+    );
 
     // MARK:ヘッドライン 左 選択グループ
     const select_headLeft = (

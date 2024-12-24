@@ -55,7 +55,7 @@ export default function handler(req, res) {
              FROM notes
              JOIN \`groups\`
                ON notes.group_id = groups.id
-             WHERE notes.group_id = ?
+             WHERE notes.group_id = ? AND notes.delete = 0
             `, [selectGroupId], 
             (err, results) => {
                 if (err) {
@@ -397,6 +397,21 @@ export default function handler(req, res) {
              VALUES (?, ?, 1)
              ON DUPLICATE KEY UPDATE \`delete\` = 0;
             `, [userId, groupId],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({results});
+                }
+            }
+        );
+    } else if (req.query.table === 'deleteProject') {
+        const projectId = req.query.projectId;
+        pool.query(
+            `UPDATE notes
+             SET \`delete\` = 1
+             WHERE id = ?
+            `, [projectId],
             (err, results) => {
                 if (err) {
                     res.status(500).json({ error: err.message });
