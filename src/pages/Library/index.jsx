@@ -135,6 +135,7 @@ export default function Library() {
         };
         fetchGroupInMember();
     }, [selectedGroupId]);
+    // console.log('メンバー：',groupInMember);
 
     // MARK:グループのロール
     const [groupRole, setGroupRole] = useState([]);
@@ -146,7 +147,19 @@ export default function Library() {
         };
         fetchGroupRole();
     }, [selectedGroupId]);
-      
+
+    // MARK:ロール変更
+    const handleChangeRole = async (e, userId) => {
+        const newRoleId = parseInt(e.target.value, 10);
+        const response = await fetch(`/api/db?table=changeRole&groupId=${selectedGroupId}&userId=${userId}&roleId=${newRoleId}`);
+        const result = await response.json();
+        setGroupInMember(prevMembers => 
+            prevMembers.map(member => 
+                member.id === userId ? { ...member, role_id: newRoleId } : member
+            )
+        );
+    }
+
     // MARK:切替え グリッド/リスト
     const [isGridView, setIsGridView] = useState(true);
     const [isNotesClass, setIsNotesClass] = useState(true);
@@ -265,9 +278,12 @@ export default function Library() {
                             {groupInMember.map((member) => (
                                 <div className={styles.member} key={member.id}>
                                     <p>{member.username}</p>
-                                    <select>
+                                    <select 
+                                     onChange={(e) => handleChangeRole(e, member.id)}
+                                     value={member.role_id}
+                                    >
                                         {groupRole.map((role) => (
-                                            <option key={role.id} value={role.id} selected={member.role_id === role.id}>{role.name}</option>
+                                            <option key={role.id} value={role.id}>{role.name}</option>
                                         ))}
                                     </select>
                                     <button className={styles.deleteBtn}><BsX/></button>

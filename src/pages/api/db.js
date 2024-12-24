@@ -354,10 +354,25 @@ export default function handler(req, res) {
             `, [groupId],
             (err, results) => {
                 if (err) {
-                    console.log('??????');
                     res.status(500).json({ error: err.message });
                 } else {
-                    console.log('!!!!!!');
+                    res.status(200).json({results});
+                }
+            }
+        );
+    } else if (req.query.table === 'changeRole') {
+        const groupId = req.query.groupId;
+        const userId = req.query.userId;
+        const roleId = req.query.roleId;
+        pool.query(
+            `UPDATE user_group_memberships
+             SET role_id = ?
+             WHERE user_id = ? AND group_id = ?
+            `, [roleId, userId, groupId],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
                     res.status(200).json({results});
                 }
             }
