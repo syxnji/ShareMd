@@ -301,8 +301,6 @@ export default function handler(req, res) {
                 }
 
                 const groupId = results.insertId;
-                console.log('Created group ID:', groupId);
-
                 Promise.all(memberIds.map(memberId => 
                     new Promise((resolve, reject) => {
                         pool.query(
@@ -331,14 +329,12 @@ export default function handler(req, res) {
              FROM users
              JOIN user_group_memberships
              ON users.id = user_group_memberships.user_id
-             WHERE user_group_memberships.group_id = ?
+             WHERE user_group_memberships.group_id = ? AND user_group_memberships.delete = 0
             `, [groupId],
             (err, results) => {
                 if (err) {
-                    console.log('member??????');
                     res.status(500).json({ error: err.message });
                 } else {
-                    console.log('member!!!!!!');
                     res.status(200).json({ results });
                 }
             }
@@ -369,6 +365,22 @@ export default function handler(req, res) {
              SET role_id = ?
              WHERE user_id = ? AND group_id = ?
             `, [roleId, userId, groupId],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({results});
+                }
+            }
+        );
+    } else if (req.query.table === 'deleteMember') {
+        const groupId = req.query.groupId;
+        const userId = req.query.userId;
+        pool.query(
+            `UPDATE user_group_memberships
+             SET \`delete\` = 1
+             WHERE user_id = ? AND group_id = ?
+            `, [userId, groupId],
             (err, results) => {
                 if (err) {
                     res.status(500).json({ error: err.message });

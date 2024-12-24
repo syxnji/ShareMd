@@ -127,15 +127,20 @@ export default function Library() {
 
     // MARK: メンバー
     const [groupInMember, setGroupInMember] = useState([]);
-    useEffect(() => {
-        const fetchGroupInMember = async () => {
+    
+    // メンバーリストを更新する関数
+    const fetchGroupInMember = async () => {
+        if (selectedGroupId) {
             const response = await fetch(`/api/db?table=groupInMember&groupId=${selectedGroupId}`);
             const members = await response.json();
             setGroupInMember(members.results);
-        };
+        }
+    };
+
+    // 初期ロード時とグループ選択時に実行
+    useEffect(() => {
         fetchGroupInMember();
     }, [selectedGroupId]);
-    // console.log('メンバー：',groupInMember);
 
     // MARK:グループのロール
     const [groupRole, setGroupRole] = useState([]);
@@ -153,11 +158,17 @@ export default function Library() {
         const newRoleId = parseInt(e.target.value, 10);
         const response = await fetch(`/api/db?table=changeRole&groupId=${selectedGroupId}&userId=${userId}&roleId=${newRoleId}`);
         const result = await response.json();
-        setGroupInMember(prevMembers => 
-            prevMembers.map(member => 
-                member.id === userId ? { ...member, role_id: newRoleId } : member
-            )
-        );
+        // メンバーリストを再取得
+        await fetchGroupInMember();
+    }
+
+    // MARK:メンバー削除
+    const handleDeleteMember = async (e, userId) => {
+        e.preventDefault();
+        const response = await fetch(`/api/db?table=deleteMember&groupId=${selectedGroupId}&userId=${userId}`);
+        const result = await response.json();
+        // メンバーリストを再取得
+        await fetchGroupInMember();
     }
 
     // MARK:切替え グリッド/リスト
@@ -286,7 +297,7 @@ export default function Library() {
                                             <option key={role.id} value={role.id}>{role.name}</option>
                                         ))}
                                     </select>
-                                    <button className={styles.deleteBtn}><BsX/></button>
+                                    <button className={styles.deleteBtn} onClick={(e) => handleDeleteMember(e, member.id)}><BsX/></button>
                                 </div>
                             ))}
                         </div>
