@@ -213,3 +213,12 @@ INSERT INTO notes (title, content, group_id, created_by) VALUES
 ('経営概要:会社の方向性', '今後5年間の会社の方向性についての要約...', 9, 8),
 ('ITインフラのアップグレード計画', '会社のITインフラをアップグレードする計画...', 10, 10),
 ('Test Note', 'Thsi is test note...', 1, 1);
+
+ALTER TABLE users ADD COLUMN `delete` TINYINT(1) DEFAULT 0;
+ALTER TABLE Users ADD COLUMN `delete` TINYINT(1) DEFAULT 0;
+ALTER TABLE roles ADD COLUMN `delete` TINYINT(1) DEFAULT 0;
+ALTER TABLE permissions ADD COLUMN `delete` TINYINT(1) DEFAULT 0;
+ALTER TABLE group_roles ADD COLUMN `delete` TINYINT(1) DEFAULT 0;
+ALTER TABLE role_permissions ADD COLUMN `delete` TINYINT(1) DEFAULT 0;
+ALTER TABLE user_group_memberships ADD COLUMN `delete` TINYINT(1) DEFAULT 0;
+ALTER TABLE notes ADD COLUMN `delete` TINYINT(1) DEFAULT 0;
