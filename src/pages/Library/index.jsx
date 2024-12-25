@@ -6,10 +6,10 @@ import { GroupHeadline } from "@/components/GroupHeadline";
 import { NotesInGroup } from '@/components/NotesInGroup';
 import { MainBtn } from "@/components/UI/MainBtn"
 import { ImgBtn } from '@/components/UI/ImgBtn';
-import { Permission } from '@/components/Permission';
+// import { Permission } from '@/components/Permission';
 import { ModalWindow } from '@/components/ModalWindow';
 // icon
-import { BsList, BsPeople, BsFileEarmarkPlus, BsGrid3X3, BsGear, BsX } from "react-icons/bs";
+import { BsList, BsPeople, BsFileEarmarkPlus, BsGrid3X3, BsGear, BsX, BsPlus } from "react-icons/bs";
 import { RiBook2Line } from "react-icons/ri";
 // style
 import styles from "./library.module.css";
@@ -49,15 +49,19 @@ export default function Library() {
     const toggleModalMember = () => {
         setModalMember(true);
         setModalProject(false);
+        setModalPermit(false);
     }
     const [modalProject, setModalProject] = useState(false);
     const toggleModalProject = () => {
         setModalProject(true);
         setModalMember(false);
+        setModalPermit(false);
     }
-    const [createMemberSuggest, setCreateMemberSuggest] = useState([]);
-    const handleCreateMember = (e) => {
-        setCreateMemberSuggest(e.target.value);
+    const [modalPermit, setModalPermit] = useState(false);
+    const toggleModalPermit = () => {
+        setModalPermit(true);
+        setModalMember(false);
+        setModalProject(false);
     }
     
     // MARK:新規ノート
@@ -150,21 +154,24 @@ export default function Library() {
     // MARK:グループのロール
     const [groupRole, setGroupRole] = useState([]);
     useEffect(() => {
-        const fetchGroupRole = async () => {
-            const response = await fetch(`/api/db?table=groupRole&groupId=${selectedGroupId}`);
-            const roles = await response.json();
-            setGroupRole(roles);
-        };
         fetchGroupRole();
     }, [selectedGroupId]);
+
+    const fetchGroupRole = async () => {
+        const response = await fetch(`/api/db?table=groupRole&groupId=${selectedGroupId}`);
+        const roles = await response.json();
+        setGroupRole(roles.results);
+    };
 
     // MARK:ロール変更
     const handleChangeRole = async (e, userId) => {
         const newRoleId = parseInt(e.target.value, 10);
+        console.log(selectedGroupId,userId,newRoleId);
         const response = await fetch(`/api/db?table=changeRole&groupId=${selectedGroupId}&userId=${userId}&roleId=${newRoleId}`);
         const result = await response.json();
         // メンバーリストを再取得
         await fetchGroupInMember();
+        await fetchGroupRole();
     }
 
     // MARK:メンバー削除
@@ -208,11 +215,83 @@ export default function Library() {
         await fetchGroupInMember();
     }
 
+    // MARK:project削除
     const handleDeleteProject = async (projectId) => {
         const response = await fetch(`/api/db?table=deleteProject&projectId=${projectId}`);
         const result = await response.json();
         // メンバーリストを再取得
         await fetchNotes();
+    }
+
+    // MARK:役職権限
+    const [roleToPermit, setRoleToPermit] = useState([]);
+    useEffect(() => {
+        fetchRoleToPermit();
+    }, [selectedGroupId]);
+
+    // 役職権限を取得
+    const fetchRoleToPermit = async () => {
+        const response = await fetch(`/api/db?table=roleToPermit&groupId=${selectedGroupId}`);
+        const roles = await response.json();
+        setRoleToPermit(roles.results);
+    };
+
+    // MARK:権限
+    const [permission, setPermission] = useState([]);
+    useEffect(() => {
+        const fetchPermission = async () => {
+            const response = await fetch(`/api/db?table=permission`);
+            const permissions = await response.json();
+            setPermission(permissions);
+        };
+        fetchPermission();
+    }, []);
+
+    // 役職名変更
+    const handleChangeRoleName = async (e, roleId) => {
+        const response = await fetch(`/api/db?table=updateRoleName&roleId=${roleId}&roleName=${e.target.value}`);
+        const result = await response.json();
+    }
+
+    // 役職権限変更
+    const handleChangePermit = async (e, roleId) => {
+        const newPermitId = parseInt(e.target.value, 10);
+        const response = await fetch(`/api/db?table=updateRoleToPermit&roleId=${roleId}&permitId=${newPermitId}`);
+        const result = await response.json();
+        await fetchRoleToPermit();
+    }
+
+    // 役職削除
+    const handleDeleteRole = async (e, roleId) => {
+        e.preventDefault();
+        const response = await fetch(`/api/db?table=deleteRole&roleId=${roleId}`);
+        const result = await response.json();
+        // 役職権限を再取得
+        await fetchRoleToPermit();
+    }
+
+    // 役職追加
+    const handleAddRole = async (e) => {
+        if (newRoleName.length > 0) {
+            e.preventDefault();
+            const response = await fetch(`/api/db?table=insertRole&roleName=${newRoleName}&groupId=${selectedGroupId}&permissionId=${newPermitId}`);
+            const result = await response.json();
+            fetchRoleToPermit();
+            setNewRoleName('');
+            setNewPermitId(1);
+        }
+    }
+
+    // 役職名変更
+    const [newRoleName, setNewRoleName] = useState('');
+    const handleChangeNewRoleName = async (e) => {
+        setNewRoleName(e.target.value);
+    }
+
+    // 役職権限変更
+    const [newPermitId, setNewPermitId] = useState(1);
+    const handleChangeNewPermit = async (e) => {
+        setNewPermitId(e.target.value);
     }
 
     // MARK:切替え グリッド/リスト
@@ -277,28 +356,29 @@ export default function Library() {
 
             {/* 設定切り替え */}
             <div className={styles.toggleSettingContent}>
-                {modalMember ? (
-                    <button 
-                    className={styles.falseBtn}
-                    onClick={toggleModalMember}
-                    >メンバー</button>
-                ) : (
-                    <button 
-                    className={styles.trueBtn}
-                    onClick={toggleModalMember}
-                    >メンバー</button>
-                )}
-                {modalProject ? (
-                    <button
-                    className={styles.falseBtn}
-                    onClick={toggleModalProject}
-                    >プロジェクト</button>
-                ) : (
-                    <button 
-                    className={styles.trueBtn}
-                    onClick={toggleModalProject}
-                    >プロジェクト</button>
-                )}
+                {['構成員', '製作', '権限'].map(type => {
+                    const isActive = {
+                        '構成員': modalMember,
+                        '製作': modalProject,
+                        '権限': modalPermit
+                    }[type];
+                    
+                    const toggleFn = {
+                        '構成員': toggleModalMember,
+                        '製作': toggleModalProject,
+                        '権限': toggleModalPermit
+                    }[type];
+
+                    return (
+                        <button 
+                         key={type}
+                         className={isActive ? styles.trueBtn : styles.falseBtn}
+                         onClick={toggleFn}
+                        >
+                            {type}
+                        </button>
+                    );
+                })}
             </div>
 
             {/* 設定内容 */}
@@ -306,19 +386,20 @@ export default function Library() {
                 <div className={styles.memberContent}>
                     <div className={styles.addMember}>
                         <input 
-                            type="text"
-                            placeholder="メンバー"
-                            className={styles.searchMember}
-                            onChange={handleSearchUser}
+                         type="text"
+                         placeholder="ユーザー名を入力"
+                         className={styles.searchMember}
+                         onChange={handleSearchUser}
+                         value={searchUser}
                         />
                         {/* メンバー候補 */}
                         {memberSuggest.length > 0 && (
                             <div className={styles.suggestMemberBox}>
                                 {memberSuggest.map((user) => (
                                     <button
-                                        className={styles.suggestMember}
-                                        key={user.id} 
-                                        onClick={(e) => handleAddMember(e, user)}
+                                     className={styles.suggestMember}
+                                     key={user.id} 
+                                     onClick={(e) => handleAddMember(e, user)}
                                     >
                                         {user.username}
                                     </button>
@@ -330,9 +411,10 @@ export default function Library() {
                         {groupInMember.map((member) => (
                             <div className={styles.member} key={member.id}>
                                 <p>{member.username}</p>
-                                <select 
-                                    onChange={(e) => handleChangeRole(e, member.id)}
-                                    value={member.role_id}
+                                <select
+                                 className={styles.roleSelect}
+                                 onChange={(e) => handleChangeRole(e, member.id)}
+                                 value={member.role_id}
                                 >
                                     {groupRole.map((role) => (
                                         <option key={role.id} value={role.id}>
@@ -347,7 +429,8 @@ export default function Library() {
                         ))}
                     </div>
                 </div>
-            ) : (
+            ) : null}
+            {modalProject ? (
                 <div className={styles.projectContent}>
                     {selectedGroupNotes.map((project) => (
                         <div className={styles.project} key={project.id}>
@@ -356,7 +439,43 @@ export default function Library() {
                         </div>
                     ))}
                 </div>
-            )}
+            ) : null}
+            {modalPermit ? (
+                <div className={styles.permitContent}>
+                    <div className={styles.addRole}>
+                        <input type="text" placeholder="役職名" className={styles.roleName} onChange={(e) => handleChangeNewRoleName(e)} value={newRoleName}/>
+                        <select className={styles.roleSelect} onChange={(e) => handleChangeNewPermit(e)}>
+                            {permission.map((permit) => (
+                                <option key={permit.id} value={permit.id}>{permit.name}</option>
+                            ))}
+                        </select>
+                        <button className={styles.addBtn} onClick={(e) => handleAddRole(e)}><BsPlus/></button>
+                    </div>
+                    <div className={styles.roleList}>
+                        {roleToPermit.length > 0 ? (
+                            roleToPermit.map((role) => (
+                                <div className={styles.role} key={role.id}>
+                                    <input 
+                                     type="text" 
+                                     placeholder="役職名" 
+                                     className={styles.roleName}
+                                     defaultValue={role.name} 
+                                 onChange={(e) => handleChangeRoleName(e, role.id)}
+                                />
+                                <select className={styles.roleSelect} onChange={(e) => handleChangePermit(e, role.id)} value={role.permission_id}>
+                                    {permission.map((permit) => (
+                                        <option key={permit.id} value={permit.id}>{permit.name}</option>
+                                    ))}
+                                </select>
+                                <button className={styles.deleteBtn} onClick={(e) => handleDeleteRole(e, role.id)}><BsX/></button>
+                            </div>
+                        ))
+                        ) : (
+                            <p>役職がありません</p>
+                        )}
+                    </div>
+                </div>
+            ) : null}
         </div>
     );
 
@@ -407,9 +526,9 @@ export default function Library() {
             )}
 
             {/* MARK:権限 */}
-            {selectedGroupNotes.length > 0 && (
+            {/* {selectedGroupNotes.length > 0 && (
                 <Permission display={displayNotes} id={selectedGroupNotes[0].groupId} />
-            )}
+            )} */}
 
             {/* MARK:ノート */}
             <div className={ displayNotes ? styles.content : styles.hideContent }>

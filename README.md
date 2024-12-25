@@ -12,6 +12,9 @@ yarn dev
 pnpm dev
 # or
 bun dev
+
+# 指定
+yarn dev --port 0.0.0.0
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

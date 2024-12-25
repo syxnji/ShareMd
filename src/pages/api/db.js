@@ -25,8 +25,6 @@ export default function handler(req, res) {
                 }
             }
         );
-
-        // MARK: SELECT > ユーザー_ノート
     } else if (req.query.table === 'allNotes') {
         pool.query(
             `SELECT notes.id, notes.title, notes.content, notes.updated_at, groups.name
@@ -45,8 +43,6 @@ export default function handler(req, res) {
                 }
             }
         );
-
-        // MARK: SELECT > グループ_ノート
     } else if (req.query.table === 'selectedGroup') {
         const selectGroupId = req.query.groupId;
         pool.query(
@@ -65,128 +61,6 @@ export default function handler(req, res) {
                 }
             }
         );
-
-        // MARK: SELECT > ロール
-    } else if (req.query.table === 'groupRole') {
-        const groupId = req.query.groupId;
-        pool.query(
-            `SELECT roles.id, roles.name, 
-             group_roles.group_id, role_permissions.permission_id
-             FROM roles 
-             JOIN group_roles 
-             ON roles.id = group_roles.role_id
-             JOIN role_permissions
-             ON roles.id = role_permissions.role_id
-             WHERE group_roles.group_id = ?
-            `, [groupId], 
-            (err, results) => {
-                if (err) {
-                    res.status(500).json({ error: err.message });
-                } else {
-                    res.status(200).json(results);
-                }
-            }
-        );
-
-        // MARK: SELECT > 権限
-    } else if (req.query.table === 'permissions') {
-        pool.query(
-            `SELECT id, name 
-             FROM permissions
-             ORDER BY id ASC
-            `,
-            (err, results) => {
-                if (err) {
-                    res.status(500).json({ error: err.message });
-                } else {
-                    res.status(200).json(results);
-                }
-            }
-        );
-
-        // MARK: UPDATE > ロール_権限
-    } else if (req.query.table === 'updPermission') {
-        const newId = req.query.new;
-        const id = req.query.id;
-        pool.query(
-            `UPDATE role_permissions
-             SET permission_id = ?
-             WHERE role_id = ?
-            `, [newId, id], 
-            (err, results) => {
-                if (err) {
-                    res.status(500).json({ error: err.message });
-                } else {
-                    res.status(200).json({ results });
-                }
-            }
-        );
-
-        // MARK: DELETE > ロール
-    } else if (req.query.table === 'deleteRole') {
-        const id = req.query.id;
-        pool.query(
-            `DELETE FROM role_permissions 
-            WHERE role_id = ?;
-            `, [id], 
-            (err, results) => {
-                if (err) {
-                    res.status(500).json({ error: err.message });
-                } else {
-                    res.status(200).json({ results });
-                }
-            }
-        );
-        pool.query(
-            `DELETE FROM group_roles 
-            WHERE role_id = ?;
-            `, [id], 
-            (err, results) => {
-                if (err) {
-                    res.status(500).json({ error: err.message });
-                } else {
-                    res.status(200).json({ results });
-                }
-            }
-        );
-        pool.query(
-            `DELETE FROM roles 
-             WHERE id = ?
-            `, [id], 
-            (err, results) => {
-                if (err) {
-                    res.status(500).json({ error: err.message });
-                } else {
-                    res.status(200).json({ results });
-                }
-            }
-        );
-
-        // MARK: INSERT > グループ_ロール_権限
-    } else if (req.query.table === 'insertRole') {
-        const { roleName, groupId, permissionId } = req.query;
-            pool.query(
-                `INSERT INTO roles (name) VALUES (?);`, 
-                [roleName],
-                (err, results) => {
-                    if (err) {
-                        res.status(500).json({ error: err.message });
-                    } else {
-                        res.status(200).json({ results });
-                        const roleId = results.insertId;
-                        pool.query(
-                            `INSERT INTO group_roles (group_id, role_id) VALUES (?, ?);`,
-                            [groupId, roleId]
-                        );
-                        pool.query(
-                            `INSERT INTO role_permissions (role_id, permission_id) VALUES (?, ?);`, 
-                            [roleId, permissionId]
-                        );
-                    }
-                }
-            );
-
-        // MARK: SELECT > グループ_ノート
     } else if (req.query.table === 'group') {
         const id = req.query.id;
         pool.query(
@@ -329,30 +203,14 @@ export default function handler(req, res) {
              FROM users
              JOIN user_group_memberships
              ON users.id = user_group_memberships.user_id
-             WHERE user_group_memberships.group_id = ? AND user_group_memberships.delete = 0
+             WHERE user_group_memberships.group_id = ? 
+             AND user_group_memberships.delete = 0
             `, [groupId],
             (err, results) => {
                 if (err) {
                     res.status(500).json({ error: err.message });
                 } else {
                     res.status(200).json({ results });
-                }
-            }
-        );
-    } else if (req.query.table === 'groupRole') {
-        const groupId = req.query.groupId;
-        pool.query(
-            `SELECT roles.id, roles.name
-             FROM roles
-             JOIN group_roles
-             ON roles.id = group_roles.role_id
-             WHERE group_roles.group_id = ?
-            `, [groupId],
-            (err, results) => {
-                if (err) {
-                    res.status(500).json({ error: err.message });
-                } else {
-                    res.status(200).json({results});
                 }
             }
         );
@@ -363,7 +221,8 @@ export default function handler(req, res) {
         pool.query(
             `UPDATE user_group_memberships
              SET role_id = ?
-             WHERE user_id = ? AND group_id = ?
+             WHERE user_id = ? 
+             AND group_id = ?
             `, [roleId, userId, groupId],
             (err, results) => {
                 if (err) {
@@ -420,6 +279,128 @@ export default function handler(req, res) {
                 }
             }
         );
+    } else if (req.query.table === 'groupRole') {
+        const groupId = req.query.groupId;
+        pool.query(
+            `SELECT roles.id, roles.name, role_permissions.permission_id
+             FROM roles
+             JOIN group_roles
+             ON roles.id = group_roles.role_id
+             JOIN role_permissions
+             ON roles.id = role_permissions.role_id
+             WHERE group_roles.group_id = ? 
+             AND roles.delete = 0
+            `, [groupId],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({results});
+                }
+            }
+        );
+    } else if (req.query.table === 'roleToPermit') {
+        const groupId = req.query.groupId;
+        pool.query(
+            `SELECT roles.id, roles.name, role_permissions.permission_id
+             FROM roles
+             JOIN group_roles
+             ON roles.id = group_roles.role_id
+             JOIN role_permissions
+             ON roles.id = role_permissions.role_id
+             WHERE group_roles.group_id = ? 
+             AND roles.delete = 0
+            `, [groupId],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({results});
+                }
+            }
+        );
+    } else if (req.query.table === 'updateRoleToPermit') {
+        const roleId = req.query.roleId;
+        const permitId = req.query.permitId;
+        pool.query(
+            `UPDATE role_permissions
+             SET permission_id = ?
+             WHERE role_id = ?
+            `, [permitId, roleId],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({results});
+                }
+            }
+        );
+    } else if (req.query.table === 'permission') {
+        pool.query(
+            `SELECT id, name 
+             FROM permissions
+            `,
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json(results);
+                }
+            }
+        );
+    } else if (req.query.table === 'updateRoleName') {
+        const roleId = req.query.roleId;
+        const roleName = req.query.roleName;
+        pool.query(
+            `UPDATE roles
+             SET name = ?
+             WHERE id = ?
+            `, [roleName, roleId], 
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
+    } else if (req.query.table === 'deleteRole') {
+        const roleId = req.query.roleId;
+        pool.query(
+            `UPDATE roles
+             SET \`delete\` = 1
+             WHERE id = ?
+            `, [roleId], 
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
+    } else if (req.query.table === 'insertRole') {
+        const { roleName, groupId, permissionId } = req.query;
+            pool.query(
+                `INSERT INTO roles (name) VALUES (?);`, 
+                [roleName],
+                (err, results) => {
+                    if (err) {
+                        res.status(500).json({ error: err.message });
+                    } else {
+                        res.status(200).json({ results });
+                        const roleId = results.insertId;
+                        pool.query(
+                            `INSERT INTO group_roles (group_id, role_id) VALUES (?, ?);`,
+                            [groupId, roleId]
+                        );
+                        pool.query(
+                            `INSERT INTO role_permissions (role_id, permission_id) VALUES (?, ?);`, 
+                            [roleId, permissionId]
+                        );
+                    }
+                }
+            );
     } else {
             res.status(400).json({ error: 'Invalid table specified' });
     }
