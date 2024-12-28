@@ -8,11 +8,10 @@ import { MainBtn } from "@/components/UI/MainBtn"
 import { ImgBtn } from '@/components/UI/ImgBtn';
 import { MemberManagement } from '@/components/MemberManagement';
 import { ProjectManagement } from '@/components/ProjectManagement';
-// import { Permission } from '@/components/Permission';
+import { PermissionManagement } from '@/components/PermissionManagement';
 import { ModalWindow } from '@/components/ModalWindow';
 // icon
-import { BsList, BsPeople, BsFileEarmarkPlus, BsGrid3X3, BsGear, BsX, BsPlus } from "react-icons/bs";
-import { RiBook2Line } from "react-icons/ri";
+import { BsList, BsFileEarmarkPlus, BsGrid3X3, BsGear, BsX} from "react-icons/bs";
 // style
 import styles from "./library.module.css";
 
@@ -42,7 +41,7 @@ export default function Library() {
         note.title.toLowerCase().includes(searchValue.toLowerCase())
     );
     
-    // MARK:設定
+    // MARK:管理
     const [modalSetting, setModalSetting] = useState(false);
     const toggleModalSetting = () => {
         setModalSetting(!modalSetting);
@@ -96,7 +95,6 @@ export default function Library() {
 
     // MARK:フォーム
     const formContent = (
-        <>
         <div className={styles.inputs}>
             <div className={styles.newNoteGroup}>
                 <select required onChange={handleChangeOption}>
@@ -114,15 +112,11 @@ export default function Library() {
                 />
             </div>
         </div>
-        </>
     )
 
-    // MARK:選択したグリープのノート
+    // MARK:グループ < ノート
     const [selectedGroupId, setSelectedGroupId] = useState(null);
-
     const [selectedGroupNotes, setSelectedGroupNotes] = useState([]);
-
-    // 選択したグループのノートを取得
     const fetchNotes = async () => {
         if (selectedGroupId) {
             const response = await fetch(`/api/db?table=selectedGroup&groupId=${selectedGroupId}`);
@@ -130,16 +124,12 @@ export default function Library() {
             setSelectedGroupNotes(notes);
         }
     };
-
-    // 選択したグループが変わったらノートを取得
     useEffect(() => {
         fetchNotes();
     }, [selectedGroupId]);
 
-    // MARK: メンバー
+    // MARK: グループ < メンバー
     const [groupInMember, setGroupInMember] = useState([]);
-    
-    // メンバーリストを更新する関数
     const fetchGroupInMember = async () => {
         if (selectedGroupId) {
             const response = await fetch(`/api/db?table=groupInMember&groupId=${selectedGroupId}`);
@@ -147,25 +137,22 @@ export default function Library() {
             setGroupInMember(members.results);
         }
     };
-
-    // 初期ロード時とグループ選択時に実行
     useEffect(() => {
         fetchGroupInMember();
     }, [selectedGroupId]);
 
-    // MARK:グループのロール
+    // グループ管理モーダル ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+    // MARK:ロール管理
     const [groupRole, setGroupRole] = useState([]);
     useEffect(() => {
         fetchGroupRole();
     }, [selectedGroupId]);
-
     const fetchGroupRole = async () => {
         const response = await fetch(`/api/db?table=groupRole&groupId=${selectedGroupId}`);
         const roles = await response.json();
         setGroupRole(roles.results);
     };
-
-    // MARK:ロール変更
+    // ロール変更
     const handleChangeRole = async (e, userId) => {
         const newRoleId = parseInt(e.target.value, 10);
         console.log(selectedGroupId,userId,newRoleId);
@@ -175,8 +162,7 @@ export default function Library() {
         await fetchGroupInMember();
         await fetchGroupRole();
     }
-
-    // MARK:メンバー削除
+    // メンバー削除
     const handleDeleteMember = async (e, userId) => {
         e.preventDefault();
         const response = await fetch(`/api/db?table=deleteMember&groupId=${selectedGroupId}&userId=${userId}`);
@@ -184,13 +170,11 @@ export default function Library() {
         // メンバーリストを再取得
         await fetchGroupInMember();
     }
-
-    // MARK:ユーザー検索
+    // ユーザー検索
     const [searchUser, setSearchUser] = useState('');
     const handleSearchUser = (e) => {
         setSearchUser(e.target.value);
     }
-
     // メンバー候補
     const [memberSuggest, setMemberSuggest] = useState([]);
     useEffect(() => {
@@ -205,8 +189,7 @@ export default function Library() {
         };
         fetchMemberSuggest();
     }, [searchUser]);
-
-    // MARK:メンバー追加
+    // メンバー追加
     const handleAddMember = async (e, user) => {
         e.preventDefault();
         const newMemberId = user.id;
@@ -217,7 +200,7 @@ export default function Library() {
         await fetchGroupInMember();
     }
 
-    // MARK:project削除
+    // MARK:製作管理
     const handleDeleteProject = async (projectId) => {
         const response = await fetch(`/api/db?table=deleteProject&projectId=${projectId}`);
         const result = await response.json();
@@ -225,20 +208,18 @@ export default function Library() {
         await fetchNotes();
     }
 
-    // MARK:役職権限
+    // MARK:役職権限管理
     const [roleToPermit, setRoleToPermit] = useState([]);
     useEffect(() => {
         fetchRoleToPermit();
     }, [selectedGroupId]);
-
     // 役職権限を取得
     const fetchRoleToPermit = async () => {
         const response = await fetch(`/api/db?table=roleToPermit&groupId=${selectedGroupId}`);
         const roles = await response.json();
         setRoleToPermit(roles.results);
     };
-
-    // MARK:権限
+    // 権限を取得
     const [permission, setPermission] = useState([]);
     useEffect(() => {
         const fetchPermission = async () => {
@@ -248,13 +229,11 @@ export default function Library() {
         };
         fetchPermission();
     }, []);
-
     // 役職名変更
     const handleChangeRoleName = async (e, roleId) => {
         const response = await fetch(`/api/db?table=updateRoleName&roleId=${roleId}&roleName=${e.target.value}`);
         const result = await response.json();
     }
-
     // 役職権限変更
     const handleChangePermit = async (e, roleId) => {
         const newPermitId = parseInt(e.target.value, 10);
@@ -262,7 +241,6 @@ export default function Library() {
         const result = await response.json();
         await fetchRoleToPermit();
     }
-
     // 役職削除
     const handleDeleteRole = async (e, roleId) => {
         e.preventDefault();
@@ -271,7 +249,6 @@ export default function Library() {
         // 役職権限を再取得
         await fetchRoleToPermit();
     }
-
     // 役職追加
     const handleAddRole = async (e) => {
         if (newRoleName.length > 0) {
@@ -283,18 +260,17 @@ export default function Library() {
             setNewPermitId(1);
         }
     }
-
     // 役職名変更
     const [newRoleName, setNewRoleName] = useState('');
     const handleChangeNewRoleName = async (e) => {
         setNewRoleName(e.target.value);
     }
-
     // 役職権限変更
     const [newPermitId, setNewPermitId] = useState(1);
     const handleChangeNewPermit = async (e) => {
         setNewPermitId(e.target.value);
     }
+    // グループ管理モーダル ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
     // MARK:切替え グリッド/リスト
     const [isGridView, setIsGridView] = useState(true);
@@ -303,12 +279,6 @@ export default function Library() {
       setIsGridView(!isGridView);
       setIsNotesClass(!isNotesClass);
     };
-
-    // MARK:切替え ノート/権限
-    // const [displayNotes, setDisplayNotes] = useState(true);
-    // const toggleGroupContent = () => {
-    //     setDisplayNotes(!displayNotes);
-    // };
 
     // MARK:ヘッドライン 左
     const headLeft = (
@@ -403,40 +373,17 @@ export default function Library() {
                />
             ) : null}
             {modalPermit ? (
-                <div className={styles.permitContent}>
-                    <div className={styles.addRole}>
-                        <input type="text" placeholder="役職名" className={styles.roleName} onChange={(e) => handleChangeNewRoleName(e)} value={newRoleName}/>
-                        <select className={styles.roleSelect} onChange={(e) => handleChangeNewPermit(e)}>
-                            {permission.map((permit) => (
-                                <option key={permit.id} value={permit.id}>{permit.name}</option>
-                            ))}
-                        </select>
-                        <button className={styles.addBtn} onClick={(e) => handleAddRole(e)}><BsPlus/></button>
-                    </div>
-                    <div className={styles.roleList}>
-                        {roleToPermit.length > 0 ? (
-                            roleToPermit.map((role) => (
-                                <div className={styles.role} key={role.id}>
-                                    <input 
-                                     type="text" 
-                                     placeholder="役職名" 
-                                     className={styles.roleName}
-                                     defaultValue={role.name} 
-                                 onChange={(e) => handleChangeRoleName(e, role.id)}
-                                />
-                                <select className={styles.roleSelect} onChange={(e) => handleChangePermit(e, role.id)} value={role.permission_id}>
-                                    {permission.map((permit) => (
-                                        <option key={permit.id} value={permit.id}>{permit.name}</option>
-                                    ))}
-                                </select>
-                                <button className={styles.deleteBtn} onClick={(e) => handleDeleteRole(e, role.id)}><BsX/></button>
-                            </div>
-                        ))
-                        ) : (
-                            <p>役職がありません</p>
-                        )}
-                    </div>
-                </div>
+               <PermissionManagement 
+                   newRoleName={newRoleName}
+                   handleChangeNewRoleName={handleChangeNewRoleName}
+                   permission={permission}
+                   handleChangeNewPermit={handleChangeNewPermit}
+                   handleAddRole={handleAddRole}
+                   roleToPermit={roleToPermit}
+                   handleChangeRoleName={handleChangeRoleName}
+                   handleChangePermit={handleChangePermit}
+                   handleDeleteRole={handleDeleteRole}
+               />
             ) : null}
         </div>
     );
