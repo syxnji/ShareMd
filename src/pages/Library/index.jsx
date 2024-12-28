@@ -7,6 +7,7 @@ import { NotesInGroup } from '@/components/NotesInGroup';
 import { MainBtn } from "@/components/UI/MainBtn"
 import { ImgBtn } from '@/components/UI/ImgBtn';
 import { MemberManagement } from '@/components/MemberManagement';
+import { ProjectManagement } from '@/components/ProjectManagement';
 // import { Permission } from '@/components/Permission';
 import { ModalWindow } from '@/components/ModalWindow';
 // icon
@@ -396,14 +397,10 @@ export default function Library() {
                />
             ) : null}
             {modalProject ? (
-                <div className={styles.projectContent}>
-                    {selectedGroupNotes.map((project) => (
-                        <div className={styles.project} key={project.id}>
-                            <p>{project.title}</p>
-                            <button className={styles.deleteBtn} onClick={() => handleDeleteProject(project.id)}><BsX/></button>
-                        </div>
-                    ))}
-                </div>
+               <ProjectManagement 
+                   selectedGroupNotes={selectedGroupNotes}
+                   handleDeleteProject={handleDeleteProject}
+               />
             ) : null}
             {modalPermit ? (
                 <div className={styles.permitContent}>
