@@ -39,6 +39,10 @@
     gap: 10px;
     border-bottom: solid 1px #ddd;
     padding: 10px;
+    transition: all 0.3s;
+}
+.role:hover{
+    background-color: #eee;
 }
 .roleName{
     flex: 7;
