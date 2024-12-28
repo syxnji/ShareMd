@@ -20,7 +20,7 @@
 }
 .suggestMemberBox{
     position: absolute;
-    width: 500px;
+    width: 480px;
     display: flex;
     flex-direction: column;
     border: solid 1px #ddd;
@@ -40,6 +40,8 @@
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
+    scrollbar-color: #ddd transparent;
+    scrollbar-width: thin;
 }
 .member{
     display: flex;
@@ -47,6 +49,10 @@
     align-items: center;
     border-bottom: solid 1px #ddd;
     padding: 10px;
+    transition: all 0.3s;
+}
+.member:hover{
+    background-color: #eee;
 }
 .member p{
     flex: 5;

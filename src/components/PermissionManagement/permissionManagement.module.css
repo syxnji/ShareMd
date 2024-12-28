@@ -27,6 +27,8 @@
     flex-direction: column;
     gap: 10px;
     overflow-y: scroll;
+    scrollbar-color: #ddd transparent;
+    scrollbar-width: thin;
 }     
 .role{
     width: 100%;
