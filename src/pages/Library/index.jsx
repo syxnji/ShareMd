@@ -6,6 +6,7 @@ import { GroupHeadline } from "@/components/GroupHeadline";
 import { NotesInGroup } from '@/components/NotesInGroup';
 import { MainBtn } from "@/components/UI/MainBtn"
 import { ImgBtn } from '@/components/UI/ImgBtn';
+import { MemberManagement } from '@/components/MemberManagement';
 // import { Permission } from '@/components/Permission';
 import { ModalWindow } from '@/components/ModalWindow';
 // icon
@@ -303,10 +304,10 @@ export default function Library() {
     };
 
     // MARK:切替え ノート/権限
-    const [displayNotes, setDisplayNotes] = useState(true);
-    const toggleGroupContent = () => {
-        setDisplayNotes(!displayNotes);
-    };
+    // const [displayNotes, setDisplayNotes] = useState(true);
+    // const toggleGroupContent = () => {
+    //     setDisplayNotes(!displayNotes);
+    // };
 
     // MARK:ヘッドライン 左
     const headLeft = (
@@ -383,52 +384,16 @@ export default function Library() {
 
             {/* 設定内容 */}
             {modalMember ? (
-                <div className={styles.memberContent}>
-                    <div className={styles.addMember}>
-                        <input 
-                         type="text"
-                         placeholder="ユーザー名を入力"
-                         className={styles.searchMember}
-                         onChange={handleSearchUser}
-                         value={searchUser}
-                        />
-                        {/* メンバー候補 */}
-                        {memberSuggest.length > 0 && (
-                            <div className={styles.suggestMemberBox}>
-                                {memberSuggest.map((user) => (
-                                    <button
-                                     className={styles.suggestMember}
-                                     key={user.id} 
-                                     onClick={(e) => handleAddMember(e, user)}
-                                    >
-                                        {user.username}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                    <div className={styles.memberList}>
-                        {groupInMember.map((member) => (
-                            <div className={styles.member} key={member.id}>
-                                <p>{member.username}</p>
-                                <select
-                                 className={styles.roleSelect}
-                                 onChange={(e) => handleChangeRole(e, member.id)}
-                                 value={member.role_id}
-                                >
-                                    {groupRole.map((role) => (
-                                        <option key={role.id} value={role.id}>
-                                            {role.name}
-                                        </option>
-                                    ))}
-                                </select>
-                                <button className={styles.deleteBtn} onClick={(e) => handleDeleteMember(e, member.id)}>
-                                    <BsX/>
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+               <MemberManagement 
+                   searchUser={searchUser}
+                   handleSearchUser={handleSearchUser}
+                   memberSuggest={memberSuggest}
+                   handleAddMember={handleAddMember}
+                   groupInMember={groupInMember}
+                   groupRole={groupRole}
+                   handleChangeRole={handleChangeRole}
+                   handleDeleteMember={handleDeleteMember}
+               />
             ) : null}
             {modalProject ? (
                 <div className={styles.projectContent}>
@@ -488,7 +453,7 @@ export default function Library() {
             <p className={styles.groupName}>
                 {selectedGroupNotes[0].groupName}
             </p>
-            <ImgBtn img={ displayNotes ? <BsPeople/> : <RiBook2Line/> } click={toggleGroupContent} />
+            {/* <ImgBtn img={ displayNotes ? <BsPeople/> : <RiBook2Line/> } click={toggleGroupContent} /> */}
             <ImgBtn img={<BsGear/>} click={toggleModalSetting} />
             </>
         )}
@@ -531,7 +496,7 @@ export default function Library() {
             )} */}
 
             {/* MARK:ノート */}
-            <div className={ displayNotes ? styles.content : styles.hideContent }>
+            <div className={styles.content}>
 
                 {/* MARK:選択したグループ内のノート */}
                 <NotesInGroup 

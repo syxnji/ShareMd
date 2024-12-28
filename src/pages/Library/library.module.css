@@ -9,10 +9,17 @@
     /* padding: 10px; */
     width: 100%;
 }
-.hideContent{
-    display: none;
+@media (max-width: 1320px) {
+    .content{
+        width: 100%;
+    }
 }
-
+@media (min-width: 1320px) {
+    .content{
+        width: 85%;
+        margin: 0 auto;
+    }
+}
 /* leftBtn */
 .groupName{
     font-size: 1.4rem;
@@ -125,75 +132,6 @@
     background-color: #fff;
     box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
     transition: all 0.3s;
-}
-
-/* メンバー */
-.memberContent{
-    width: 500px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    border-radius: 10px;
-    min-height: 0;
-}
-.addMember{
-    width: 500px;
-    border-bottom: solid 1px #333;
-    padding: 10px;
-}
-.searchMember{
-    width: 100%;
-    border: solid 1px #ddd;
-    border-radius: 10px;
-    padding: 10px;
-    outline: none;
-}
-.suggestMemberBox{
-    position: absolute;
-    width: 500px;
-    display: flex;
-    flex-direction: column;
-    border: solid 1px #ddd;
-    border-radius: 10px;
-    padding: 10px;
-    background-color: #fff;
-}
-.suggestMember{
-    width: 100%;
-    text-align: left;
-    border: none;
-    background-color: transparent;
-    padding: 10px;
-    outline: none;
-}
-.memberList{
-    display: flex;
-    flex-direction: column;
-    overflow-y: scroll;
-}
-.member{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: solid 1px #ddd;
-    padding: 10px;
-}
-.member p{
-    flex: 5;
-}
-.member select{
-    flex: 4;
-    padding: 10px;
-    border: solid 1px #ddd;
-    border-radius: 5px;
-}
-.deleteBtn{
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    background-color: transparent;
 }
 
 /* プロジェクト */
