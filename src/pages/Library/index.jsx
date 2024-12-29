@@ -306,7 +306,8 @@ export default function Library() {
         </div>
         {/* 新規ノート */}
         <div className={styles.addNote}>
-            <MainBtn img={<BsFileEarmarkPlus/>} click={handleNewNote} text="New Note"/>
+            {/* <MainBtn img={<BsFileEarmarkPlus/>} click={handleNewNote} text="New Note"/> */}
+            <ImgBtn img={<BsFileEarmarkPlus/>} click={handleNewNote} color="main"/>
         </div>
         </>
     )

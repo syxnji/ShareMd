@@ -29,6 +29,7 @@ export const getServerSideProps = async ({ params: { id } }) => ({
     props: { id },
 });
 export default function MarkdownEditor({ id }) {
+    const router = useRouter();
     // const [markdown, setMarkdown] = useState('# Hello, Markdown!\n\nThis is a live preview.')
     
     //   const [showEditor, setShowEditor] = useState(true)
@@ -52,7 +53,11 @@ export default function MarkdownEditor({ id }) {
     //     console.log('toggle')
     //   }
 
-    const [note, setNote] = useState()
+    const [note, setNote] = useState({
+        title: '',
+        content: '',
+        updated_at: '',
+    });
     
     // groupが更新された後の処理
     useEffect(() => {
@@ -97,10 +102,16 @@ export default function MarkdownEditor({ id }) {
         fetchNoteUpd();
     }
 
+    // back
+    const handleBack = (e) => {
+        e.preventDefault();
+        router.push('/Library');
+    }
+
     // left
     const headLeft = (
         <>
-        <button className={styles.backBtn}>
+        <button className={styles.backBtn} onClick={handleBack}>
             <MdArrowBackIos />
         </button>
         <input 
@@ -122,7 +133,8 @@ export default function MarkdownEditor({ id }) {
                 <ImgBtn img={<IoLogoMarkdown />}/>
             </div>
             <div className={styles.saveBtn}>
-                <MainBtn img={<IoSaveOutline/>} text="Save" click={handleSave}/>
+                {/* <MainBtn img={<IoSaveOutline/>} text="Save" click={handleSave}/> */}
+                <ImgBtn img={<IoSaveOutline/>} click={handleSave} color="main"/>
             </div>
         </div>
     )
