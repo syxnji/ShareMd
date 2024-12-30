@@ -1,5 +1,4 @@
 import mysql from 'mysql2';
-
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
@@ -9,7 +8,35 @@ const pool = mysql.createPool({
 
 // APIリクエストのハンドリング
 export default function handler(req, res) {
-    if (req.query.table === 'joinedGroups') {
+    if (req.query.table === 'register') {
+        const username = req.query.username;
+        const email = req.query.email;
+        const password = req.query.password;
+        pool.query(
+            `INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?);`,
+            [username, email, password],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
+    } else if (req.query.table === 'login') {
+        const email = req.query.email;
+        pool.query(
+            `SELECT * FROM users WHERE email = ?;`,
+            [email],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
+    } else if (req.query.table === 'joinedGroups') {
         pool.query(
             `SELECT groups.id, name 
              FROM \`groups\` 

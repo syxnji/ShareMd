@@ -16,7 +16,8 @@ import { BsList, BsFileEarmarkPlus, BsGrid3X3, BsGear, BsX} from "react-icons/bs
 import styles from "./library.module.css";
 
 export default function Library() {
-
+    // ログインしているユーザーのID
+    const userId = sessionStorage.getItem('id');
     // MARK:全てのノート
     const [allNotes, setAllNotes] = useState([]);
     useEffect(() => {
