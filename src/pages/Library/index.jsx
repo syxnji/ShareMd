@@ -292,12 +292,10 @@ export default function Library() {
                  type="search"
                  onChange={handleSearch}
                 />
-                {/* <ImgBtn img={<BsSearch/>} type="submit" /> */}
             </form>
         </div>
         </>
     )
-
     // MARK:ヘッドライン 右
     const headRight = (
         <>
@@ -310,13 +308,6 @@ export default function Library() {
             {/* <MainBtn img={<BsFileEarmarkPlus/>} click={handleNewNote} text="New Note"/> */}
             <ImgBtn img={<BsFileEarmarkPlus/>} click={handleNewNote} color="main"/>
         </div>
-        </>
-    )
-    // MARK:ヘッドライン 左 最近更新
-    const recently_headLeft = (
-        <>
-        {/* 最近更新 */}
-        <p className={styles.groupName}>検索結果</p>
         </>
     )
     
@@ -390,22 +381,6 @@ export default function Library() {
         </div>
     );
 
-    // MARK:ヘッドライン 左 選択グループ
-    const select_headLeft = (
-        <>
-        {/* 選択されたグループ */}
-        {selectedGroupNotes.length > 0 && (
-            <>
-            <p className={styles.groupName}>
-                {selectedGroupNotes[0].groupName}
-            </p>
-            {/* <ImgBtn img={ displayNotes ? <BsPeople/> : <RiBook2Line/> } click={toggleGroupContent} /> */}
-            <ImgBtn img={<BsGear/>} click={toggleModalSetting} />
-            </>
-        )}
-        </>
-    )
-
     return(
         <main className={styles.main}>
             
@@ -431,19 +406,16 @@ export default function Library() {
             {/* MARK:ヘッドライン(検索、レイアウト、新規ノート) */}
             <GroupHeadline headLeft={headLeft} headRight={headRight} />
 
-            {/* MARK:ヘッドライン(グループ名、権限/ノートボタン) */}
-            {selectedGroupNotes.length > 0 && (
-                <GroupHeadline headLeft={select_headLeft} />
-            )}
-
-            {/* MARK:権限 */}
-            {/* {selectedGroupNotes.length > 0 && (
-                <Permission display={displayNotes} id={selectedGroupNotes[0].groupId} />
-            )} */}
-
             {/* MARK:ノート */}
             <div className={styles.content}>
 
+                {/* MARK:ヘッドライン(グループ名、権限/ノートボタン) */}
+                {selectedGroupNotes.length > 0 && (
+                    <div className={styles.notesTitles}>
+                        <p className={styles.notesTitle}>{selectedGroupNotes[0].groupName}</p>
+                        <button className={styles.settingBtn} onClick={toggleModalSetting}><BsGear/></button>
+                    </div>
+                )}
                 {/* MARK:選択したグループ内のノート */}
                 <NotesInGroup 
                  notes={selectedGroupNotes} 
@@ -451,7 +423,9 @@ export default function Library() {
                 />
                         
                 {/* MARK:最近更新されたノート */}
-                <GroupHeadline headLeft={recently_headLeft} />
+                <div className={styles.notesTitles}>
+                    <p className={styles.notesTitle}>検索結果「{searchValue}」</p>
+                </div>
                 <NotesInGroup 
                  notes={filteredNotes} 
                  isNotesClass={isNotesClass}

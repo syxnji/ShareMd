@@ -2,18 +2,13 @@
 /* head */
 .outerHead{
     width: 100%;
-    padding: 10px;
-    /* margin-top: 10px; */
-    /* margin-bottom: 15px; */
-    /* border-bottom: solid 1px #ddd; */
+    margin-bottom: 10px;
 }
 .innerHead{
     height: 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* border-bottom: solid 1px #ddd; */
-    /* padding: 10px; */
 }
 .left{
     width: 35vw;
