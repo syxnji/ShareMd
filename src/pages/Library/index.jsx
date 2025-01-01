@@ -63,7 +63,8 @@ export default function Library() {
     }, [userId]);
     // ログアウト
     const handleLogout = () => {
-        sessionStorage.clear();
+        // sessionStorage.clear();
+        Cookies.remove('id', { path: '/' });
         window.location.assign('/Auth');
     }
     
