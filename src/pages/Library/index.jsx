@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
 // component
 import { Menu } from '@/components/Menu';
 import { GroupHeadline } from "@/components/GroupHeadline";
@@ -19,10 +20,11 @@ import { MdLogout } from 'react-icons/md';
 
 export default function Library() {
     // MARK:ユーザーID
+
     const [userId, setUserId] = useState(null);
     useEffect(() => {
-      const id = sessionStorage.getItem('id');
-      setUserId(id);
+        const id = Cookies.get('id');
+        setUserId(id);
     }, []);
 
     // MARK:全てのノート
