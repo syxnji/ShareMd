@@ -1,0 +1,71 @@
+.auth{
+    z-index: 100;
+    width: 600px;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    border: solid 1px #ddd;
+    overflow: hidden;
+    box-shadow:  20px 20px 60px #bebebe,
+                 -20px -20px 60px #ffffff;
+}
+.toggleBtns{
+    width: 500px;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    border-radius: 10px;
+    padding: 5px;
+    background: #e0e0e0;
+    box-shadow: inset 20px 20px 60px #bebebe,
+                inset -20px -20px 60px #ffffff;
+}
+.falseBtn{
+    width: 100%;
+    height: 32px;
+    border: none;
+    background-color: transparent;
+}
+.trueBtn{
+    width: 100%;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    background-color: #fff;
+    transition: all 0.3s;
+}
+.loginForm{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.registerForm{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.loginForm input, .registerForm input{
+    width: 500px;
+    padding: 10px;
+    border: solid 1px #ddd;
+    border-radius: 10px;
+    outline: none;
+}
+.loginForm button, .registerForm button{
+    width: 500px;
+    padding: 10px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #429;
+    border: solid 1px #ddd;
+    border-radius: 10px;
+    transition: all 0.3s;
+}

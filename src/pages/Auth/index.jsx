@@ -1,11 +1,12 @@
 'use client'
-
 import { useState } from "react";
-import bcrypt from 'bcryptjs';
+import { useRouter } from 'next/router';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import bcrypt from 'bcryptjs';
+import Cookies from 'js-cookie';
+// styles
 import styles from "./auth.module.css";
-import { useRouter } from 'next/router';
 
 export default function Auth() {
     const router = useRouter();
@@ -22,7 +23,8 @@ export default function Auth() {
         const checkPassword = await bcrypt.compareSync(password, result.results[0].password_hash);
         if (checkPassword) {
             toast.success('ログインに成功しました');
-            sessionStorage.setItem('id', result.results[0].id);
+            // sessionStorage.setItem('id', result.results[0].id);
+            Cookies.set('id', result.results[0].id, { expires: 1, path: '/', secure: true });
             router.push('/Library');
         } else {
             toast.error('ログインに失敗しました');
@@ -48,27 +50,23 @@ export default function Auth() {
             <div className={styles.auth}>
                 <ToastContainer />
                 <div className={styles.toggleBtns}>
-                    <button className={styles.toggleBtn} onClick={() => setToggle('login')}>ログイン</button>
-                    <button className={styles.toggleBtn} onClick={() => setToggle('register')}>新規登録</button>
+                    <button className={toggle === 'login' ? styles.trueBtn : styles.falseBtn } onClick={() => setToggle('login')}>ログイン</button>
+                    <button className={toggle === 'register' ? styles.trueBtn : styles.falseBtn } onClick={() => setToggle('register')}>新規登録</button>
                 </div>
                 <div className={styles.authForm}>
                     {toggle === 'login' ? (
-                        <div className={styles.loginForm}>
-                            <form onSubmit={handleLogin}>
-                                <input type="text" placeholder="メールアドレス" value={email} onChange={(e) => setEmail(e.target.value)} />
-                                <input type="password" placeholder="パスワード" value={password} onChange={(e) => setPassword(e.target.value)} />
-                                <button type="submit">ログイン</button>
-                            </form>
-                        </div>
+                        <form onSubmit={handleLogin} className={styles.loginForm}>
+                            <input type="text" placeholder="メールアドレス" value={email} onChange={(e) => setEmail(e.target.value)} required/>
+                            <input type="password" placeholder="パスワード" value={password} onChange={(e) => setPassword(e.target.value)}  required/>
+                            <button type="submit">ログイン</button>
+                        </form>
                     ) : (
-                        <div className={styles.registerForm}>
-                            <form onSubmit={handleRegister}>
-                                <input type="text" placeholder="ユーザー名" value={username} onChange={(e) => setUsername(e.target.value)} />
-                                <input type="text" placeholder="メールアドレス" value={email} onChange={(e) => setEmail(e.target.value)} />
-                                <input type="password" placeholder="パスワード" value={password} onChange={(e) => setPassword(e.target.value)} />
-                                <button type="submit">登録</button>
-                            </form>
-                        </div>
+                        <form onSubmit={handleRegister} className={styles.registerForm}>
+                            <input type="text" placeholder="ユーザー名" value={username} onChange={(e) => setUsername(e.target.value)}  required/>
+                            <input type="text" placeholder="メールアドレス" value={email} onChange={(e) => setEmail(e.target.value)}  required/>
+                            <input type="password" placeholder="パスワード" value={password} onChange={(e) => setPassword(e.target.value)}  required/>
+                            <button type="submit">登録</button>
+                        </form>
                     )}
                 </div>
             </div>
