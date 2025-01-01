@@ -36,14 +36,28 @@ export default function handler(req, res) {
                 }
             }
         );
+    } else if (req.query.table === 'userInfo') {
+        const userId = req.query.userId;
+        pool.query(
+            `SELECT * FROM users WHERE id = ?;`,
+            [userId],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
     } else if (req.query.table === 'joinedGroups') {
+        const userId = req.query.userId;
         pool.query(
             `SELECT groups.id, name 
              FROM \`groups\` 
              JOIN user_group_memberships 
                ON groups.id = user_group_memberships.group_id 
-             WHERE user_group_memberships.user_id = 1
-            `, 
+             WHERE user_group_memberships.user_id = ? AND groups.delete = 0 AND user_group_memberships.delete = 0
+            `, [userId],
             (err, results) => {
                 if (err) {
                     res.status(500).json({ error: err.message });
@@ -53,6 +67,7 @@ export default function handler(req, res) {
             }
         );
     } else if (req.query.table === 'allNotes') {
+        const userId = req.query.userId;
         pool.query(
             `SELECT notes.id, notes.title, notes.content, notes.updated_at, groups.name
              FROM notes 
@@ -60,8 +75,8 @@ export default function handler(req, res) {
                ON notes.group_id = groups.id
              JOIN user_group_memberships
                ON notes.group_id = user_group_memberships.group_id
-             WHERE user_id = 1
-            `, 
+             WHERE user_id = ? AND notes.delete = 0
+            `, [userId],
             (err, results) => {
                 if (err) {
                     res.status(500).json({ error: err.message });
@@ -112,7 +127,7 @@ export default function handler(req, res) {
              FROM \`groups\`
              JOIN notes
              ON groups.id = notes.group_id
-             WHERE groups.id = ?
+             WHERE groups.id = ? AND notes.delete = 0
             `, [id], 
             (err, results) => {
                 if (err) {
@@ -177,7 +192,7 @@ export default function handler(req, res) {
         pool.query(
             `SELECT id, username
              FROM users
-             WHERE username LIKE ?
+             WHERE username LIKE ? AND \`delete\` = 0
             `, [`%${name}%`],
             (err, results) => {
                 if (err) {

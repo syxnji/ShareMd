@@ -10,18 +10,18 @@ import { BsArrowBarRight } from "react-icons/bs";
 // style
 import styles from "./menu.module.css";
 
-export function Menu({ setSelectedGroupId }) {
+export function Menu({ setSelectedGroupId, userId }) {
 
     // グループ表示
     const [allGroups, setAllGroups] = useState([]);
+    const fetchGroup = async () => {
+        const response = await fetch(`/api/db?table=joinedGroups&userId=${userId}`);
+        const allGroups = await response.json();
+        setAllGroups(allGroups);
+    };
     useEffect(() => {
-        const fetchGroup = async () => {
-            const response = await fetch(`/api/db?table=joinedGroups`);
-            const allGroups = await response.json();
-            setAllGroups(allGroups);
-        };
       fetchGroup();
-    }, []);
+    }, [userId]);
 
     // グループクリック
     const groupClick = (id) => {
@@ -40,17 +40,10 @@ export function Menu({ setSelectedGroupId }) {
         setModalCreate(!modalCreate);
     };
 
-    // GroupHeadline
-    // const headLeft = (
-    //     <p className={styles.booksTitle}>Books</p>
-    // )
-    // const headRight =(
-    //     <ImgBtn click={toggleMenu} img={isMenu ? <BsArrowBarLeft/> : <BsArrowBarRight/>}/>
-    // )
-
     return(
         <>
         <CreateGroup
+            fetchGroup={fetchGroup}
             isOpen={modalCreate}
             onClose={toggleModalCreate}
         />
@@ -61,7 +54,6 @@ export function Menu({ setSelectedGroupId }) {
             <div className={styles.innerMenu}>
                 {isMenu ? (
                     <>
-                    {/* <GroupHeadline headLeft={headLeft}/> */}
                     <div className={styles.addGroup}>
                         <button 
                         className={styles.addGroupBtn}

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { BsX } from "react-icons/bs";
 import styles from "./createGroup.module.css";
 
-export function CreateGroup({ isOpen, onClose }) {
+export function CreateGroup({ isOpen, onClose, fetchGroup }) {
     // グループ名
     const [createName, setCreateName] = useState("");
     const handleCreateName = (e) => {
@@ -55,6 +55,7 @@ export function CreateGroup({ isOpen, onClose }) {
         const response = await fetch(`/api/db?table=insertGroup&name=${createName}&memberIds=${memberIds}`);
         const result = await response.json();
         onClose();
+        fetchGroup();
     }
 
     if (!isOpen) return null;

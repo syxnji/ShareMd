@@ -11,26 +11,59 @@ import { ProjectManagement } from '@/components/ProjectManagement';
 import { PermissionManagement } from '@/components/PermissionManagement';
 import { ModalWindow } from '@/components/ModalWindow';
 // icon
-import { BsList, BsFileEarmarkPlus, BsGrid3X3, BsGear, BsX} from "react-icons/bs";
+import { BsList, BsFileEarmarkPlus, BsGrid3X3, BsGear, BsX, BsBuildings} from "react-icons/bs";
+import { FaRegUser } from 'react-icons/fa6';
 // style
 import styles from "./library.module.css";
+import { MdLogout } from 'react-icons/md';
 
 export default function Library() {
-    // ログインしているユーザーのID
-    const userId = sessionStorage.getItem('id');
+    // MARK:ユーザーID
+    const [userId, setUserId] = useState(null);
+    useEffect(() => {
+      const id = sessionStorage.getItem('id');
+      setUserId(id);
+    }, []);
+
     // MARK:全てのノート
     const [allNotes, setAllNotes] = useState([]);
     useEffect(() => {
         const fetchNotes = async () => {
-            const response = await fetch(`/api/db?table=allNotes`);
+            const response = await fetch(`/api/db?table=allNotes&userId=${userId}`);
             const allNotes = await response.json();
             setAllNotes(allNotes);
         };
         fetchNotes();
-    }, []);
-
+    }, [userId]);
+    
     const [modalState, setModalState] = useState({ open: false });
     const [inputValue, setInputValue] = useState('')
+    
+    // MARK:アカウント表示
+    const [accountView, setAccountView] = useState(false);
+    const toggleAccountView = () => {
+        setAccountView(!accountView);
+    }
+    // 所属グループ表示
+    const [modalJoinedGroups, setModalJoinedGroups] = useState(false);
+    const toggleModalJoinedGroups = () => {
+        setModalJoinedGroups(!modalJoinedGroups);
+    }
+    // ユーザー情報
+    const [userInfo, setUserInfo] = useState([]);
+    useEffect(() => {
+        const fetchUser = async () => {
+            const response = await fetch(`/api/db?table=userInfo&userId=${userId}`);
+            const userInfo = await response.json();
+            setUserInfo(userInfo.results);
+        };  
+        fetchUser();
+    }, [userId]);
+    // ログアウト
+    const handleLogout = () => {
+        sessionStorage.clear();
+        window.location.assign('/Auth');
+    }
     
     // MARK:検索
     const [searchValue, setSearchValue] = useState('');
@@ -73,12 +106,12 @@ export default function Library() {
     const [allGroups, setAllGroups] = useState([]);
     useEffect(() => {
         const fetchGroup = async () => {
-            const response = await fetch(`/api/db?table=joinedGroups`);
+            const response = await fetch(`/api/db?table=joinedGroups&userId=${userId}`);
             const allGroups = await response.json();
             setAllGroups(allGroups);
         };
         fetchGroup();
-    }, []);
+    }, [userId]);
     
     // MARK:グループ選択
     const [valueSelect, setValueSelect] = useState(1)
@@ -94,7 +127,7 @@ export default function Library() {
         window.location.assign(`/Editor/${result.results.insertId}`);
     }
 
-    // MARK:フォーム
+    // MARK:新規ノート フォーム
     const formContent = (
         <div className={styles.inputs}>
             <div className={styles.newNoteGroup}>
@@ -399,8 +432,45 @@ export default function Library() {
         {/* MARK:設定 */}
         {modalSetting ? modalSettingWindow : null}
 
+        <button className={styles.account} onClick={toggleAccountView}>
+            {accountView ?  <BsX/> : <FaRegUser/>}
+        </button>
+        {accountView ? (
+            <div className={styles.accountWindow}>
+                <div className={styles.accountContent}>
+                    <FaRegUser/>
+                    <div className={styles.accountInfo}>
+                        <p className={styles.accountName}>{userInfo[0].username}</p>
+                        <p className={styles.accountEmail}>{userInfo[0].email}</p>
+                    </div>
+                </div>
+                <div className={styles.groupBtnContainer}>
+                    <button className={styles.groupsBtn} onClick={toggleModalJoinedGroups}><BsBuildings/></button>
+                </div>
+                <div className={styles.logoutBtnContainer}>
+                    <button className={styles.logoutBtn} onClick={handleLogout}><MdLogout /></button>
+                </div>
+            </div>
+        ) : null}
+
+        {modalJoinedGroups ? (
+            <div className={styles.joinedGroupsWindow}>
+                <button className={styles.joinedGroupsClose} onClick={toggleModalJoinedGroups}><BsX/></button>
+                <div className={styles.joinedGroupsContent}>
+                    <div className={styles.GroupsList}>
+                        {allGroups.map((group) => (
+                            <div className={styles.group} key={group.id}>
+                                <p>{group.name}</p>
+                                <button className={styles.deleteBtn}><BsX/></button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        ) : null}
+
         {/* MARK:メニュー */}
-        <Menu setSelectedGroupId={setSelectedGroupId} />
+        <Menu setSelectedGroupId={setSelectedGroupId} userId={userId}/>
 
         <div className={styles.contents}>
             {/* MARK:ヘッドライン(検索、レイアウト、新規ノート) */}

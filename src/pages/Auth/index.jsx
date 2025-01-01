@@ -19,7 +19,6 @@ export default function Auth() {
         e.preventDefault();
         const response = await fetch(`/api/db?table=login&email=${email}`);
         const result = await response.json();
-        console.log('pass:', result.results[0].password_hash);
         const checkPassword = await bcrypt.compareSync(password, result.results[0].password_hash);
         if (checkPassword) {
             toast.success('ログインに成功しました');
@@ -35,7 +34,6 @@ export default function Auth() {
         const hashedPassword = await bcrypt.hash(password, 10);
         const response = await fetch(`/api/db?table=register&username=${username}&email=${email}&password=${hashedPassword}`);
         const result = await response.json();
-        console.log('result:', result);
         if (result.error) {
             toast.error('登録に失敗しました');
         } else {

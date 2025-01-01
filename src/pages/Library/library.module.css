@@ -1,6 +1,117 @@
 .main{
     display: flex;
 }
+
+.account{
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-radius: 50%;
+    background-color: #333;
+    color: #fff;
+}
+.accountWindow{
+    position: absolute;
+    bottom: 10px;
+    right: 55px;
+    display: flex;
+    gap: 2px;
+}
+.accountContent{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #333;
+    padding: 10px;
+    border-radius: 10px 0 0 10px;
+    color: #fff;
+}
+.accountName{
+    font-weight: bold;
+    font-size: 0.7rem;
+}
+.accountEmail{
+    font-size: 0.5rem;
+}
+.groupsBtn{
+    height: 100%;
+    padding: 10px;
+    background-color: #333;
+    border: solid 1px #333;
+    color: #fff;
+    transition: all 0.3s;
+}
+.groupsBtn:hover{
+    background-color: #fff;
+    color: #333;
+}
+.logoutBtn{
+    height: 100%;
+    padding: 10px;
+    background-color: #f44;
+    border: solid 1px #f44;
+    border-radius: 0 10px 10px 0;
+    color: #fff;
+    transition: all 0.3s;
+}
+.logoutBtn:hover{
+    background-color: #fff;
+    color: #f44;
+}
+
+.joinedGroupsWindow{
+    z-index: 100;
+    width: 600px;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    border: solid 1px #ddd;
+    overflow: hidden;
+    box-shadow:  20px 20px 60px #bebebe,
+                 -20px -20px 60px #ffffff;
+}
+.joinedGroupsClose{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+}
+.joinedGroupsContent{
+    width: 500px;
+    height: 100%;
+}
+.groupList{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.group{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: solid 1px #ddd;
+}
+.deleteBtn{
+    background-color: transparent;
+    border: none;
+}
+
 .contents{
     width: 100%;
     padding: 10px;
@@ -43,7 +154,6 @@
 }
 .search input{
     width: 500px;
-    /* height: 32px; */
     height: 48px;
     padding: 10px;
     margin-right: 10px;
@@ -66,7 +176,6 @@
 /* new ノート モーダルウィンドウ */
 .inputs{
     display: flex;
-    /* flex-direction: column; */
     gap: 10px;
 }
 .newNoteGroup select{
