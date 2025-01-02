@@ -439,7 +439,7 @@ export default function Library() {
             {accountView ?  <BsX/> : <FaRegUser/>}
         </button>
         {accountView ? (
-            <div className={styles.accountWindow}>
+            <div className={styles.accountWindow + ' ' + styles.slideIn}>
                 <div className={styles.accountContent}>
                     <FaRegUser/>
                     <div className={styles.accountInfo}>

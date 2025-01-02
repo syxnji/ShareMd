@@ -1,7 +1,28 @@
 .main{
     display: flex;
 }
+@keyframes slideIn {
+    from{
+        opacity: 0;
+        transform: translateX(10%);
+    }
+    to{
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+@keyframes slideOut {
+    from{
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to{
+        opacity: 0;
+        transform: translateX(10%);
+    }
+}
 
+/* アカウント */
 .account{
     position: absolute;
     bottom: 10px;
@@ -20,6 +41,9 @@
     right: 55px;
     display: flex;
     gap: 2px;
+}
+.slideIn{
+    animation: slideIn 0.3s ease-in-out forwards;
 }
 .accountContent{
     display: flex;
@@ -112,6 +136,7 @@
     border: none;
 }
 
+/* ライブラリ */
 .contents{
     width: 100%;
     padding: 10px;
@@ -130,7 +155,8 @@
         margin: 0 auto;
     }
 }
-/* leftBtn */
+
+/* グループ名 */
 .groupName{
     font-size: 1.4rem;
     font-weight: bold;
@@ -139,13 +165,11 @@
     overflow: hidden;
     margin-right: 10px;
 }
-
-/* rightBtn */
 .layouts{
     margin-right: 10px;
 }
 
-/* search */
+/* 検索 */
 .search{
     width: 100%;
 }
@@ -173,7 +197,7 @@
     gap: 10px;
 }
 
-/* new ノート モーダルウィンドウ */
+/* 新規ノート */
 .inputs{
     display: flex;
     gap: 10px;
@@ -191,7 +215,7 @@
     padding: 10px;
 }
 
-/* setting */
+/* 設定 */
 .modalSettingWindow{
     z-index: 100;
     width: 600px;
