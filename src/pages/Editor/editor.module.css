@@ -24,20 +24,12 @@
 
 /* head */
 .head{
+    position: sticky;
+    top: 0px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    border-bottom: solid 1px #ddd;
-    margin-bottom: 15px;
-}
-.title{
-    font-family: inherit;
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: #333;
-    border: none;
-    border-bottom: solid 2px #ddd;
-    outline: none;
+    gap: 10px;
+    background-color: #fff;
 }
 .backBtn{
     width: 32px;
@@ -47,9 +39,21 @@
     background-color: transparent;
     border: none;
 }
-.rights{
+.title{
+    flex: 1;
+    height: 48px;
+    font-family: inherit;
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #333;
+    border: none;
+    border-bottom: solid 2px #aaa;
+    outline: none;
+}
+.btns{
     display: flex;
-    gap: 5px;
+    gap: 10px;
 }
 
 /* common */

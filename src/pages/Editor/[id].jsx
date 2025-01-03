@@ -146,7 +146,29 @@ export default function MarkdownEditor({ id }) {
 
                 <div className={styles.content}> 
                     <form>
-                        <GroupHeadline headLeft={headLeft} headRight={headRight}/>
+                        {/* <GroupHeadline headLeft={headLeft} headRight={headRight}/> */}
+                        <div className={styles.head}>
+                            <button className={styles.backBtn} onClick={handleBack}>
+                                <MdArrowBackIos />
+                            </button>
+                            <input 
+                                name='title'
+                                className={styles.title} 
+                                value={noteTitle}
+                                onChange={handleChangeTitle}
+                            />
+                            <div className={styles.btns}>
+                                <div className={styles.screenBtn}>
+                                    <ImgBtn img={screen ? <BsFullscreenExit /> : <BsFullscreen />} click={toggleScreen}/>
+                                </div>
+                                <div className={styles.viewBtn}>
+                                    <ImgBtn img={view ? <IoLogoMarkdown /> : <CiTextAlignLeft />} click={toggleViewer}/>
+                                </div>
+                                <div className={styles.saveBtn}>
+                                    <ImgBtn img={<IoSaveOutline/>} click={handleSave} color="main"/>
+                                </div>
+                            </div>
+                        </div>
 
                         <Markdown id={id} content={noteContent} change={handleChange} view={view}/>
                         <div className={styles.update}>
