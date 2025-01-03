@@ -1,102 +1,71 @@
 'use client'
-import { useState, useEffect } from 'react'
-import { useRouter, userouter } from "next/router"
-import ReactMarkdown from 'react-markdown'
+import { useState, useEffect} from 'react'
+import { useRouter } from "next/router"
 // component
 import { SidebarInNotes } from "@/components/SidebarInNotes/index";
-import { Menu } from "@/components/Menu/index.jsx";
 import { Markdown } from "@/components/Markdown";
-import { MainBtn } from '@/components/UI/MainBtn/index.jsx';
 import { ImgBtn } from '@/components/UI/ImgBtn/index.jsx';
 import { GroupHeadline } from '@/components/GroupHeadline';
+import { ToastContainer, toast } from 'react-toastify';
 // style
 import styles from "./editor.module.css"
+import 'react-toastify/dist/ReactToastify.css';
 // icon
 import { IoLogoMarkdown, IoSaveOutline } from "react-icons/io5";
-import { BsFullscreen } from "react-icons/bs";
+import { BsFullscreen, BsFullscreenExit } from "react-icons/bs";
 import { MdArrowBackIos } from "react-icons/md";
+import { CiTextAlignLeft } from "react-icons/ci";
 
-// const MarkdownComponents = {
-//   h1: ({ children }) => <h1 style={{ fontSize: '2em', fontWeight: 'bold', marginBottom: '0.5em' }}>{children}</h1>,
-//   h2: ({ children }) => <h2 style={{ fontSize: '1.5em', fontWeight: 'bold', marginBottom: '0.5em' }}>{children}</h2>,
-//   p: ({ children }) => <p style={{ marginBottom: '1em' }}>{children}</p>,
-//   ul: ({ children }) => <ul style={{ listStyleType: 'disc', paddingLeft: '2em', marginBottom: '1em' }}>{children}</ul>,
-//   ol: ({ children }) => <ol style={{ listStyleType: 'decimal', paddingLeft: '2em', marginBottom: '1em' }}>{children}</ol>,
-//   li: ({ children }) => <li style={{ marginBottom: '0.5em' }}>{children}</li>,
-//   a: ({ href, children }) => <a href={href} style={{ color: '#3b82f6', textDecoration: 'underline' }}>{children}</a>,
-// }
 export const getServerSideProps = async ({ params: { id } }) => ({
     props: { id },
 });
 export default function MarkdownEditor({ id }) {
-    const router = useRouter();
-    // const [markdown, setMarkdown] = useState('# Hello, Markdown!\n\nThis is a live preview.')
-    
-    //   const [showEditor, setShowEditor] = useState(true)
-    //   const [showViewer, setShowViewer] = useState(true)
-    
-    //   const toggleEditor = () => {
-    //     if (showEditor && !showViewer) {
-    //         return
-    //     }
-    //     setShowEditor(!showEditor)
-    //   }
-    
-    //   const toggleViewer = () => {
-    //     if (!showEditor && showViewer) {
-    //         return
-    //     }
-    //     setShowViewer(!showViewer)
-    //   }
-    
-    //   const toggleScreen = () => {
-    //     console.log('toggle')
-    //   }
 
-    const [note, setNote] = useState({
-        title: '',
-        content: '',
-        updated_at: '',
-    });
+    const router = useRouter();
+
+    const [noteTitle, setNoteTitle] = useState('');
+    const [noteContent, setNoteContent] = useState('');
+    const [noteUpdatedAt, setNoteUpdatedAt] = useState('');
     
-    // groupが更新された後の処理
+    // noteを取得
     useEffect(() => {
         const fetchNote = async () => {
             try {
                 const noteResponse = await fetch(`/api/db?table=note&id=${id}`);
                 const noteData = await noteResponse.json();
-                setNote(noteData.results[0]);
+                setNoteTitle(noteData.results[0].title);
+                setNoteContent(noteData.results[0].content);
+                setNoteUpdatedAt(noteData.results[0].updated_at);
             } catch (error) {
                 console.error('エラー(fetchNote):', error);
             }
         };
         fetchNote();
     }, [id]);
-    
+
     // change
     const handleChange = (e) => {
-        const { name, value } = e.target
-        setNote(prev => ({ ...prev, [name]: value }))
+        setNoteContent(e.target.value);
+    }
+    const handleChangeTitle = (e) => {
+        setNoteTitle(e.target.value);
     }
 
     // save
     const handleSave = (e) => {
-        // リロードを防ぐ
         e.preventDefault();
 
-        // update
         const fetchNoteUpd = async () => {
             try {
-                const encodedContent = encodeURIComponent(note.content);
-                const encodedTitle = encodeURIComponent(note.title);
+                const encodedContent = encodeURIComponent(noteContent);
+                const encodedTitle = encodeURIComponent(noteTitle);
                 const updResponse = await fetch(`/api/db?table=updateNote&id=${id}&title=${encodedTitle}&content=${encodedContent}`);
-                
+                toast.success('保存しました');
                 if (!updResponse.ok) {
                     throw new Error('Network response was not ok');
                 }
-                
             } catch (error) {
-                console.error('エラー(fetchNoteUpd):', error);
+                toast.error('保存に失敗しました');
             }
         };
         fetchNoteUpd();
@@ -108,7 +77,21 @@ export default function MarkdownEditor({ id }) {
         router.push('/Library');
     }
 
-    // left
+    // toggle viewer
+    const [view, setView] = useState(false)
+    const toggleViewer = (e) => {
+        e.preventDefault();
+        setView(!view)
+    }
+
+    // toggle screen
+    const [screen, setScreen] = useState(false)
+    const toggleScreen = (e) => {
+        e.preventDefault();
+        setScreen(!screen)
+    }
+
+    // head
     const headLeft = (
         <>
         <button className={styles.backBtn} onClick={handleBack}>
@@ -117,88 +100,67 @@ export default function MarkdownEditor({ id }) {
         <input 
             name='title'
             className={styles.title} 
-            value={note?.title} 
-            onChange={handleChange}
+            value={noteTitle}
+            onChange={handleChangeTitle}
         />
         </>
     );
-
-    // right
     const headRight =(
         <div className={styles.rights}>
             <div className={styles.screenBtn}>
-                <ImgBtn img={<BsFullscreen />}/>
+                <ImgBtn img={screen ? <BsFullscreenExit /> : <BsFullscreen />} click={toggleScreen}/>
             </div>
             <div className={styles.viewBtn}>
-                <ImgBtn img={<IoLogoMarkdown />}/>
+                <ImgBtn img={view ? <IoLogoMarkdown /> : <CiTextAlignLeft />} click={toggleViewer}/>
             </div>
             <div className={styles.saveBtn}>
-                {/* <MainBtn img={<IoSaveOutline/>} text="Save" click={handleSave}/> */}
                 <ImgBtn img={<IoSaveOutline/>} click={handleSave} color="main"/>
             </div>
         </div>
     )
 
     return (
-        <main className={styles.main}>
-            <SidebarInNotes selectNoteId={id} />
-
-            {/* head */}
-            <div className={styles.content}> 
-                <form>
-                    <GroupHeadline headLeft={headLeft} headRight={headRight}/>
-
-                    <Markdown id={id} content={note?.content} change={handleChange} />
-                    <div className={styles.update}>
-                        <p className={styles.last}>
-                            Last update:
-                        </p>
-                        <p className={styles.date}>
-                            {note?.updated_at ? new Date(note.updated_at).toLocaleString() : 'N/A'}
-                        </p>
-                    </div>
-                </form>
-                {/* <div className={styles.mdContent}>
-                    <div className={styles.mdHeads}>
-                        <button className={showEditor ? styles.showEditorButton : styles.hideEditorButton}
-                        onClick={toggleEditor}>
-                            Editor
-                        </button>
-                        <button className={showViewer ? styles.showViewerButton : styles.hideViewerButton}
-                        onClick={toggleViewer}>
-                            Viewer
-                        </button>
-                    </div>
-                    <div className={styles.areas}>
-                        <div className={showEditor ? styles.showEditorArea : styles.hideEditorArea}>
-                            <textarea
-                                value={markdown}
-                                onChange={(e) => setMarkdown(e.target.value)}
-                                className={styles.showInputArea}
-                            />
-                            <div className={styles.screen}>
-                                <ImgBtn img={<BsFullscreen />} />
-                            </div>
-                        </div>
-                        <div className={showViewer ? styles.showViewerArea : styles.hideViewerArea}>
-                            <div className={styles.showPreviewArea}>
-                                <ReactMarkdown components={MarkdownComponents}>
-                                    {markdown}
-                                </ReactMarkdown>
-                            </div>
-                            <div className={styles.screen}>
-                                <ImgBtn img={<BsFullscreen />} />
-                            </div>
-                        </div>
-                    </div>
-
+        <>
+        {screen ? (
+            <main className={styles.full}>
+                <ToastContainer />
+                <div className={styles.content}>
+                    <Markdown content={noteContent} change={handleChange} view={view}/>
                 </div>
-                <div className={styles.bottom}>
+                <div className={styles.menu}>
                     <div className={styles.saveBtn}>
-                        <MainBtn img={<IoSaveOutline/>} text="Save"/>
+                        <ImgBtn img={<IoSaveOutline/>} click={handleSave} color="main"/>
                     </div>
-                </div> */}
-            </div>
-        </main>
+                    <div className={styles.screenBtn}>
+                        <ImgBtn img={screen ? <BsFullscreenExit /> : <BsFullscreen />} click={toggleScreen}/>
+                    </div>
+                    <div className={styles.viewBtn}>
+                        <ImgBtn img={view ? <IoLogoMarkdown /> : <CiTextAlignLeft />} click={toggleViewer}/>
+                    </div>
+                </div>
+            </main>
+        ) : (
+            <main className={styles.main}>
+                <ToastContainer />
+                <SidebarInNotes selectNoteId={id} />
+
+                <div className={styles.content}> 
+                    <form>
+                        <GroupHeadline headLeft={headLeft} headRight={headRight}/>
+
+                        <Markdown id={id} content={noteContent} change={handleChange} view={view}/>
+                        <div className={styles.update}>
+                            <p className={styles.last}>
+                                Last update:
+                            </p>
+                            <p className={styles.date}>
+                                {noteUpdatedAt ? new Date(noteUpdatedAt).toLocaleString() : 'N/A'}
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        )}
+        </>
     )
 }

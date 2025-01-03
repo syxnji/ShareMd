@@ -1,14 +1,25 @@
 
-/* notes */
+@keyframes slideBottom {
+    from{
+        opacity: 0;
+        transform: translateY(10%);
+    }
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 .grid{
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 20px;
+    animation: slideBottom 0.3s ease-in-out forwards;
 }
 .list{
     display: flex;
     flex-direction: column;
     gap: 10px;
     margin-bottom: 20px;
+    animation: slideBottom 0.3s ease-in-out forwards;
 }
