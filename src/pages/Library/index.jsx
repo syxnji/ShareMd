@@ -5,7 +5,6 @@ import Cookies from 'js-cookie';
 import { Menu } from '@/components/Menu';
 import { GroupHeadline } from "@/components/GroupHeadline";
 import { NotesInGroup } from '@/components/NotesInGroup';
-import { MainBtn } from "@/components/UI/MainBtn"
 import { ImgBtn } from '@/components/UI/ImgBtn';
 import { MemberManagement } from '@/components/MemberManagement';
 import { ProjectManagement } from '@/components/ProjectManagement';
@@ -19,12 +18,18 @@ import styles from "./library.module.css";
 import { MdLogout } from 'react-icons/md';
 
 export default function Library() {
-    // MARK:ユーザーID
 
+    // MARK:ユーザーID
     const [userId, setUserId] = useState(null);
     useEffect(() => {
-        const id = Cookies.get('id');
-        setUserId(id);
+        const getUserId = async () => {
+            const id = Cookies.get('id');
+            if (!id) {
+                window.location.assign('/Auth');
+            }
+            setUserId(id);
+        };
+        getUserId();
     }, []);
 
     // MARK:全てのノート

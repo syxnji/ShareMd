@@ -20,14 +20,17 @@ export default function Auth() {
         e.preventDefault();
         const response = await fetch(`/api/db?table=login&email=${email}`);
         const result = await response.json();
+        if (!result.results || result.results.length === 0) {
+            toast.error('メールアドレスまたはパスワードが間違っています');
+            return;
+        }
         const checkPassword = await bcrypt.compareSync(password, result.results[0].password_hash);
         if (checkPassword) {
             toast.success('ログインに成功しました');
-            // sessionStorage.setItem('id', result.results[0].id);
-            Cookies.set('id', result.results[0].id, { expires: 1, path: '/', secure: true });
+            Cookies.set('id', result.results[0].id, { expires: 3, path: '/', secure: true });
             router.push('/Library');
         } else {
-            toast.error('ログインに失敗しました');
+            toast.error('メールアドレスまたはパスワードが間違っています');
         }
     }
 

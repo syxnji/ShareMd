@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect} from 'react'
 import { useRouter } from "next/router"
+import Cookies from 'js-cookie';
 // component
 import { SidebarInNotes } from "@/components/SidebarInNotes/index";
 import { Markdown } from "@/components/Markdown";
@@ -20,9 +21,33 @@ export const getServerSideProps = async ({ params: { id } }) => ({
     props: { id },
 });
 export default function MarkdownEditor({ id }) {
-
+    
+    // グループに所属しているか確認
+    const [groupId, setGroupId] = useState('');
+    const [userId, setUserId] = useState(null);
+    useEffect(() => {
+        const getUserId = async () => {
+            const id = Cookies.get('id');
+            setUserId(id);
+        };
+        getUserId();
+    }, []);
+    useEffect(() => {
+        const fetchCheck = async () => {
+            if (groupId) {
+                const response = await fetch(`/api/db?table=checkUser&userId=${userId}&groupId=${groupId}`);
+                const result = await response.json();
+                if (!result.results || result.results.length === 0) {
+                    window.location.assign('/404');
+                }
+            }
+        };
+        fetchCheck();
+    }, [groupId]);
+    
     const router = useRouter();
 
+    
     const [noteTitle, setNoteTitle] = useState('');
     const [noteContent, setNoteContent] = useState('');
     const [noteUpdatedAt, setNoteUpdatedAt] = useState('');
@@ -36,12 +61,14 @@ export default function MarkdownEditor({ id }) {
                 setNoteTitle(noteData.results[0].title);
                 setNoteContent(noteData.results[0].content);
                 setNoteUpdatedAt(noteData.results[0].updated_at);
+                setGroupId(noteData.results[0].group_id);
             } catch (error) {
                 console.error('エラー(fetchNote):', error);
             }
         };
         fetchNote();
     }, [id]);
+    
 
     // change
     const handleChange = (e) => {
@@ -50,11 +77,11 @@ export default function MarkdownEditor({ id }) {
     const handleChangeTitle = (e) => {
         setNoteTitle(e.target.value);
     }
-
+    
     // save
     const handleSave = (e) => {
         e.preventDefault();
-
+        
         const fetchNoteUpd = async () => {
             try {
                 const encodedContent = encodeURIComponent(noteContent);
@@ -91,34 +118,6 @@ export default function MarkdownEditor({ id }) {
         setScreen(!screen)
     }
 
-    // head
-    const headLeft = (
-        <>
-        <button className={styles.backBtn} onClick={handleBack}>
-            <MdArrowBackIos />
-        </button>
-        <input 
-            name='title'
-            className={styles.title} 
-            value={noteTitle}
-            onChange={handleChangeTitle}
-        />
-        </>
-    );
-    const headRight =(
-        <div className={styles.rights}>
-            <div className={styles.screenBtn}>
-                <ImgBtn img={screen ? <BsFullscreenExit /> : <BsFullscreen />} click={toggleScreen}/>
-            </div>
-            <div className={styles.viewBtn}>
-                <ImgBtn img={view ? <IoLogoMarkdown /> : <CiTextAlignLeft />} click={toggleViewer}/>
-            </div>
-            <div className={styles.saveBtn}>
-                <ImgBtn img={<IoSaveOutline/>} click={handleSave} color="main"/>
-            </div>
-        </div>
-    )
-
     return (
         <>
         {screen ? (
@@ -146,7 +145,6 @@ export default function MarkdownEditor({ id }) {
 
                 <div className={styles.content}> 
                     <form>
-                        {/* <GroupHeadline headLeft={headLeft} headRight={headRight}/> */}
                         <div className={styles.head}>
                             <button className={styles.backBtn} onClick={handleBack}>
                                 <MdArrowBackIos />

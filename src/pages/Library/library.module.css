@@ -41,7 +41,7 @@
     right: 55px;
     display: flex;
     gap: 2px;
-    animation: slideIn 0.3s ease-in-out forwards;
+    animation: slideLeft 0.3s ease-in-out forwards;
 }
 .accountContent{
     display: flex;

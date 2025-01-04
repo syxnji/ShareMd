@@ -172,6 +172,20 @@ export default function handler(req, res) {
                 }
             }
         );
+    } else if (req.query.table === 'checkUser') {
+        const userId = req.query.userId;
+        const groupId = req.query.groupId;
+        pool.query(
+            `SELECT * FROM user_group_memberships WHERE group_id = ? AND user_id = ?;
+            `, [groupId, userId], 
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
     } else if (req.query.table === 'newNote') {
         const groupId = req.query.groupId;
         const noteName = req.query.noteName;
