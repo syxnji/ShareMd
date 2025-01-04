@@ -22,7 +22,7 @@
     }
 }
 
-/* アカウント */
+/* MARK:アカウント */
 .account{
     position: absolute;
     bottom: 10px;
@@ -135,7 +135,7 @@
     border: none;
 }
 
-/* ライブラリ */
+/* MARK:ライブラリ */
 .contents{
     width: 100%;
     padding: 10px;
@@ -168,7 +168,7 @@
     margin-right: 10px;
 }
 
-/* 検索 */
+/* MARK:検索 */
 .search{
     width: 100%;
 }
@@ -184,7 +184,7 @@
     border-radius: 10px;
 }
 
-/* notes */
+/* MARK:ノート */
 .grid{
     display: flex;
     flex-wrap: wrap;
@@ -196,25 +196,87 @@
     gap: 10px;
 }
 
-/* 新規ノート */
-.inputs{
+/* MARK:新規ノート */
+.modalNewNoteWindow{
+    z-index: 100;
+    width: 600px;
+    height: 80vh;
     display: flex;
+    flex-direction: column;
     gap: 10px;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    border: solid 1px #ddd;
+    overflow: hidden;
+    animation: slideIn 0.3s ease-in-out forwards;
+    box-shadow:  20px 20px 60px #bebebe,
+                 -20px -20px 60px #ffffff;
 }
-.newNoteGroup select{
-    width: 100px;
+.newNoteClose{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+}
+.newNoteContents{
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+.newNoteLabel{
+    width: 100%;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #aaa;
+    text-align: left;
+}
+.newNoteGroup{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.newNoteGroupSelect{
+    width: 100%;
     border: solid 1px #333;
     border-radius: 10px;
     padding: 10px;
 }
-.newNoteName input{
-    width: 300px;
+.newNoteTitle{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.newNoteInput{
+    width: 100%;
     border: solid 1px #333;
     border-radius: 10px;
     padding: 10px;
+}
+.newNoteSubmit{
+    width: 100%;
+    border: solid 1px #333;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    transition: all 0.3s;
+}
+.newNoteSubmit:hover{
+    background-color: #fff;
+    color: #333;
 }
 
-/* 設定 */
+/* MARK:設定 */
 .modalSettingWindow{
     z-index: 100;
     width: 600px;

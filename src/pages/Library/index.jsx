@@ -9,7 +9,6 @@ import { ImgBtn } from '@/components/UI/ImgBtn';
 import { MemberManagement } from '@/components/MemberManagement';
 import { ProjectManagement } from '@/components/ProjectManagement';
 import { PermissionManagement } from '@/components/PermissionManagement';
-import { ModalWindow } from '@/components/ModalWindow';
 // icon
 import { BsList, BsFileEarmarkPlus, BsGrid3X3, BsGear, BsX, BsBuildings} from "react-icons/bs";
 import { FaRegUser } from 'react-icons/fa6';
@@ -18,8 +17,8 @@ import styles from "./library.module.css";
 import { MdLogout } from 'react-icons/md';
 
 export default function Library() {
-
-    // MARK:ユーザーID
+    
+    // MARK:セッションToアカウント
     const [userId, setUserId] = useState(null);
     useEffect(() => {
         const getUserId = async () => {
@@ -32,7 +31,7 @@ export default function Library() {
         getUserId();
     }, []);
 
-    // MARK:全てのノート
+    // MARK:アカウントToノート
     const [allNotes, setAllNotes] = useState([]);
     useEffect(() => {
         const fetchNotes = async () => {
@@ -43,20 +42,20 @@ export default function Library() {
         fetchNotes();
     }, [userId]);
     
-    const [modalState, setModalState] = useState({ open: false });
-    const [inputValue, setInputValue] = useState('')
     
-    // MARK:アカウント表示
+    // MARK:切替 - アカウント
     const [accountView, setAccountView] = useState(false);
     const toggleAccountView = () => {
         setAccountView(!accountView);
     }
-    // 所属グループ表示
+    
+    // MARK:切替 - グループ
     const [modalJoinedGroups, setModalJoinedGroups] = useState(false);
     const toggleModalJoinedGroups = () => {
         setModalJoinedGroups(!modalJoinedGroups);
     }
-    // ユーザー情報
+    
+    // MARK:表示 - アカウント
     const [userInfo, setUserInfo] = useState([]);
     useEffect(() => {
         const fetchUser = async () => {
@@ -66,14 +65,15 @@ export default function Library() {
         };  
         fetchUser();
     }, [userId]);
-    // ログアウト
+
+    // MARK:ログアウト
     const handleLogout = () => {
         // sessionStorage.clear();
         Cookies.remove('id', { path: '/' });
         window.location.assign('/Auth');
     }
     
-    // MARK:検索
+    // MARK: タイトルToノート
     const [searchValue, setSearchValue] = useState('');
     const handleSearch = (e) => {
         e.preventDefault();
@@ -83,23 +83,29 @@ export default function Library() {
         note.title.toLowerCase().includes(searchValue.toLowerCase())
     );
     
-    // MARK:管理
+    // MARK:切替 - 設定
     const [modalSetting, setModalSetting] = useState(false);
     const toggleModalSetting = () => {
         setModalSetting(!modalSetting);
     }
+
+    // MARK:切替 - 設定 - 構成員
     const [modalMember, setModalMember] = useState(true);
     const toggleModalMember = () => {
         setModalMember(true);
         setModalProject(false);
         setModalPermit(false);
     }
+    
+    // MARK:切替 - 設定 - 製作
     const [modalProject, setModalProject] = useState(false);
     const toggleModalProject = () => {
         setModalProject(true);
         setModalMember(false);
         setModalPermit(false);
     }
+    
+    // MARK:切替 - 設定 - 権限
     const [modalPermit, setModalPermit] = useState(false);
     const toggleModalPermit = () => {
         setModalPermit(true);
@@ -107,54 +113,42 @@ export default function Library() {
         setModalProject(false);
     }
     
-    // MARK:新規ノート
-    const handleNewNote =() => {
-        setModalState({ open: true })
-    }
+    // MARK:アカウントToグループ
     const [allGroups, setAllGroups] = useState([]);
     useEffect(() => {
-        const fetchGroup = async () => {
-            const response = await fetch(`/api/db?table=joinedGroups&userId=${userId}`);
-            const allGroups = await response.json();
-            setAllGroups(allGroups);
-        };
         fetchGroup();
     }, [userId]);
-    
-    // MARK:グループ選択
-    const [valueSelect, setValueSelect] = useState(1)
-    const handleChangeOption = (event) => {
-        setValueSelect(event.target.value);
+    const fetchGroup = async () => {
+        const response = await fetch(`/api/db?table=joinedGroups&userId=${userId}`);
+        const allGroups = await response.json();
+        setAllGroups(allGroups);
+    };
+
+    // MARK: 切替 - 新規ノート
+    const [modalNewNote, setModalNewNote] = useState(false);
+    const toggleModalNewNote = () => {
+        setModalNewNote(!modalNewNote);
     }
 
-    // MARK:インサート新規ノート
-    const handleSubmit = async (e) => {
+    // MARK: 新規ノート - グループ選択
+    const [newNoteGroup, setNewNoteGroup] = useState(1);
+    const handleChangeNewNoteGroup = (e) => {
+        setNewNoteGroup(e.target.value);
+    }
+
+    // MARK: 新規ノート - タイトル
+    const [newNoteTitle, setNewNoteTitle] = useState('');
+    const handleChangeNewNoteTitle = (e) => {
+        setNewNoteTitle(e.target.value);
+    }
+
+    // MARK:新規ノート作成
+    const handleCreateNote = async (e) => {
         e.preventDefault();
-        const response = await fetch(`/api/db?table=newNote&groupId=${valueSelect}&noteName=${inputValue}`);
+        const response = await fetch(`/api/db?table=newNote&groupId=${newNoteGroup}&noteName=${newNoteTitle}`);
         const result = await response.json();
         window.location.assign(`/Editor/${result.results.insertId}`);
     }
-
-    // MARK:新規ノート フォーム
-    const formContent = (
-        <div className={styles.inputs}>
-            <div className={styles.newNoteGroup}>
-                <select required onChange={handleChangeOption}>
-                    {allGroups.map((group) => (
-                        <option key={group.id} value={group.id}>{group.name}</option>
-                    ))}
-                </select>
-            </div>
-            <div className={styles.newNoteName}>
-                <input 
-                 type="text" 
-                 placeholder='ノート名' 
-                 onChange={(e) => setInputValue(e.target.value)} 
-                 required 
-                />
-            </div>
-        </div>
-    )
 
     // MARK:グループ < ノート
     const [selectedGroupId, setSelectedGroupId] = useState(null);
@@ -322,7 +316,7 @@ export default function Library() {
       setIsNotesClass(!isNotesClass);
     };
 
-    // MARK:ヘッドライン 左
+    // MARK:ヘッドライン
     const headLeft = (
         <>
         {/* 検索 */}
@@ -337,7 +331,6 @@ export default function Library() {
         </div>
         </>
     )
-    // MARK:ヘッドライン 右
     const headRight = (
         <>
         {/* レイアウト */}
@@ -347,7 +340,7 @@ export default function Library() {
         {/* 新規ノート */}
         <div className={styles.addNote}>
             {/* <MainBtn img={<BsFileEarmarkPlus/>} click={handleNewNote} text="New Note"/> */}
-            <ImgBtn img={<BsFileEarmarkPlus/>} click={handleNewNote} color="main"/>
+            <ImgBtn img={<BsFileEarmarkPlus/>} click={toggleModalNewNote} color="main"/>
         </div>
         </>
     )
@@ -422,24 +415,36 @@ export default function Library() {
         </div>
     );
 
+    // MARK:メイン ━━━━━━━
     return(
         <main className={styles.main}>
-            
-        {modalState.open && (
-            <form className={styles.formContent} onSubmit={handleSubmit}>
-                <ModalWindow 
-                    msg={'+ New Note'}
-                    content={formContent}
-                    No={() => setModalState({ open: false})}
-                    Yes={(e) => handleSubmit(e)}
-                    type={'submit'}
-                />
+
+        {/* MARK:新規ノート */}
+        {modalNewNote ? (
+            <form className={styles.modalNewNoteWindow} onSubmit={handleCreateNote}>
+                <button className={styles.newNoteClose} onClick={toggleModalNewNote}><BsX/></button>
+                <div className={styles.newNoteContents}>
+                    <div className={styles.newNoteGroup}>
+                        <label htmlFor="newNoteGroup" className={styles.newNoteLabel}>保存先グループ</label>   
+                        <select className={styles.newNoteGroupSelect} required onChange={handleChangeNewNoteGroup}>
+                            {allGroups.map((group) => (
+                                <option key={group.id} value={group.id}>{group.name}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className={styles.newNoteTitle}>
+                        <label htmlFor="newNoteName" className={styles.newNoteLabel}>ノートタイトル</label>
+                        <input className={styles.newNoteInput} type="text" placeholder='ToDo List' onChange={handleChangeNewNoteTitle} value={newNoteTitle} required/>
+                    </div>
+                    <button className={styles.newNoteSubmit} type="submit">作成</button>
+                </div>
             </form>
-        )}
+        ) : null}
 
         {/* MARK:設定 */}
         {modalSetting ? modalSettingWindow : null}
 
+        {/* MARK:アカウント */}
         <button className={styles.account} onClick={toggleAccountView}>
             {accountView ?  <BsX/> : <FaRegUser/>}
         </button>
@@ -460,7 +465,6 @@ export default function Library() {
                 </div>
             </div>
         ) : null}
-
         {modalJoinedGroups ? (
             <div className={styles.joinedGroupsWindow}>
                 <button className={styles.joinedGroupsClose} onClick={toggleModalJoinedGroups}><BsX/></button>
@@ -478,29 +482,26 @@ export default function Library() {
         ) : null}
 
         {/* MARK:メニュー */}
-        <Menu setSelectedGroupId={setSelectedGroupId} userId={userId}/>
+        <Menu setSelectedGroupId={setSelectedGroupId} userInfo={userInfo[0]} allGroups={allGroups} fetchGroup={fetchGroup}/>
 
         <div className={styles.contents}>
-            {/* MARK:ヘッドライン(検索、レイアウト、新規ノート) */}
+            {/* MARK:ヘッドライン */}
             <GroupHeadline headLeft={headLeft} headRight={headRight} />
 
-            {/* MARK:ノート */}
             <div className={styles.content}>
-
-                {/* MARK:ヘッドライン(グループ名、権限/ノートボタン) */}
+                {/* MARK:グループToノート */}
                 {selectedGroupNotes.length > 0 && (
                     <div className={styles.notesTitles}>
                         <p className={styles.notesTitle}>{selectedGroupNotes[0].groupName}</p>
                         <button className={styles.settingBtn} onClick={toggleModalSetting}><BsGear/></button>
                     </div>
                 )}
-                {/* MARK:選択したグループ内のノート */}
                 <NotesInGroup 
                  notes={selectedGroupNotes} 
                  isNotesClass={isNotesClass}
                 />
                         
-                {/* MARK:最近更新されたノート */}
+                {/* MARK:検索結果 */}
                 <div className={styles.notesTitles}>
                     <p className={styles.notesTitle}>検索結果「{searchValue}」</p>
                 </div>
