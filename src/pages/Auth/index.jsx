@@ -38,10 +38,13 @@ export default function Auth() {
         e.preventDefault();
         const hashedPassword = await bcrypt.hash(password, 10);
         const response = await fetch(`/api/db?table=register&username=${username}&email=${email}&password=${hashedPassword}`);
-        const result = await response.json();
-        if (result.error) {
+        const registerData = await response.json();
+        if (registerData.error) {
             toast.error('登録に失敗しました');
         } else {
+            const insertedId = await registerData.results.insertId;
+            const response = await fetch(`/api/db?table=defaultGroup&userId=${insertedId}`);
+            const defaultGroupData = await response.json();
             toast.success('登録に成功しました');
             setToggle('login');
             setPassword('');

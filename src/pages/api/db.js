@@ -8,6 +8,7 @@ const pool = mysql.createPool({
 
 // APIリクエストのハンドリング
 export default function handler(req, res) {
+    // MARK: 新規登録
     if (req.query.table === 'register') {
         const username = req.query.username;
         const email = req.query.email;
@@ -23,6 +24,7 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: ログイン
     } else if (req.query.table === 'login') {
         const email = req.query.email;
         pool.query(
@@ -36,6 +38,7 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: ユーザー情報
     } else if (req.query.table === 'userInfo') {
         const userId = req.query.userId;
         pool.query(
@@ -49,6 +52,35 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: デフォルトグループ
+    } else if (req.query.table === 'defaultGroup') {
+        const userId = req.query.userId;
+        console.log('userId', userId);
+
+        pool.query(
+            `INSERT INTO \`groups\` (name) VALUES ('プライベート');`,
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                    const groupId = results.insertId;
+
+                    pool.query(
+                        `INSERT INTO user_group_memberships (user_id, group_id) VALUES (?, ?);`,
+                        [userId, groupId],
+                        (err, results) => {
+                            if (err) {
+                                res.status(500).json({ error: err.message });
+                            } else {
+                                res.status(200).json({ results });
+                            }
+                        }
+                    );
+                }
+            }
+        );
+    // MARK: 参加しているグループ
     } else if (req.query.table === 'joinedGroups') {
         const userId = req.query.userId;
         pool.query(
@@ -66,6 +98,7 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: 全てのノート
     } else if (req.query.table === 'allNotes') {
         const userId = req.query.userId;
         pool.query(
@@ -85,6 +118,7 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: 選択したグループのノート
     } else if (req.query.table === 'selectedGroup') {
         const selectGroupId = req.query.groupId;
         pool.query(
@@ -103,6 +137,7 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: 選択したノートのグループ
     } else if (req.query.table === 'group') {
         const id = req.query.id;
         pool.query(
@@ -120,6 +155,7 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: グループのノート
     } else if (req.query.table === 'notes') {
         const id = req.query.id;
         pool.query(
@@ -137,6 +173,7 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: 選択したノート
     } else if (req.query.table === 'note') {
         const id = req.query.id;
         pool.query(
@@ -152,6 +189,7 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: ノートの更新
     } else if (req.query.table === 'updateNote') {
         const id = req.query.id;
         const title = req.query.title;
@@ -172,6 +210,7 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: ユーザーがグループに参加しているか
     } else if (req.query.table === 'checkUser') {
         const userId = req.query.userId;
         const groupId = req.query.groupId;
@@ -186,21 +225,25 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: 新規ノート
     } else if (req.query.table === 'newNote') {
         const groupId = req.query.groupId;
         const noteName = req.query.noteName;
+        const userId = req.query.userId;
         pool.query(
             `INSERT INTO notes (title, group_id, created_by, created_at, updated_at)
-             VALUES (?, ?, 1, NOW(), NOW());
-            `, [noteName, groupId], 
+             VALUES (?, ?, ?, NOW(), NOW());
+            `, [noteName, groupId, userId], 
             (err, results) => {
                 if (err) {
                     res.status(500).json({ error: err.message });
                 } else {
                     res.status(200).json({ results });
+                    const noteId = results.insertId;
                 }
             }
         );
+    // MARK: ユーザー検索
     } else if (req.query.table === 'suggestUsers') {
         const name = req.query.name;
         pool.query(
@@ -216,6 +259,7 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: 新規グループ
     } else if (req.query.table === 'insertGroup') {
         const name = req.query.name;
         const memberIds = req.query.memberIds.split(',');
@@ -252,6 +296,7 @@ export default function handler(req, res) {
                 });
             }
         );
+    // MARK: グループのメンバー
     } else if (req.query.table === 'groupInMember') {
         const groupId = req.query.groupId;
         pool.query(
@@ -270,6 +315,7 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: メンバーの役割変更
     } else if (req.query.table === 'changeRole') {
         const groupId = req.query.groupId;
         const userId = req.query.userId;
@@ -288,6 +334,7 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: メンバーの削除
     } else if (req.query.table === 'deleteMember') {
         const groupId = req.query.groupId;
         const userId = req.query.userId;
@@ -304,6 +351,7 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: メンバーの追加
     } else if (req.query.table === 'addMember') {
         const groupId = req.query.groupId;
         const userId = req.query.userId;
@@ -320,7 +368,8 @@ export default function handler(req, res) {
                 }
             }
         );
-    } else if (req.query.table === 'deleteProject') {
+    // MARK: グループの削除
+    } else if (req.query.table === 'deleteGroup') {
         const projectId = req.query.projectId;
         pool.query(
             `UPDATE notes
@@ -335,6 +384,7 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: グループの役割
     } else if (req.query.table === 'groupRole') {
         const groupId = req.query.groupId;
         pool.query(
@@ -355,6 +405,7 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: 役割の権限
     } else if (req.query.table === 'roleToPermit') {
         const groupId = req.query.groupId;
         pool.query(
@@ -375,6 +426,7 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: 役割の権限の更新
     } else if (req.query.table === 'updateRoleToPermit') {
         const roleId = req.query.roleId;
         const permitId = req.query.permitId;
@@ -391,6 +443,7 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: 権限
     } else if (req.query.table === 'permission') {
         pool.query(
             `SELECT id, name 
@@ -404,6 +457,7 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: 役割の名前の更新
     } else if (req.query.table === 'updateRoleName') {
         const roleId = req.query.roleId;
         const roleName = req.query.roleName;
@@ -420,6 +474,7 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: 役割の削除
     } else if (req.query.table === 'deleteRole') {
         const roleId = req.query.roleId;
         pool.query(
@@ -435,6 +490,7 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: 役割の追加
     } else if (req.query.table === 'insertRole') {
         const { roleName, groupId, permissionId } = req.query;
             pool.query(

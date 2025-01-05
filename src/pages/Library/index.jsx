@@ -131,7 +131,7 @@ export default function Library() {
     }
 
     // MARK: 新規ノート - グループ選択
-    const [newNoteGroup, setNewNoteGroup] = useState(1);
+    const [newNoteGroup, setNewNoteGroup] = useState(null);
     const handleChangeNewNoteGroup = (e) => {
         setNewNoteGroup(e.target.value);
     }
@@ -145,7 +145,8 @@ export default function Library() {
     // MARK:新規ノート作成
     const handleCreateNote = async (e) => {
         e.preventDefault();
-        const response = await fetch(`/api/db?table=newNote&groupId=${newNoteGroup}&noteName=${newNoteTitle}`);
+        console.log(newNoteGroup,newNoteTitle,userId);
+        const response = await fetch(`/api/db?table=newNote&groupId=${newNoteGroup}&noteName=${newNoteTitle}&userId=${userId}`);
         const result = await response.json();
         window.location.assign(`/Editor/${result.results.insertId}`);
     }
@@ -426,7 +427,8 @@ export default function Library() {
                 <div className={styles.newNoteContents}>
                     <div className={styles.newNoteGroup}>
                         <label htmlFor="newNoteGroup" className={styles.newNoteLabel}>保存先グループ</label>   
-                        <select className={styles.newNoteGroupSelect} required onChange={handleChangeNewNoteGroup}>
+                        <select className={styles.newNoteGroupSelect} required onChange={handleChangeNewNoteGroup} defaultValue="">
+                            <option value="" disabled>選択してください</option>
                             {allGroups.map((group) => (
                                 <option key={group.id} value={group.id}>{group.name}</option>
                             ))}
