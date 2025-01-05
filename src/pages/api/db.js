@@ -98,6 +98,23 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: グループ退会
+    } else if (req.query.table === 'leaveGroup') {
+        const groupId = req.query.groupId;
+        const userId = req.query.userId;
+        pool.query(
+            `UPDATE user_group_memberships
+             SET \`delete\` = 1
+             WHERE group_id = ? AND user_id = ?
+            `, [groupId, userId],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
     // MARK: 全てのノート
     } else if (req.query.table === 'allNotes') {
         const userId = req.query.userId;

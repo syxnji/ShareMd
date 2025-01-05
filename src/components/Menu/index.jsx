@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 // component
 import { ToastContainer, toast } from 'react-toastify';
 // icon
-import { BsArrowBarLeft, BsBuildings, BsX } from "react-icons/bs";
+import { BsArrowBarLeft, BsBuildings, BsGear, BsX } from "react-icons/bs";
 // style
 import styles from "./menu.module.css";
 import 'react-toastify/dist/ReactToastify.css';
 
-export function Menu({ setSelectedGroupId, userInfo, allGroups, fetchGroup }) {
+export function Menu({ setSelectedGroupId, userInfo, allGroups, fetchGroup, toggleModalSetting }) {
 
     // MARK:グループ選択
     const groupClick = (id) => {
@@ -159,9 +159,12 @@ export function Menu({ setSelectedGroupId, userInfo, allGroups, fetchGroup }) {
                     </div>
                     <div className={styles.groups}>
                         {allGroups.map((group) => (
-                            <button className={styles.group} key={group.id} onClick={() => groupClick(group.id)}>
-                                {group.name}
-                            </button>
+                            <div className={styles.groupBox}>
+                                <button className={styles.group} key={group.id} onClick={() => groupClick(group.id)}>
+                                    {group.name}
+                                </button>
+                                <button className={styles.settingBtn} onClick={(e) => {toggleModalSetting(); setSelectedGroupId(group.id);}}><BsGear/></button>
+                            </div>
                             ))}
                     </div>
                     </>

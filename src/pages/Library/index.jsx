@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
+import { ToastContainer, toast } from 'react-toastify';
 // component
 import { Menu } from '@/components/Menu';
 import { GroupHeadline } from "@/components/GroupHeadline";
@@ -15,6 +16,7 @@ import { FaRegUser } from 'react-icons/fa6';
 // style
 import styles from "./library.module.css";
 import { MdLogout } from 'react-icons/md';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Library() {
     
@@ -53,6 +55,7 @@ export default function Library() {
     const [modalJoinedGroups, setModalJoinedGroups] = useState(false);
     const toggleModalJoinedGroups = () => {
         setModalJoinedGroups(!modalJoinedGroups);
+        setModalSetting(false);
     }
     
     // MARK:表示 - アカウント
@@ -87,6 +90,7 @@ export default function Library() {
     const [modalSetting, setModalSetting] = useState(false);
     const toggleModalSetting = () => {
         setModalSetting(!modalSetting);
+        setModalJoinedGroups(false);
     }
 
     // MARK:切替 - 設定 - 構成員
@@ -123,6 +127,13 @@ export default function Library() {
         const allGroups = await response.json();
         setAllGroups(allGroups);
     };
+    // グループ退会
+    const handleLeaveGroup = async (groupId) => {
+        const response = await fetch(`/api/db?table=leaveGroup&groupId=${groupId}&userId=${userId}`);
+        const result = await response.json();
+        fetchGroup();
+        toast.success('グループを退会しました');
+    }
 
     // MARK: 切替 - 新規ノート
     const [modalNewNote, setModalNewNote] = useState(false);
@@ -145,7 +156,6 @@ export default function Library() {
     // MARK:新規ノート作成
     const handleCreateNote = async (e) => {
         e.preventDefault();
-        console.log(newNoteGroup,newNoteTitle,userId);
         const response = await fetch(`/api/db?table=newNote&groupId=${newNoteGroup}&noteName=${newNoteTitle}&userId=${userId}`);
         const result = await response.json();
         window.location.assign(`/Editor/${result.results.insertId}`);
@@ -419,14 +429,19 @@ export default function Library() {
     // MARK:メイン ━━━━━━━
     return(
         <main className={styles.main}>
+            
+        {/* MARK:トースト */}
+        <ToastContainer />
 
         {/* MARK:新規ノート */}
         {modalNewNote ? (
             <form className={styles.modalNewNoteWindow} onSubmit={handleCreateNote}>
+                {/* 閉じる */}
                 <button className={styles.newNoteClose} onClick={toggleModalNewNote}><BsX/></button>
                 <div className={styles.newNoteContents}>
                     <div className={styles.newNoteGroup}>
-                        <label htmlFor="newNoteGroup" className={styles.newNoteLabel}>保存先グループ</label>   
+                        <label htmlFor="newNoteGroup" className={styles.newNoteLabel}>保存先グループ</label>
+                        {/* グループ選択 */}
                         <select className={styles.newNoteGroupSelect} required onChange={handleChangeNewNoteGroup} defaultValue="">
                             <option value="" disabled>選択してください</option>
                             {allGroups.map((group) => (
@@ -436,6 +451,7 @@ export default function Library() {
                     </div>
                     <div className={styles.newNoteTitle}>
                         <label htmlFor="newNoteName" className={styles.newNoteLabel}>ノートタイトル</label>
+                        {/* ノートタイトル */}
                         <input className={styles.newNoteInput} type="text" placeholder='ToDo List' onChange={handleChangeNewNoteTitle} value={newNoteTitle} required/>
                     </div>
                     <button className={styles.newNoteSubmit} type="submit">作成</button>
@@ -447,6 +463,7 @@ export default function Library() {
         {modalSetting ? modalSettingWindow : null}
 
         {/* MARK:アカウント */}
+        {/* アカウントモーダル切替 */}
         <button className={styles.account} onClick={toggleAccountView}>
             {accountView ?  <BsX/> : <FaRegUser/>}
         </button>
@@ -460,22 +477,29 @@ export default function Library() {
                     </div>
                 </div>
                 <div className={styles.groupBtnContainer}>
+                    {/* グループモーダル切替 */}
                     <button className={styles.groupsBtn} onClick={toggleModalJoinedGroups}><BsBuildings/></button>
                 </div>
                 <div className={styles.logoutBtnContainer}>
+                    {/* ログアウト */}
                     <button className={styles.logoutBtn} onClick={handleLogout}><MdLogout /></button>
                 </div>
             </div>
         ) : null}
+
+        {/* MARK:グループモーダル */}
         {modalJoinedGroups ? (
             <div className={styles.joinedGroupsWindow}>
+                {/* 閉じる */}
                 <button className={styles.joinedGroupsClose} onClick={toggleModalJoinedGroups}><BsX/></button>
                 <div className={styles.joinedGroupsContent}>
                     <div className={styles.GroupsList}>
                         {allGroups.map((group) => (
                             <div className={styles.group} key={group.id}>
                                 <p>{group.name}</p>
-                                <button className={styles.deleteBtn}><BsX/></button>
+                                {/* 設定モーダル切替 / グループ選択 / 別モーダル閉じる */}
+                                <button className={styles.settingBtn} onClick={(e) => {toggleModalSetting(); setSelectedGroupId(group.id); setModalJoinedGroups(false);}}><BsGear/></button>
+                                <button className={styles.deleteBtn} onClick={(e) => {handleLeaveGroup(group.id);}}><BsX/></button>
                             </div>
                         ))}
                     </div>
@@ -484,7 +508,7 @@ export default function Library() {
         ) : null}
 
         {/* MARK:メニュー */}
-        <Menu setSelectedGroupId={setSelectedGroupId} userInfo={userInfo[0]} allGroups={allGroups} fetchGroup={fetchGroup}/>
+        <Menu setSelectedGroupId={setSelectedGroupId} userInfo={userInfo[0]} allGroups={allGroups} fetchGroup={fetchGroup} toggleModalSetting={toggleModalSetting}/>
 
         <div className={styles.contents}>
             {/* MARK:ヘッドライン */}
