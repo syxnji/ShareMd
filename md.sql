@@ -9,38 +9,61 @@ CREATE TABLE users (
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `delete` BOOLEAN DEFAULT 0
 ) ENGINE=InnoDB;
 
--- -- 仮account
--- CREATE TABLE Users (
---     userId INT AUTO_INCREMENT PRIMARY KEY,
---     username VARCHAR(50) NOT NULL,
---     mailaddress VARCHAR(100) NOT NULL UNIQUE,
---     password VARCHAR(255) NOT NULL
--- );
+-- MARK: 通知
+CREATE TABLE notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    sender_id INT,
+    group_id INT,
+    type_id INT,
+    response TINYINT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `delete` BOOLEAN DEFAULT 0
+) ENGINE=InnoDB;
+
+-- MARK: 通知タイプ
+CREATE TABLE notification_types (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    description TEXT,
+    `delete` BOOLEAN DEFAULT 0
+) ENGINE=InnoDB;
+
+INSERT INTO notification_types (name, description) VALUES
+('request', 'グループに参加リクエストがあった場合に通知されます'),
+('invite', 'グループに招待された場合に通知されます'),
+('accept', 'グループに参加承認があった場合に通知されます'),
+('reject', 'グループに参加拒否があった場合に通知されます');
 
 -- Groups table
 CREATE TABLE `groups` (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT,
+    created_by INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `delete` BOOLEAN DEFAULT 0
 ) ENGINE=InnoDB;
 
 -- Roles table (predefined roles)
 CREATE TABLE roles (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
-    description TEXT
+    description TEXT,
+    `delete` BOOLEAN DEFAULT 0
 ) ENGINE=InnoDB;
 
 -- Permissions table
 CREATE TABLE permissions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) UNIQUE NOT NULL,
-    description TEXT
+    description TEXT,
+    `delete` BOOLEAN DEFAULT 0
 ) ENGINE=InnoDB;
 
 -- Group-specific Roles table
@@ -50,7 +73,8 @@ CREATE TABLE group_roles (
     role_id INT,
     UNIQUE(group_id, role_id),
     FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE CASCADE,
-    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
+    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE,
+    `delete` BOOLEAN DEFAULT 0
 ) ENGINE=InnoDB;
 
 -- Role-Permission associations table
@@ -60,7 +84,8 @@ CREATE TABLE role_permissions (
     permission_id INT,
     UNIQUE(role_id, permission_id),
     FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE,
-    FOREIGN KEY (permission_id) REFERENCES permissions(id) ON DELETE CASCADE
+    FOREIGN KEY (permission_id) REFERENCES permissions(id) ON DELETE CASCADE,
+    `delete` BOOLEAN DEFAULT 0
 ) ENGINE=InnoDB;
 
 -- User-Group Memberships table
@@ -70,6 +95,7 @@ CREATE TABLE user_group_memberships (
     group_id INT,
     role_id INT,
     joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `delete` BOOLEAN DEFAULT 0,
     UNIQUE(user_id, group_id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE CASCADE,
@@ -85,22 +111,23 @@ CREATE TABLE notes (
     created_by INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `delete` BOOLEAN DEFAULT 0,
     FOREIGN KEY (group_id) REFERENCES `groups`(id) ON DELETE SET NULL,
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 -- Insert sample data into users table
 INSERT INTO users (username, email, password_hash) VALUES
-('john_doe', 'john@example.com', 'hashed_password_1'),
-('jane_smith', 'jane@example.com', 'hashed_password_2'),
-('bob_johnson', 'bob@example.com', 'hashed_password_3'),
-('alice_williams', 'alice@example.com', 'hashed_password_4'),
-('charlie_brown', 'charlie@example.com', 'hashed_password_5'),
-('diana_ross', 'diana@example.com', 'hashed_password_6'),
-('edward_norton', 'edward@example.com', 'hashed_password_7'),
-('fiona_apple', 'fiona@example.com', 'hashed_password_8'),
-('george_clooney', 'george@example.com', 'hashed_password_9'),
-('helen_mirren', 'helen@example.com', 'hashed_password_10');
+('john_doe', 'john@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
+('jane_smith', 'jane@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
+('bob_johnson', 'bob@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
+('alice_williams', 'alice@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
+('charlie_brown', 'charlie@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
+('diana_ross', 'diana@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
+('edward_norton', 'edward@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
+('fiona_apple', 'fiona@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
+('george_clooney', 'george@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
+('helen_mirren', 'helen@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2');
 
 -- Insert sample data into groups table
 INSERT INTO `groups` (name, description) VALUES
@@ -214,12 +241,15 @@ INSERT INTO notes (title, content, group_id, created_by) VALUES
 ('ITインフラのアップグレード計画', '会社のITインフラをアップグレードする計画...', 10, 10),
 ('Test Note', 'Thsi is test note...', 1, 1);
 
-ALTER TABLE users ADD COLUMN `delete` TINYINT(1) DEFAULT 0;
-ALTER TABLE Users ADD COLUMN `delete` TINYINT(1) DEFAULT 0;
-ALTER TABLE roles ADD COLUMN `delete` TINYINT(1) DEFAULT 0;
-ALTER TABLE permissions ADD COLUMN `delete` TINYINT(1) DEFAULT 0;
-ALTER TABLE `groups` ADD COLUMN `delete` TINYINT(1) DEFAULT 0;
-ALTER TABLE group_roles ADD COLUMN `delete` TINYINT(1) DEFAULT 0;
-ALTER TABLE role_permissions ADD COLUMN `delete` TINYINT(1) DEFAULT 0;
-ALTER TABLE user_group_memberships ADD COLUMN `delete` TINYINT(1) DEFAULT 0;
-ALTER TABLE notes ADD COLUMN `delete` TINYINT(1) DEFAULT 0;
+SELECT * FROM group_roles;
+SELECT * FROM groups;
+SELECT * FROM notes;
+SELECT * FROM notification_types;
+SELECT * FROM notifications;
+SELECT * FROM permissions;
+SELECT * FROM role_permissions;
+SELECT * FROM roles;
+SELECT * FROM user_group_memberships;
+SELECT * FROM users;
+
+show tables;

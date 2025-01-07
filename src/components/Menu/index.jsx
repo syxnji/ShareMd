@@ -88,7 +88,7 @@ export function Menu({ setSelectedGroupId, userInfo, allGroups, fetchGroup, togg
     const handleCreateGroup = async (e) => {
         e.preventDefault();
         const memberIds = memberList.map((member) => member.id);
-        const response = await fetch(`/api/db?table=insertGroup&name=${createName}&memberIds=${memberIds}`);
+        const response = await fetch(`/api/db?table=insertGroup&name=${createName}&userId=${userInfo.id}&memberIds=${memberIds}`);
         const result = await response.json();
         toggleModalCreate();
         setCreateName("");
@@ -101,7 +101,7 @@ export function Menu({ setSelectedGroupId, userInfo, allGroups, fetchGroup, togg
     return(
         <>
         {/* MARK:トースト */}
-        <ToastContainer />
+        {/* <ToastContainer /> */}
 
         {/* MARK:グループ作成モーダル */}
         {modalCreate ? (
@@ -128,10 +128,10 @@ export function Menu({ setSelectedGroupId, userInfo, allGroups, fetchGroup, togg
                     <div className={styles.newGroupMemberListBox}>
                         <p className={styles.newGroupLabel}>メンバーリスト</p>
                         <div className={styles.newGroupMemberList}>
-                        {memberList.map((member) => (
-                            <div className={styles.member} key={member.id}>
-                                <p>{member.username}</p>
-                                <button className={styles.memberDelete} onClick={(e) => handleDeleteMember(e, member)}><BsX/></button>
+                            {memberList.map((member) => (
+                                <div className={styles.member} key={member.id}>
+                                    <p>{member.username}</p>
+                                    <button className={styles.memberDelete} onClick={(e) => handleDeleteMember(e, member)}><BsX/></button>
                                 </div>
                             ))}
                         </div>
@@ -159,13 +159,13 @@ export function Menu({ setSelectedGroupId, userInfo, allGroups, fetchGroup, togg
                     </div>
                     <div className={styles.groups}>
                         {allGroups.map((group) => (
-                            <div className={styles.groupBox}>
-                                <button className={styles.group} key={group.id} onClick={() => groupClick(group.id)}>
+                            <div className={styles.groupBox} key={group.id}>
+                                <button className={styles.group} onClick={() => groupClick(group.id)}>
                                     {group.name}
                                 </button>
                                 <button className={styles.settingBtn} onClick={(e) => {toggleModalSetting(); setSelectedGroupId(group.id);}}><BsGear/></button>
                             </div>
-                            ))}
+                        ))}
                     </div>
                     </>
                 ) : null}

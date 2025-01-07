@@ -135,7 +135,7 @@
 
 /* グループ追加モーダル */
 .modalNewGroupWindow{
-    z-index: 100;
+    z-index: 150;
     width: 600px;
     height: 80vh;
     display: flex;

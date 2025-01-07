@@ -52,13 +52,56 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: 通知
+    } else if (req.query.table === 'notifications') {
+        const userId = req.query.userId;
+        pool.query(
+            `SELECT * FROM notifications WHERE user_id = ? AND response = 0;`,
+            [userId],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
+    // MARK: 通知の承認
+    } else if (req.query.table === 'acceptRequest') {
+        const notificationId = req.query.notificationId;
+        pool.query(
+            `UPDATE notifications SET response = 1 WHERE id = ?;`,
+            [notificationId],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
+    // MARK: 通知の拒否
+    } else if (req.query.table === 'rejectRequest') {
+        const notificationId = req.query.notificationId;
+        pool.query(
+            `UPDATE notifications SET response = 2 WHERE id = ?;`,
+            [notificationId],
+            (err, results) => { 
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
     // MARK: デフォルトグループ
     } else if (req.query.table === 'defaultGroup') {
         const userId = req.query.userId;
         console.log('userId', userId);
 
         pool.query(
-            `INSERT INTO \`groups\` (name) VALUES ('プライベート');`,
+            `INSERT INTO \`groups\` (name, created_by) VALUES ('プライベート', ?);`,
+            [userId],
             (err, results) => {
                 if (err) {
                     res.status(500).json({ error: err.message });
@@ -275,16 +318,81 @@ export default function handler(req, res) {
                     res.status(200).json({ results });
                 }
             }
+        );  
+    // MARK: 検索グループ
+    } else if (req.query.table === 'searchGroup') {
+        const name = req.query.name;
+        pool.query(
+            `SELECT id, name, created_by
+             FROM \`groups\` 
+             WHERE name LIKE ? 
+             AND \`delete\` = 0;`,
+            [`%${name}%`],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
+    // MARK: グループ参加リクエスト
+    } else if (req.query.table === 'requestGroup') {
+        const fromUserId = req.query.fromUserId;
+        const toUserId = req.query.toUserId;
+        const groupId = req.query.groupId;
+        pool.query(
+            `INSERT INTO notifications (user_id, sender_id, group_id, type_id) VALUES (?, ?, ?, 1);`,
+            [toUserId, fromUserId, groupId],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
+    // MARK: グループ招待
+    } else if (req.query.table === 'inviteGroup') {
+        const groupId = req.query.groupId;
+        const inviteUserId = req.query.inviteUserId;
+        const userId = req.query.userId;
+        pool.query(
+            `INSERT INTO notifications (user_id, sender_id, group_id, type_id) VALUES (?, ?, ?, 2);`,
+            [inviteUserId, userId, groupId],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
+    // MARK: グループ参加
+    } else if (req.query.table === 'joinGroup') {
+        const groupId = req.query.groupId;
+        const inviteUserId = req.query.inviteUserId;
+        pool.query(
+            `INSERT INTO user_group_memberships (user_id, group_id, role_id) VALUES (?, ?, 1);`,
+            [inviteUserId, groupId],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
         );
     // MARK: 新規グループ
     } else if (req.query.table === 'insertGroup') {
         const name = req.query.name;
+        const userId = req.query.userId;
         const memberIds = req.query.memberIds.split(',');
 
         pool.query(
-            `INSERT INTO \`groups\` (name, created_at, updated_at)
-            VALUES (?, NOW(), NOW());
-            `, [name],
+            `INSERT INTO \`groups\` (name, created_by)
+            VALUES (?, ?);
+            `, [name, userId],
             (err, results) => {
                 if (err) {
                     res.status(500).json({ error: err.message });
@@ -295,9 +403,9 @@ export default function handler(req, res) {
                 Promise.all(memberIds.map(memberId => 
                     new Promise((resolve, reject) => {
                         pool.query(
-                            `INSERT INTO user_group_memberships (user_id, group_id, role_id)
-                             VALUES (?, ?, 1);
-                            `, [memberId, groupId],
+                            `INSERT INTO notifications (user_id, sender_id, group_id, type_id)
+                             VALUES (?, ?, ?, 2);
+                            `, [memberId, userId, groupId],
                             (err, results) => {
                                 if (err) reject(err);
                                 else resolve(results);

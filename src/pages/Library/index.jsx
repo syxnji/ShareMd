@@ -11,11 +11,11 @@ import { MemberManagement } from '@/components/MemberManagement';
 import { ProjectManagement } from '@/components/ProjectManagement';
 import { PermissionManagement } from '@/components/PermissionManagement';
 // icon
-import { BsList, BsFileEarmarkPlus, BsGrid3X3, BsGear, BsX, BsBuildings} from "react-icons/bs";
+import { BsList, BsFileEarmarkPlus, BsGrid3X3, BsGear, BsX, BsBuildings, BsArrowRepeat} from "react-icons/bs";
 import { FaRegUser } from 'react-icons/fa6';
 // style
 import styles from "./library.module.css";
-import { MdLogout } from 'react-icons/md';
+import { MdLogout, MdOutlineWifiFind } from 'react-icons/md';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function Library() {
@@ -29,9 +29,35 @@ export default function Library() {
                 window.location.assign('/Auth');
             }
             setUserId(id);
+            fetchNotifications();
         };
         getUserId();
     }, []);
+
+    // MARK:通知
+    const [notifications, setNotifications] = useState([]);
+    useEffect(() => {
+        fetchNotifications();
+    }, [userId]);
+    const fetchNotifications = async () => {
+        const response = await fetch(`/api/db?table=notifications&userId=${userId}`);
+        const result = await response.json();
+        setNotifications(result.results);
+    };
+    // MARK:通知設定
+    const customToastOptions = {
+        position: "bottom-right",
+        autoClose: false,
+        closeOnClick: false,
+        draggable: false,   
+        closeButton: false,
+    }
+    const defaultToastOptions = {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        draggable: true,
+    }
 
     // MARK:アカウントToノート
     const [allNotes, setAllNotes] = useState([]);
@@ -132,7 +158,7 @@ export default function Library() {
         const response = await fetch(`/api/db?table=leaveGroup&groupId=${groupId}&userId=${userId}`);
         const result = await response.json();
         fetchGroup();
-        toast.success('グループを退会しました');
+        toast.success('グループを退会しました', defaultToastOptions);
     }
 
     // MARK: 切替 - 新規ノート
@@ -327,6 +353,76 @@ export default function Library() {
       setIsNotesClass(!isNotesClass);
     };
 
+    // MARK:切替 - 検索グループ
+    const [modalSearchGroup, setModalSearchGroup] = useState(false);
+    const toggleModalSearchGroup = () => {
+        setModalSearchGroup(!modalSearchGroup);
+    }
+    // MARK: グループ名から検索
+    const [searchGroup, setSearchGroup] = useState('');
+    const handleSearchGroup = (e) => {
+        setSearchGroup(e.target.value);
+    }
+    // MARK: 検索結果
+    const [searchGroupResult, setSearchGroupResult] = useState([]);
+    useEffect(() => {
+        fetchSearchGroup();
+    }, [searchGroup]);
+    const fetchSearchGroup = async () => {
+        const response = await fetch(`/api/db?table=searchGroup&name=${searchGroup}`);
+        const groups = await response.json();
+        setSearchGroupResult(groups.results);
+    }
+    // MARK: グループ参加リクエスト
+    const handleRequestGroup = async (e, groupId, createdBy) => {
+        e.preventDefault();
+        await fetch(`/api/db?table=requestGroup&groupId=${groupId}&fromUserId=${userId}&toUserId=${createdBy}`);
+        toast.success('グループ参加リクエストを送信しました', defaultToastOptions);
+    }
+    // MARK: リクエストの承認&招待
+    const handleAccept = async (notificationId, groupId, inviteUserId, typeId) => {
+        await fetch(`/api/db?table=acceptRequest&notificationId=${notificationId}`);
+        if (typeId === 1) {
+            await fetch(`/api/db?table=inviteGroup&groupId=${groupId}&inviteUserId=${inviteUserId}&userId=${userId}`);
+            toast.success('リクエストを承認しました', defaultToastOptions);
+        } else if (typeId === 2) {
+            await fetch(`/api/db?table=joinGroup&groupId=${groupId}&inviteUserId=${inviteUserId}`);
+            toast.success('グループに参加しました', defaultToastOptions);
+        }
+        fetchNotifications();
+    };
+    // MARK: リクエストの拒否
+    const handleReject = async (notificationId) => {
+        await fetch(`/api/db?table=rejectRequest&notificationId=${notificationId}`);
+        fetchNotifications();
+        toast.success('拒否しました', defaultToastOptions);
+    };
+    useEffect(() => {
+        notifications.forEach((notification) => {
+            toast(
+                ({ closeToast }) => (
+                <div>
+                    {notification.type_id === 1 ? (
+                        <>
+                            <p>リクエストID:{notification.id} 送信者:{notification.sender_id}</p>
+                            <button onClick={() => {handleAccept(notification.id, notification.group_id, notification.sender_id, notification.type_id); closeToast();}}>承認</button>
+                            <button onClick={() => {handleReject(notification.id); closeToast();}}>拒否</button>
+                        </>
+                    ) : null}
+                    {notification.type_id === 2 ? (
+                        <>
+                            <p>招待ID:{notification.id} 送信者:{notification.sender_id}</p>
+                            <button onClick={() => {handleAccept(notification.id, notification.group_id, notification.user_id, notification.type_id); closeToast();}}>承認</button>
+                            <button onClick={() => {handleReject(notification.id); closeToast();}}>拒否</button>
+                        </>
+                    ) : null}
+                </div>
+                ),
+                customToastOptions
+            );
+        });
+    }, [notifications]);
+
     // MARK:ヘッドライン
     const headLeft = (
         <>
@@ -344,15 +440,19 @@ export default function Library() {
     )
     const headRight = (
         <>
-        {/* レイアウト */}
-        <div className={styles.layouts}>
-            <ImgBtn img={isGridView ? <BsList/> : <BsGrid3X3/>} click={toggleView}/>
-        </div>
-        {/* 新規ノート */}
-        <div className={styles.addNote}>
-            {/* <MainBtn img={<BsFileEarmarkPlus/>} click={handleNewNote} text="New Note"/> */}
-            <ImgBtn img={<BsFileEarmarkPlus/>} click={toggleModalNewNote} color="main"/>
-        </div>
+            {/* 検索グループ */}
+            <div className={styles.searchGroup}>
+                <ImgBtn img={<MdOutlineWifiFind />} click={toggleModalSearchGroup}/>
+            </div>
+            {/* レイアウト */}
+            <div className={styles.layouts}>
+                <ImgBtn img={isGridView ? <BsList/> : <BsGrid3X3/>} click={toggleView}/>
+            </div>
+            {/* 新規ノート */}
+            <div className={styles.addNote}>
+                {/* <MainBtn img={<BsFileEarmarkPlus/>} click={handleNewNote} text="New Note"/> */}
+                <ImgBtn img={<BsFileEarmarkPlus/>} click={toggleModalNewNote} color="main"/>
+            </div>
         </>
     )
     
@@ -502,6 +602,28 @@ export default function Library() {
                                 <button className={styles.deleteBtn} onClick={(e) => {handleLeaveGroup(group.id);}}><BsX/></button>
                             </div>
                         ))}
+                    </div>
+                </div>
+            </div>
+        ) : null}
+
+        {/* MARK:検索グループ */}
+        {modalSearchGroup ? (
+            <div className={styles.searchGroupWindow}>
+                <button className={styles.searchGroupClose} onClick={toggleModalSearchGroup}><BsX/></button>
+                <div className={styles.searchGroupContent}>
+                    <input className={styles.searchGroupInput} type="text" placeholder="グループ名で検索" onChange={handleSearchGroup} value={searchGroup}/>
+                    <div className={styles.searchGroupList}>
+                        {searchGroupResult.length > 0 ? (
+                            searchGroupResult.map((group) => (
+                                <div className={styles.group} key={group.id}>
+                                    <p>{group.name}</p>
+                                    <button className={styles.requestBtn} onClick={(e) => {handleRequestGroup(e, group.id, group.created_by);}}>参加リクエスト</button>
+                                </div>
+                            ))
+                        ) : (
+                            <p>グループが見つかりません</p>
+                        )}
                     </div>
                 </div>
             </div>

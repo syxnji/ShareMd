@@ -88,7 +88,7 @@
 }
 
 .joinedGroupsWindow{
-    z-index: 100;
+    z-index: 150;
     width: 600px;
     height: 80vh;
     display: flex;
@@ -166,9 +166,6 @@
     overflow: hidden;
     margin-right: 10px;
 }
-.layouts{
-    margin-right: 10px;
-}
 
 /* MARK:検索 */
 .search{
@@ -200,7 +197,7 @@
 
 /* MARK:新規ノート */
 .modalNewNoteWindow{
-    z-index: 100;
+    z-index: 150;
     width: 600px;
     height: 80vh;
     display: flex;
@@ -280,7 +277,7 @@
 
 /* MARK:設定 */
 .modalSettingWindow{
-    z-index: 100;
+    z-index: 150;
     width: 600px;
     height: 80vh;
     display: flex;
@@ -350,3 +347,103 @@
     font-weight: bold;
     color: #333;
 }
+
+/* MARK:検索グループ */
+.searchGroupWindow{
+    z-index: 150;
+    width: 600px;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    border: solid 1px #ddd;
+    overflow: hidden;
+    animation: slideIn 0.3s ease-in-out forwards;
+    box-shadow:  20px 20px 60px #bebebe,
+                 -20px -20px 60px #ffffff;
+}
+.searchGroupClose{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+}
+.searchGroupContent{
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+}
+.searchGroupInput{
+    width: 100%;
+    border: solid 1px #ddd;
+    border-radius: 10px;
+    padding: 10px;
+}
+.searchGroupList{
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: scroll;
+    background-color: #eee;
+}
+
+/* MARK:通知 */
+.notifications{
+    position: absolute;
+    width: 300px;
+    top: 60px;
+    right: 10px;
+    background-color: #ddd;
+    padding: 10px;
+    border-radius: 10px;
+}
+.notification{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* background-color: #eee; */
+    padding: 10px;
+    border-radius: 10px;
+}
+.message{
+    display: flex;
+    justify-content: flex-start;
+}
+.buttons{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+}
+.acceptBtn{
+    width: 100%;
+    background-color: #4f4;
+    color: #333;
+    border: solid 1px #2d2;
+    border-radius: 5px;
+    padding: 5px;
+}   
+.rejectBtn{
+    width: 100%;
+    background-color: #f44;
+    color: #fff;
+    border: solid 1px #d22;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+
+
