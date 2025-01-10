@@ -32,7 +32,7 @@ export default function Library() {
             fetchNotifications();
         };
         getUserId();
-    }, []);
+    }, [userId]);
 
     // MARK:通知
     const [notifications, setNotifications] = useState([]);
@@ -57,6 +57,13 @@ export default function Library() {
         autoClose: 3000,
         closeOnClick: true,
         draggable: true,
+    }
+
+    // MARK:リロード
+    const refresh = () => {
+        toast.dismiss();
+        fetchNotifications();
+        fetchNotes();
     }
 
     // MARK:アカウントToノート
@@ -401,19 +408,23 @@ export default function Library() {
         notifications.forEach((notification) => {
             toast(
                 ({ closeToast }) => (
-                <div>
+                <div className={styles.message}>
                     {notification.type_id === 1 ? (
                         <>
-                            <p>リクエストID:{notification.id} 送信者:{notification.sender_id}</p>
-                            <button onClick={() => {handleAccept(notification.id, notification.group_id, notification.sender_id, notification.type_id); closeToast();}}>承認</button>
-                            <button onClick={() => {handleReject(notification.id); closeToast();}}>拒否</button>
+                            <div className={styles.messageContent}>
+                                <p>リクエストID:{notification.id} 送信者:{notification.sender_id}</p>
+                                <button className={styles.acceptBtn} onClick={() => {handleAccept(notification.id, notification.group_id, notification.sender_id, notification.type_id); closeToast();}}>承認</button>
+                            </div>
+                            <button className={styles.rejectBtn} onClick={() => {handleReject(notification.id); closeToast();}}><BsX size={30}/></button>
                         </>
                     ) : null}
                     {notification.type_id === 2 ? (
                         <>
-                            <p>招待ID:{notification.id} 送信者:{notification.sender_id}</p>
-                            <button onClick={() => {handleAccept(notification.id, notification.group_id, notification.user_id, notification.type_id); closeToast();}}>承認</button>
-                            <button onClick={() => {handleReject(notification.id); closeToast();}}>拒否</button>
+                            <div className={styles.messageContent}>
+                                <p>招待ID:{notification.id} 送信者:{notification.sender_id}</p>
+                                <button className={styles.acceptBtn} onClick={() => {handleAccept(notification.id, notification.group_id, notification.user_id, notification.type_id); closeToast();}}>承認</button>
+                            </div>
+                            <button className={styles.rejectBtn} onClick={() => {handleReject(notification.id); closeToast();}}><BsX size={30}/></button>
                         </>
                     ) : null}
                 </div>
@@ -440,6 +451,10 @@ export default function Library() {
     )
     const headRight = (
         <>
+            {/* リロード */}
+            <div className={styles.reload}>
+                <ImgBtn img={<BsArrowRepeat/>} click={refresh}/>
+            </div>
             {/* 検索グループ */}
             <div className={styles.searchGroup}>
                 <ImgBtn img={<MdOutlineWifiFind />} click={toggleModalSearchGroup}/>
@@ -596,7 +611,7 @@ export default function Library() {
                     <div className={styles.GroupsList}>
                         {allGroups.map((group) => (
                             <div className={styles.group} key={group.id}>
-                                <p>{group.name}</p>
+                                <p className={styles.modalGroupName}>{group.name}</p>
                                 {/* 設定モーダル切替 / グループ選択 / 別モーダル閉じる */}
                                 <button className={styles.settingBtn} onClick={(e) => {toggleModalSetting(); setSelectedGroupId(group.id); setModalJoinedGroups(false);}}><BsGear/></button>
                                 <button className={styles.deleteBtn} onClick={(e) => {handleLeaveGroup(group.id);}}><BsX/></button>

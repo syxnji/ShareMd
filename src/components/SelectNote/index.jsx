@@ -7,28 +7,25 @@ export function Notes({id, className, title, preview, last}) {
         // <Link href={{ pathname: "/Editor/", query: { id } }} className={className}>
         <Link href={`/Editor/${id}`} className={className}>
             <div className={styles.note}>
-                
-                <div className={styles.top}>
-                    <div className={styles.title}>
-                        <p>
-                            {title}
-                        </p>
-                    </div>
+                <div className={styles.title}>
+                    <p>
+                        {title}
+                    </p>
+                </div>
+                {className.includes("grid") ? (
                     <div className={styles.preview}>
                         <p>
-                            {preview} ...
+                            {preview}
                         </p>
                     </div>
-                </div>
-                <div className={styles.bottom}>
-                    <div className={styles.history}>
-                        <p>
-                            Last Edited:
-                        </p>
-                        <p>
-                            {last}
-                        </p>
-                    </div>
+                ) : null}
+                <div className={styles.history}>
+                    <p>
+                        Last Edited:
+                    </p>
+                    <p>
+                        {last}
+                    </p>
                 </div>
             </div>
         </Link>

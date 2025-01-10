@@ -15,21 +15,12 @@
     text-decoration: none;
     transition: all 0.5s;
 }
-.list .top{
-    display: flex;
-}
-.list .preview{
-    display: none;
-}
-.list .bottom{
-    display: flex;
-    align-items: flex-end;
-}
 
 /* common */
 .note{
     display: flex;
     justify-content: space-between;
+    gap: 10px;
     padding: 10px;
     background-color: #fff;
     border: solid 1px #ddd;
@@ -49,9 +40,10 @@
     overflow-x: hidden;
 }
 .preview{
-    margin-top: 5px;
+    flex: 1;
     border-radius: 5px;
     background-color: #eee;
+    overflow: hidden;
 }
 .preview p{
     color: #777;

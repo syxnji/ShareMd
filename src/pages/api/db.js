@@ -384,6 +384,7 @@ export default function handler(req, res) {
             }
         );
     // MARK: 新規グループ
+    // TODO 改善するかも
     } else if (req.query.table === 'insertGroup') {
         const name = req.query.name;
         const userId = req.query.userId;

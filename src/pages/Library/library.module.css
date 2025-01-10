@@ -131,8 +131,29 @@
     align-items: center;
     padding: 10px;
     border-bottom: solid 1px #ddd;
+    gap: 10px;
+}
+.modalGroupName{
+    flex: 1;
+}
+.settingBtn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #eee;
+    border-radius: 100%;
+    border: solid 1px #ddd;
+    padding: 10px;
+    transition: all 0.3s;
+}
+.settingBtn:hover{
+    background-color: #fff;
+    color: #333;
 }
 .deleteBtn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: transparent;
     border: none;
 }
@@ -398,6 +419,17 @@
     overflow-y: scroll;
     background-color: #eee;
 }
+.requestBtn{
+    padding: 10px;
+    background-color: #fff;
+    border: solid 1px #429;
+    border-radius: 10px;
+    transition: all 0.3s;
+}
+.requestBtn:hover{
+    background-color: #429;
+    color: #fff;
+}
 
 /* MARK:通知 */
 .notifications{
@@ -419,8 +451,17 @@
     border-radius: 10px;
 }
 .message{
+    width: 100%;
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+.messageContent{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 .buttons{
     width: 100%;
@@ -429,20 +470,26 @@
     gap: 5px;
 }
 .acceptBtn{
-    width: 100%;
-    background-color: #4f4;
-    color: #333;
-    border: solid 1px #2d2;
-    border-radius: 5px;
-    padding: 5px;
-}   
-.rejectBtn{
-    width: 100%;
-    background-color: #f44;
+    background-color: #97e;
     color: #fff;
-    border: solid 1px #d22;
-    border-radius: 5px;
-    padding: 5px 10px;
+    border: none;
+    border: solid 1px #97e;
+    border-radius: 10px;
+    padding: 10px;
+    transition: all 0.3s;
+}   
+.acceptBtn:hover{
+    background-color: #fff;
+    color: #97e;
+    border: solid 1px #97e;
+}
+.rejectBtn{
+    background-color: transparent;
+    border: none;
+    transition: all 0.3s;
+}
+.rejectBtn:hover{
+    color: #f44;
 }
 
 
