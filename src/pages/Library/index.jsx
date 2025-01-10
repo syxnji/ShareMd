@@ -54,7 +54,7 @@ export default function Library() {
     }
     const defaultToastOptions = {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 2000,
         closeOnClick: true,
         draggable: true,
     }
@@ -162,8 +162,7 @@ export default function Library() {
     };
     // グループ退会
     const handleLeaveGroup = async (groupId) => {
-        const response = await fetch(`/api/db?table=leaveGroup&groupId=${groupId}&userId=${userId}`);
-        const result = await response.json();
+        await fetch(`/api/db?table=leaveGroup&groupId=${groupId}&userId=${userId}`);
         fetchGroup();
         toast.success('グループを退会しました', defaultToastOptions);
     }
@@ -221,7 +220,6 @@ export default function Library() {
         fetchGroupInMember();
     }, [selectedGroupId]);
 
-    // グループ管理モーダル ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
     // MARK:ロール管理
     const [groupRole, setGroupRole] = useState([]);
     useEffect(() => {
@@ -235,9 +233,7 @@ export default function Library() {
     // ロール変更
     const handleChangeRole = async (e, userId) => {
         const newRoleId = parseInt(e.target.value, 10);
-        console.log(selectedGroupId,userId,newRoleId);
-        const response = await fetch(`/api/db?table=changeRole&groupId=${selectedGroupId}&userId=${userId}&roleId=${newRoleId}`);
-        const result = await response.json();
+        await fetch(`/api/db?table=changeRole&groupId=${selectedGroupId}&userId=${userId}&roleId=${newRoleId}`);
         // メンバーリストを再取得
         await fetchGroupInMember();
         await fetchGroupRole();
@@ -245,8 +241,7 @@ export default function Library() {
     // メンバー削除
     const handleDeleteMember = async (e, userId) => {
         e.preventDefault();
-        const response = await fetch(`/api/db?table=deleteMember&groupId=${selectedGroupId}&userId=${userId}`);
-        const result = await response.json();
+        await fetch(`/api/db?table=deleteMember&groupId=${selectedGroupId}&userId=${userId}`);
         // メンバーリストを再取得
         await fetchGroupInMember();
     }
@@ -273,8 +268,7 @@ export default function Library() {
     const handleAddMember = async (e, user) => {
         e.preventDefault();
         const newMemberId = user.id;
-        const response = await fetch(`/api/db?table=addMember&groupId=${selectedGroupId}&userId=${newMemberId}`);
-        const result = await response.json();
+        await fetch(`/api/db?table=addMember&groupId=${selectedGroupId}&userId=${newMemberId}`);
         setSearchUser('');
         // メンバーリストを再取得
         await fetchGroupInMember();
@@ -282,8 +276,7 @@ export default function Library() {
 
     // MARK:製作管理
     const handleDeleteProject = async (projectId) => {
-        const response = await fetch(`/api/db?table=deleteProject&projectId=${projectId}`);
-        const result = await response.json();
+        await fetch(`/api/db?table=deleteProject&projectId=${projectId}`);
         // メンバーリストを再取得
         await fetchNotes();
     }
@@ -311,21 +304,18 @@ export default function Library() {
     }, []);
     // 役職名変更
     const handleChangeRoleName = async (e, roleId) => {
-        const response = await fetch(`/api/db?table=updateRoleName&roleId=${roleId}&roleName=${e.target.value}`);
-        const result = await response.json();
+        await fetch(`/api/db?table=updateRoleName&roleId=${roleId}&roleName=${e.target.value}`);
     }
     // 役職権限変更
     const handleChangePermit = async (e, roleId) => {
         const newPermitId = parseInt(e.target.value, 10);
-        const response = await fetch(`/api/db?table=updateRoleToPermit&roleId=${roleId}&permitId=${newPermitId}`);
-        const result = await response.json();
+        await fetch(`/api/db?table=updateRoleToPermit&roleId=${roleId}&permitId=${newPermitId}`);
         await fetchRoleToPermit();
     }
     // 役職削除
     const handleDeleteRole = async (e, roleId) => {
         e.preventDefault();
-        const response = await fetch(`/api/db?table=deleteRole&roleId=${roleId}`);
-        const result = await response.json();
+        await fetch(`/api/db?table=deleteRole&roleId=${roleId}`);
         // 役職権限を再取得
         await fetchRoleToPermit();
     }
@@ -333,8 +323,7 @@ export default function Library() {
     const handleAddRole = async (e) => {
         if (newRoleName.length > 0) {
             e.preventDefault();
-            const response = await fetch(`/api/db?table=insertRole&roleName=${newRoleName}&groupId=${selectedGroupId}&permissionId=${newPermitId}`);
-            const result = await response.json();
+            await fetch(`/api/db?table=insertRole&roleName=${newRoleName}&groupId=${selectedGroupId}&permissionId=${newPermitId}`);
             fetchRoleToPermit();
             setNewRoleName('');
             setNewPermitId(1);
@@ -350,7 +339,6 @@ export default function Library() {
     const handleChangeNewPermit = async (e) => {
         setNewPermitId(e.target.value);
     }
-    // グループ管理モーダル ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
     // MARK:切替え グリッド/リスト
     const [isGridView, setIsGridView] = useState(true);
@@ -637,7 +625,9 @@ export default function Library() {
                                 </div>
                             ))
                         ) : (
-                            <p>グループが見つかりません</p>
+                            <div className={styles.group}>
+                                <p>グループが見つかりません</p>
+                            </div>
                         )}
                     </div>
                 </div>
