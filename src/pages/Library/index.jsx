@@ -40,9 +40,9 @@ export default function Library() {
         fetchNotifications();
     }, [userId]);
     const fetchNotifications = async () => {
-        const response = await fetch(`/api/db?table=notifications&userId=${userId}`);
-        const result = await response.json();
-        setNotifications(result.results);
+        const notice = await fetch(`/api/db?table=notifications&userId=${userId}`);
+        const noticeResult = await notice.json();
+        setNotifications(noticeResult.results);
     };
     // MARK:通知設定
     const customToastOptions = {
@@ -400,7 +400,7 @@ export default function Library() {
                     {notification.type_id === 1 ? (
                         <>
                             <div className={styles.messageContent}>
-                                <p>リクエストID:{notification.id} 送信者:{notification.sender_id}</p>
+                                <p><span className={styles.noticeUserName}>{notification.username}さん</span>から<span className={styles.noticeGroupName}>「{notification.name}」</span>への<span className={styles.noticeTypeRequest}>参加リクエスト</span>があります</p>
                                 <button className={styles.acceptBtn} onClick={() => {handleAccept(notification.id, notification.group_id, notification.sender_id, notification.type_id); closeToast();}}>承認</button>
                             </div>
                             <button className={styles.rejectBtn} onClick={() => {handleReject(notification.id); closeToast();}}><BsX size={30}/></button>
@@ -409,7 +409,7 @@ export default function Library() {
                     {notification.type_id === 2 ? (
                         <>
                             <div className={styles.messageContent}>
-                                <p>招待ID:{notification.id} 送信者:{notification.sender_id}</p>
+                                <p><span className={styles.noticeUserName}>{notification.username}さん</span>から<span className={styles.noticeGroupName}>「{notification.name}」</span>への<span className={styles.noticeTypeInvite}>招待</span>があります</p>
                                 <button className={styles.acceptBtn} onClick={() => {handleAccept(notification.id, notification.group_id, notification.user_id, notification.type_id); closeToast();}}>承認</button>
                             </div>
                             <button className={styles.rejectBtn} onClick={() => {handleReject(notification.id); closeToast();}}><BsX size={30}/></button>

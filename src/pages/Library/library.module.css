@@ -463,6 +463,22 @@
     flex-direction: column;
     gap: 10px;
 }
+.noticeUserName{
+    font-weight: bold;
+    color: #555;
+}
+.noticeGroupName{
+    font-weight: bold;
+    color: #555;
+}
+.noticeTypeRequest{
+    font-weight: bold;
+    color: #0080ee;
+}
+.noticeTypeInvite{
+    font-weight: bold;
+    color: #00ee80;
+}
 .buttons{
     width: 100%;
     display: flex;

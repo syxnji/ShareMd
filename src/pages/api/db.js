@@ -56,7 +56,11 @@ export default function handler(req, res) {
     } else if (req.query.table === 'notifications') {
         const userId = req.query.userId;
         pool.query(
-            `SELECT * FROM notifications WHERE user_id = ? AND response = 0;`,
+            `SELECT notifications.*, users.username, groups.name 
+             FROM notifications 
+             JOIN users ON notifications.user_id = users.id 
+             JOIN \`groups\` ON notifications.group_id = \`groups\`.id 
+             WHERE user_id = ? AND response = 0;`,
             [userId],
             (err, results) => {
                 if (err) {
