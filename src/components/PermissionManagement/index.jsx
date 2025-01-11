@@ -48,11 +48,13 @@ export const PermissionManagement = ({
                                className={styles.roleName}
                                defaultValue={role.name} 
                                onChange={(e) => handleChangeRoleName(e, role.id)}
+                               disabled={role.id === 1 || role.id === 2}
                            />
                            <select 
                                className={styles.roleSelect} 
                                onChange={(e) => handleChangePermit(e, role.id)} 
                                value={role.permission_id}
+                               disabled={role.id === 1 || role.id === 2}
                            >
                                {permission.map((permit) => (
                                    <option key={permit.id} value={permit.id}>
@@ -63,6 +65,7 @@ export const PermissionManagement = ({
                            <button 
                                className={styles.deleteBtn} 
                                onClick={(e) => handleDeleteRole(e, role.id)}
+                               disabled={role.id === 1 || role.id === 2}
                            >
                                <BsX/>
                            </button>

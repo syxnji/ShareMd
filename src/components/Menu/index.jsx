@@ -3,12 +3,13 @@ import { useEffect, useState } from "react";
 // component
 import { ToastContainer, toast } from 'react-toastify';
 // icon
-import { BsArrowBarLeft, BsBuildings, BsGear, BsX } from "react-icons/bs";
+import { BsArrowBarLeft, BsBuildings, BsX } from "react-icons/bs";
 // style
 import styles from "./menu.module.css";
 import 'react-toastify/dist/ReactToastify.css';
+import { MdAdminPanelSettings } from "react-icons/md";
 
-export function Menu({ setSelectedGroupId, userInfo, allGroups, fetchGroup, toggleModalSetting }) {
+export function Menu({ setSelectedGroupId, userInfo, allGroups, fetchGroup, toggleModalSetting, checkPermission }) {
 
     // MARK:グループ選択
     const groupClick = (id) => {
@@ -88,8 +89,7 @@ export function Menu({ setSelectedGroupId, userInfo, allGroups, fetchGroup, togg
     const handleCreateGroup = async (e) => {
         e.preventDefault();
         const memberIds = memberList.map((member) => member.id);
-        const response = await fetch(`/api/db?table=insertGroup&name=${createName}&userId=${userInfo.id}&memberIds=${memberIds}`);
-        const result = await response.json();
+        await fetch(`/api/db?table=insertGroup&name=${createName}&userId=${userInfo.id}&memberIds=${memberIds}`);
         toggleModalCreate();
         setCreateName("");
         setMemberList([]);
@@ -100,8 +100,6 @@ export function Menu({ setSelectedGroupId, userInfo, allGroups, fetchGroup, togg
     // MARK:コンポーネント ━━━
     return(
         <>
-        {/* MARK:トースト */}
-        {/* <ToastContainer /> */}
 
         {/* MARK:グループ作成モーダル */}
         {modalCreate ? (
@@ -163,7 +161,9 @@ export function Menu({ setSelectedGroupId, userInfo, allGroups, fetchGroup, togg
                                 <button className={styles.group} onClick={() => groupClick(group.id)}>
                                     {group.name}
                                 </button>
-                                <button className={styles.settingBtn} onClick={(e) => {toggleModalSetting(); setSelectedGroupId(group.id);}}><BsGear/></button>
+                                {checkPermission.some(permission => permission.group_id === group.id && permission.permission_id === 1) && (
+                                    <button className={styles.settingBtn} onClick={(e) => {toggleModalSetting(); setSelectedGroupId(group.id);}}><MdAdminPanelSettings /></button>
+                                )}
                             </div>
                         ))}
                     </div>

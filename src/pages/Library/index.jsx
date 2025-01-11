@@ -15,10 +15,11 @@ import { BsList, BsFileEarmarkPlus, BsGrid3X3, BsGear, BsX, BsBuildings, BsArrow
 import { FaRegUser } from 'react-icons/fa6';
 // style
 import styles from "./library.module.css";
-import { MdLogout, MdOutlineWifiFind } from 'react-icons/md';
+import { MdAdminPanelSettings, MdLogout, MdOutlineWifiFind } from 'react-icons/md';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function Library() {
+
     
     // MARK:セッションToアカウント
     const [userId, setUserId] = useState(null);
@@ -63,6 +64,7 @@ export default function Library() {
     const refresh = () => {
         toast.dismiss();
         fetchNotifications();
+        fetchGroup();
         fetchNotes();
     }
 
@@ -93,6 +95,7 @@ export default function Library() {
     
     // MARK:表示 - アカウント
     const [userInfo, setUserInfo] = useState([]);
+    console.log(userId,'>> userInfo :',userInfo);
     useEffect(() => {
         const fetchUser = async () => {
             const response = await fetch(`/api/db?table=userInfo&userId=${userId}`);
@@ -160,12 +163,25 @@ export default function Library() {
         const allGroups = await response.json();
         setAllGroups(allGroups);
     };
-    // グループ退会
+
+    // MARK: グループ退会
     const handleLeaveGroup = async (groupId) => {
         await fetch(`/api/db?table=leaveGroup&groupId=${groupId}&userId=${userId}`);
         fetchGroup();
         toast.success('グループを退会しました', defaultToastOptions);
     }
+
+    // MARK: 権限チェック
+    const [checkPermission, setCheckPermission] = useState([]);
+    useEffect(() => {
+        fetchCheckPermission();
+    }, [allGroups]);
+    const fetchCheckPermission = async () => {
+        const response = await fetch(`/api/db?table=checkPermission&userId=${userId}`);
+        const permissions = await response.json();
+        setCheckPermission(permissions.results);
+    };
+    console.log(checkPermission);
 
     // MARK: 切替 - 新規ノート
     const [modalNewNote, setModalNewNote] = useState(false);
@@ -601,7 +617,9 @@ export default function Library() {
                             <div className={styles.group} key={group.id}>
                                 <p className={styles.modalGroupName}>{group.name}</p>
                                 {/* 設定モーダル切替 / グループ選択 / 別モーダル閉じる */}
-                                <button className={styles.settingBtn} onClick={(e) => {toggleModalSetting(); setSelectedGroupId(group.id); setModalJoinedGroups(false);}}><BsGear/></button>
+                                {checkPermission.some(permission => permission.group_id === group.id && permission.permission_id === 1) && (
+                                    <button className={styles.settingBtn} onClick={(e) => {toggleModalSetting(); setSelectedGroupId(group.id); setModalJoinedGroups(false);}}><MdAdminPanelSettings /></button>
+                                )}
                                 <button className={styles.deleteBtn} onClick={(e) => {handleLeaveGroup(group.id);}}><BsX/></button>
                             </div>
                         ))}
@@ -635,7 +653,7 @@ export default function Library() {
         ) : null}
 
         {/* MARK:メニュー */}
-        <Menu setSelectedGroupId={setSelectedGroupId} userInfo={userInfo[0]} allGroups={allGroups} fetchGroup={fetchGroup} toggleModalSetting={toggleModalSetting}/>
+        <Menu setSelectedGroupId={setSelectedGroupId} userInfo={userInfo[0]} allGroups={allGroups} fetchGroup={fetchGroup} toggleModalSetting={toggleModalSetting} checkPermission={checkPermission}/>
 
         <div className={styles.contents}>
             {/* MARK:ヘッドライン */}
@@ -646,7 +664,9 @@ export default function Library() {
                 {selectedGroupNotes.length > 0 && (
                     <div className={styles.notesTitles}>
                         <p className={styles.notesTitle}>{selectedGroupNotes[0].groupName}</p>
-                        <button className={styles.settingBtn} onClick={toggleModalSetting}><BsGear/></button>
+                        {checkPermission.some(permission => permission.group_id === selectedGroupId && permission.permission_id === 1) && (
+                            <button className={styles.settingBtn} onClick={toggleModalSetting}><MdAdminPanelSettings /></button>
+                        )}
                     </div>
                 )}
                 <NotesInGroup 
@@ -658,11 +678,15 @@ export default function Library() {
                 <div className={styles.notesTitles}>
                     <p className={styles.notesTitle}>検索結果「{searchValue}」</p>
                 </div>
-                <NotesInGroup 
-                 notes={filteredNotes} 
-                 isNotesClass={isNotesClass}
-                />
-                
+                {filteredNotes.length > 0 ? (
+                    <NotesInGroup 
+                     notes={filteredNotes} 
+                     isNotesClass={isNotesClass}
+                    />
+                ) : (
+                    <p>ノートが見つかりません...</p>
+                )}
+
             </div>
             
         </div>

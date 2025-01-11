@@ -42,6 +42,7 @@ export const MemberManagement = ({
                            className={styles.roleSelect}
                            onChange={(e) => handleChangeRole(e, member.id)}
                            value={member.role_id}
+                           disabled={member.role_id === 1}
                        >
                            {groupRole.map((role) => (
                                <option key={role.id} value={role.id}>
@@ -49,7 +50,7 @@ export const MemberManagement = ({
                                </option>
                            ))}
                        </select>
-                       <button className={styles.deleteBtn} onClick={(e) => handleDeleteMember(e, member.id)}>
+                       <button className={styles.deleteBtn} onClick={(e) => handleDeleteMember(e, member.id)} disabled={member.role_id === 1}>
                            <BsX/>
                        </button>
                    </div>

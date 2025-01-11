@@ -121,6 +121,18 @@ export default function handler(req, res) {
                                 res.status(500).json({ error: err.message });
                             } else {
                                 res.status(200).json({ results });
+
+                                pool.query(
+                                    `INSERT INTO group_roles (group_id, role_id) VALUES (?, 1), (?, 2);`,
+                                    [groupId, groupId],
+                                    (err, results) => {
+                                        if (err) {
+                                            res.status(500).json({ error: err.message });
+                                        } else {
+                                            res.status(200).json({ results });
+                                        }
+                                    }
+                                );
                             }
                         }
                     );
@@ -142,6 +154,28 @@ export default function handler(req, res) {
                     res.status(500).json({ error: err.message });
                 } else {
                     res.status(200).json(results);
+                }
+            }
+        );
+    // MARK: 権限チェック
+    } else if (req.query.table === 'checkPermission') {
+        const userId = req.query.userId;
+        pool.query(
+            `SELECT user_group_memberships.id, 
+             user_group_memberships.user_id,
+             user_group_memberships.group_id, 
+             user_group_memberships.role_id, 
+             role_permissions.permission_id
+             FROM user_group_memberships 
+             JOIN role_permissions 
+             ON user_group_memberships.role_id = role_permissions.role_id 
+             WHERE user_group_memberships.user_id = ?;`
+             , [userId],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
                 }
             }
         );
@@ -377,7 +411,7 @@ export default function handler(req, res) {
         const groupId = req.query.groupId;
         const inviteUserId = req.query.inviteUserId;
         pool.query(
-            `INSERT INTO user_group_memberships (user_id, group_id, role_id) VALUES (?, ?, 1);`,
+            `INSERT INTO user_group_memberships (user_id, group_id, role_id) VALUES (?, ?, 2);`,
             [inviteUserId, groupId],
             (err, results) => {
                 if (err) {
@@ -405,19 +439,30 @@ export default function handler(req, res) {
                 }
 
                 const groupId = results.insertId;
-                Promise.all(memberIds.map(memberId => 
-                    new Promise((resolve, reject) => {
+                Promise.all(memberIds.map(memberId => {
+                    if (memberId !== userId) {
+                        new Promise((resolve, reject) => {
+                            pool.query(
+                                `INSERT INTO notifications (user_id, sender_id, group_id, type_id)
+                                VALUES (?, ?, ?, 2);
+                                `, [memberId, userId, groupId],
+                                (err, results) => {
+                                    if (err) reject(err);
+                                    else resolve(results);
+                                }
+                            );
+                        })
+                    } else {
                         pool.query(
-                            `INSERT INTO notifications (user_id, sender_id, group_id, type_id)
-                             VALUES (?, ?, ?, 2);
-                            `, [memberId, userId, groupId],
+                            `INSERT INTO user_group_memberships (user_id, group_id, role_id) VALUES (?, ?, 1);`,
+                            [memberId, groupId],
                             (err, results) => {
                                 if (err) reject(err);
                                 else resolve(results);
                             }
                         );
-                    })
-                ))
+                    }
+                }))
                 .then(() => {
                     res.status(200).json({ success: true, groupId });
                 })

@@ -2,7 +2,7 @@ drop database md;
 create database md;
 use md;
 
--- Users table
+-- MARK: ユーザー
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
@@ -12,6 +12,19 @@ CREATE TABLE users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `delete` BOOLEAN DEFAULT 0
 ) ENGINE=InnoDB;
+
+-- MARK: INS ユーザー
+INSERT INTO users (username, email, password_hash) VALUES
+('john_doe', 'john@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
+('jane_smith', 'jane@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
+('bob_johnson', 'bob@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
+('alice_williams', 'alice@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
+('charlie_brown', 'charlie@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
+('diana_ross', 'diana@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
+('edward_norton', 'edward@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
+('fiona_apple', 'fiona@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
+('george_clooney', 'george@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
+('helen_mirren', 'helen@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2');
 
 -- MARK: 通知
 CREATE TABLE notifications (
@@ -33,13 +46,14 @@ CREATE TABLE notification_types (
     `delete` BOOLEAN DEFAULT 0
 ) ENGINE=InnoDB;
 
+-- MARK: INS 通知タイプ
 INSERT INTO notification_types (name, description) VALUES
 ('request', 'グループに参加リクエストがあった場合に通知されます'),
 ('invite', 'グループに招待された場合に通知されます'),
 ('accept', 'グループに参加承認があった場合に通知されます'),
 ('reject', 'グループに参加拒否があった場合に通知されます');
 
--- Groups table
+-- MARK: グループ
 CREATE TABLE `groups` (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -50,7 +64,21 @@ CREATE TABLE `groups` (
     `delete` BOOLEAN DEFAULT 0
 ) ENGINE=InnoDB;
 
--- Roles table (predefined roles)
+-- MARK: INS グループ
+INSERT INTO `groups` (name, description, created_by) VALUES
+('Marketing Team', 'マーケティング関連の文書用グループ', 1),
+('Development Team', '開発関連の文書用グループ', 2),
+('HR Department', '人事関連の文書用グループ', 3),
+('財務部門', '財務関連の文書用グループ', 4),
+('営業チーム', '営業関連の文書用グループ', 5),
+('カスタマーサポート', 'カスタマーサポート関連の文書用グループ', 6),
+('研究チーム', '研究関連の文書用グループ', 7),
+('法務部門', '法務関連の文書用グループ', 8),
+('経営層チーム', '経営層向けの文書用グループ', 9),
+('IT部門', 'IT関連の文書用グループ', 10),
+('サポート', 'サポート関連の文書用グループ', 11);
+
+-- MARK: 役職
 CREATE TABLE roles (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
@@ -58,7 +86,57 @@ CREATE TABLE roles (
     `delete` BOOLEAN DEFAULT 0
 ) ENGINE=InnoDB;
 
--- Permissions table
+-- MARK: INS 役職
+INSERT INTO roles (name, description) VALUES 
+-- グループ作成者 1 2
+('創設者', 'グループを作成したユーザー'),
+('デフォルト', 'デフォルトの役職'),
+-- マーケティング 3 4 5
+('担当者', 'マーケティング関連の業務を担当'),
+('キャンペーンリーダー', 'マーケティングキャンペーンのリーダー'),
+('アナリスト', 'マーケティング分析業務を担当'),
+-- 開発 6 7 8
+('ジュニア開発者', '開発業務のサポート'),
+('シニア開発者', '高度な開発業務を担当'),
+('リーダー', '開発チームのリーダー'),
+-- 人事 9 10 11
+('人事担当者', '人事業務を担当'),
+('採用担当者', '採用活動を担当'),
+('人事マネージャー', '人事部門のマネジメント'),
+-- 財務 12 13 14
+('財務担当者', '財務業務を担当'),
+('財務アナリスト', '財務データの分析業務を担当'),
+('財務マネージャー', '財務部門の管理'),
+-- 営業 15 16 17
+('営業担当者', '営業活動を担当'),
+('営業マネージャー', '営業チームのマネジメント'),
+('アカウントマネージャー', 'クライアントとの関係を管理'),
+-- カスタマーサポート 18 19 20
+('サポートスタッフ', 'カスタマーサポート業務を担当'),
+('サポートリーダー', 'サポートチームのリーダー'),
+('カスタマーサポートマネージャー', 'カスタマーサポート部門の管理'),
+-- 研究 21 22 23
+('研究者', '研究業務を担当'),
+('シニア研究者', '高度な研究業務を担当'),
+('リサーチリーダー', '研究チームのリーダー'),
+-- 法務 24 25 26
+('法務担当者', '法務業務を担当'),
+('法務アドバイザー', '法務に関するアドバイスを提供'),
+('法務マネージャー', '法務部門の管理'),
+-- 経営 27 28 29
+('経営陣', '経営層の業務を担当'),
+('経営アシスタント', '経営陣のサポート業務'),
+('経営マネージャー', '経営部門の管理'),
+-- IT 30 31 32
+('CEO', '最高経営責任者'),
+('CFO', '最高財務責任者'),
+('COO', '最高執行責任者'),
+-- サポート 33 34 35
+('ITサポート', 'ITサポート業務を担当'),
+('システムエンジニア', 'システム開発および管理業務を担当'),
+('ITマネージャー', 'IT部門の管理');
+
+-- MARK: 権限
 CREATE TABLE permissions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) UNIQUE NOT NULL,
@@ -66,7 +144,13 @@ CREATE TABLE permissions (
     `delete` BOOLEAN DEFAULT 0
 ) ENGINE=InnoDB;
 
--- Group-specific Roles table
+-- MARK: INS 権限
+INSERT INTO permissions (name, description) VALUES
+('管理者', '文書の管理および設定の管理を行う権限'),
+('編集可能', '文書を作成、編集、削除する権限'),
+('閲覧のみ', '文書を読む権限');
+
+-- MARK: グループごとの役職
 CREATE TABLE group_roles (
     id INT AUTO_INCREMENT PRIMARY KEY,
     group_id INT,
@@ -77,7 +161,32 @@ CREATE TABLE group_roles (
     `delete` BOOLEAN DEFAULT 0
 ) ENGINE=InnoDB;
 
--- Role-Permission associations table
+-- MARK: INS グループごとのロール
+INSERT INTO group_roles (group_id, role_id) VALUES
+-- マーケティング
+(1,1),(1,2), (1, 3), (1, 4), (1, 5),
+-- 開発
+(2,1),(2,2), (2, 6), (2, 7), (2, 8),
+-- 人事
+(3,1),(3,2), (3, 9), (3, 10), (3, 11),
+-- 財務
+(4,1),(4,2), (4, 12), (4, 13), (4, 14),
+-- 営業
+(5,1),(5,2), (5, 15), (5, 16), (5, 17),
+-- カスタマーサポート
+(6,1),(6,2), (6, 18), (6, 19), (6, 20),
+-- 研究
+(7,1),(7,2), (7, 21), (7, 22), (7, 23),
+-- 法務
+(8,1),(8,2), (8, 24), (8, 25), (8, 26),
+-- 経営
+(9,1),(9,2), (9, 27), (9, 28), (9, 29),
+-- IT
+(10,1),(10,2), (10, 30), (10, 31), (10, 32),
+-- サポート
+(11,1),(11,2), (11, 33), (11, 34), (11, 35);
+
+-- MARK: 役職ごとの権限
 CREATE TABLE role_permissions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     role_id INT,
@@ -88,7 +197,34 @@ CREATE TABLE role_permissions (
     `delete` BOOLEAN DEFAULT 0
 ) ENGINE=InnoDB;
 
--- User-Group Memberships table
+-- MARK: INS 役職ごとの権限
+INSERT INTO role_permissions (role_id, permission_id) VALUES
+-- デフォルト
+(1, 1), (2, 2),
+-- グループ作成者
+(3, 1),(4, 2),(5, 3),
+-- マーケティング
+(6, 1),(7, 2),(8, 3),
+-- 開発
+(9, 1),(10, 2),(11, 3),
+-- 人事
+(12, 1),(13, 2),(14, 3),
+-- 財務
+(15, 1),(16, 2),(17, 3),
+-- 営業
+(18, 1),(19, 2),(20, 3),
+-- カスタマーサポート
+(21, 1),(22, 2),(23, 3),
+-- 研究
+(24, 1),(25, 2),(26, 3),
+-- 法務
+(27, 1),(28, 2),(29, 3),
+-- 経営
+(30, 1),(31, 2),(32, 3),
+-- IT
+(33, 1),(34, 2),(35, 3);
+
+-- MARK: ユーザーごとのグループ
 CREATE TABLE user_group_memberships (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
@@ -102,7 +238,29 @@ CREATE TABLE user_group_memberships (
     FOREIGN KEY (role_id) REFERENCES group_roles(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
--- Notes table
+-- MARK: INS ユーザーごとのグループ
+INSERT INTO user_group_memberships (user_id, group_id, role_id) VALUES
+-- 1~3
+(1, 1, 1), (1, 2, 2), (1, 3, 2),
+(2, 1, 2), (2, 2, 1), (2, 3, 2),
+(3, 1, 2), (3, 2, 2), (3, 3, 1),
+-- 4~6
+(4, 4, 1), (4, 5, 2), (4, 6, 2),
+(5, 4, 2), (5, 5, 1), (5, 6, 2),
+(6, 4, 2), (6, 5, 2), (6, 6, 1),
+-- 7~9
+(7, 7, 1), (7, 8, 2), (7, 9, 2),
+(8, 7, 2), (8, 8, 1), (8, 9, 2),
+(9, 7, 2), (9, 8, 2), (9, 9, 1),
+-- 10
+(10, 10, 1),
+-- 11
+(1, 11, 1), (2, 11, 2), (3, 11, 2),
+(4, 11, 2), (5, 11, 2), (6, 11, 2),
+(7, 11, 2), (8, 11, 2), (9, 11, 2),
+(10, 11, 1);
+
+-- MARK: ノート
 CREATE TABLE notes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
@@ -116,118 +274,7 @@ CREATE TABLE notes (
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
--- Insert sample data into users table
-INSERT INTO users (username, email, password_hash) VALUES
-('john_doe', 'john@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
-('jane_smith', 'jane@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
-('bob_johnson', 'bob@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
-('alice_williams', 'alice@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
-('charlie_brown', 'charlie@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
-('diana_ross', 'diana@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
-('edward_norton', 'edward@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
-('fiona_apple', 'fiona@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
-('george_clooney', 'george@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2'),
-('helen_mirren', 'helen@mail.com', '$2a$10$N/SRaU0r6gg6SWZOK6ipJuijmxnP9fdGqGAqWOCPrrP9e7MSLhwU2');
-
--- Insert sample data into groups table
-INSERT INTO `groups` (name, description) VALUES
-('Marketing Team', 'マーケティング関連の文書用グループ'),
-('Development Team', '開発関連の文書用グループ'),
-('HR Department', '人事関連の文書用グループ'),
-('財務部門', '財務関連の文書用グループ'),
-('営業チーム', '営業関連の文書用グループ'),
-('カスタマーサポート', 'カスタマーサポート関連の文書用グループ'),
-('研究チーム', '研究関連の文書用グループ'),
-('法務部門', '法務関連の文書用グループ'),
-('経営層チーム', '経営層向けの文書用グループ'),
-('IT部門', 'IT関連の文書用グループ');
-
--- Insert 70 sample data into roles table
-INSERT INTO roles (name, description) VALUES 
-('担当者', 'マーケティング関連の業務を担当'),
-('キャンペーンリーダー', 'マーケティングキャンペーンのリーダー'),
-('アナリスト', 'マーケティング分析業務を担当'),
-('ジュニア開発者', '開発業務のサポート'),
-('シニア開発者', '高度な開発業務を担当'),
-('リーダー', '開発チームのリーダー'),
-('人事担当者', '人事業務を担当'),
-('採用担当者', '採用活動を担当'),
-('人事マネージャー', '人事部門のマネジメント'),
-('財務担当者', '財務業務を担当'),
-('財務アナリスト', '財務データの分析業務を担当'),
-('財務マネージャー', '財務部門の管理'),
-('営業担当者', '営業活動を担当'),
-('営業マネージャー', '営業チームのマネジメント'),
-('アカウントマネージャー', 'クライアントとの関係を管理'),
-('サポートスタッフ', 'カスタマーサポート業務を担当'),
-('サポートリーダー', 'サポートチームのリーダー'),
-('カスタマーサポートマネージャー', 'カスタマーサポート部門の管理'),
-('研究者', '研究業務を担当'),
-('シニア研究者', '高度な研究業務を担当'),
-('リサーチリーダー', '研究チームのリーダー'),
-('法務担当者', '法務業務を担当'),
-('法務アドバイザー', '法務に関するアドバイスを提供'),
-('法務マネージャー', '法務部門の管理'),
-('経営陣', '経営層の業務を担当'),
-('経営アシスタント', '経営陣のサポート業務'),
-('CEO', '最高経営責任者'),
-('CFO', '最高財務責任者'),
-('COO', '最高執行責任者'),
-('ITサポート', 'ITサポート業務を担当'),
-('システムエンジニア', 'システム開発および管理業務を担当'),
-('ITマネージャー', 'IT部門の管理');
-
-
--- Insert sample data into permissions table
-INSERT INTO permissions (name, description) VALUES
-('閲覧のみ', '文書を読む権限'),
-('編集可能', '文書を作成、編集、削除する権限'),
-('管理者', '文書の管理および設定の管理を行う権限');
-
--- Insert 70 roles for 10 groups into group_roles table
-INSERT INTO group_roles (group_id, role_id) VALUES
--- Group 1
-(1, 1), (1, 2), (1, 3),
--- Group 2
-(2, 4), (2, 5), (2, 6),
--- Group 3
-(3, 7), (3, 8), (3, 9),
--- Group 4
-(4, 10), (4, 11), (4, 12),
--- Group 5
-(5, 13), (5, 14), (5, 15),
--- Group 6
-(6, 16), (6, 17), (6, 18),
--- Group 7
-(7, 19), (7, 20), (7, 21),
--- Group 8
-(8, 22), (8, 23), (8, 24),
--- Group 9
-(9, 25), (9, 26), (9, 27), (9, 28), (9, 29),
--- Group 10
-(10, 30), (10, 31), (10, 32);
-
--- Insert sample data into role_permissions table
-INSERT INTO role_permissions (role_id, permission_id) VALUES
-(1, 1),(2, 2),(3, 3),
-(4, 2),(5, 2),(6, 3),
-(7, 1),(8, 2),(9, 3),
-(10, 1),(11, 2),(12, 3),
-(13, 1),(14, 2),(15, 2),
-(16, 1),(17, 2),(18, 3),
-(19, 1),(20, 2),(21, 3),
-(22, 1),(23, 2),(24, 3),
-(25, 3),(26, 2),(27, 3),(28, 3),(29, 3),
-(30, 1), (31, 2),(32, 3);
-
--- Insert sample data into user_group_memberships table
-INSERT INTO user_group_memberships (user_id, group_id, role_id) VALUES
-(1, 1, 1), (2, 1, 2), (3, 2, 1), (4, 2, 2),
-(5, 3, 1), (6, 3, 2), (7, 4, 1), (8, 4, 2),
-(9, 5, 1), (10, 5, 2),
-(1, 2, 1),(1, 3, 1),(1, 4, 1);
-
--- Insert sample data into notes table
+-- MARK: INS ノート
 INSERT INTO notes (title, content, group_id, created_by) VALUES
 ('Marketing Strategy 2023', 'Content for marketing strategy...', 1, 1),
 ('Q2 Development Roadmap', 'Roadmap for Q2 development...', 2, 3),
