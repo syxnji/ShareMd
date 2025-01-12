@@ -165,6 +165,12 @@ export function Markdown({ content, change, view }) {
         <>
         <div className={styles.markdownContent}>
             {view ? (
+                <div className={styles.noteViewer}>
+                    <ReactMarkdown components={MarkdownComponents} remarkPlugins={[remarkGfm]}>
+                        {content}
+                    </ReactMarkdown>
+                </div>
+            ) : (
                 <div className={styles.noteInput}>
                     <textarea
                     name='content'
@@ -172,12 +178,6 @@ export function Markdown({ content, change, view }) {
                     value={content}
                     onChange={change}
                     />
-                </div>
-            ) : (
-                <div className={styles.noteViewer}>
-                    <ReactMarkdown components={MarkdownComponents} remarkPlugins={[remarkGfm]}>
-                        {content}
-                    </ReactMarkdown>
                 </div>
             )}
         </div>

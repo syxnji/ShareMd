@@ -6,7 +6,6 @@ import Cookies from 'js-cookie';
 import { SidebarInNotes } from "@/components/SidebarInNotes/index";
 import { Markdown } from "@/components/Markdown";
 import { ImgBtn } from '@/components/UI/ImgBtn/index.jsx';
-import { GroupHeadline } from '@/components/GroupHeadline';
 import { ToastContainer, toast } from 'react-toastify';
 // style
 import styles from "./editor.module.css"
@@ -154,6 +153,7 @@ export default function MarkdownEditor({ id }) {
                                 className={styles.title} 
                                 value={noteTitle}
                                 onChange={handleChangeTitle}
+                                placeholder='Click to edit title...'
                             />
                             <div className={styles.btns}>
                                 <div className={styles.screenBtn}>

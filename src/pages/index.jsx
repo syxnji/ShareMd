@@ -1,81 +1,43 @@
+"use client"
+import Link from "next/link";
+import { useState, useEffect } from "react";
 // style
 import styles from "@/styles/index.module.css";
+// icon
+import { TfiWrite } from "react-icons/tfi";
+import { PiSignIn } from "react-icons/pi";
+import Cookies from "js-cookie";
+import { FaBook } from "react-icons/fa6";
 
 export default function MarkdownEditor() {
-  // 仮データ
-  const bookColors = [
-    '#8B4513', // Saddle Brown
-    '#D2691E', // Chocolate
-    '#CD853F', // Peru
-    '#DEB887', // Burlywood
-    '#F4A460', // Sandy Brown
-    '#D2B48C', // Tan
-    '#FFDAB9', // Peach Puff
-    '#FFE4B5', // Moccasin
-    '#F0E68C', // Khaki
-    '#BDB76B', // Dark Khaki
-    '#800000', // Maroon
-    '#8B0000', // Dark Red
-    '#A52A2A', // Brown
-    '#B22222', // Fire Brick
-    '#CD5C5C', // Indian Red
-  ]
-  const booksTop = Array.from({ length: 51 }, () => bookColors[Math.floor(Math.random() * bookColors.length)])
-  const booksBottom = Array.from({ length: 51 }, () => bookColors[Math.floor(Math.random() * bookColors.length)])
+
+  const [noteTitle, setNoteTitle] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setIsLoggedIn(!!Cookies.get('id'));
+  }, []);
+
   return (
       <main>
         <div className={styles.contents}>
-          {/* top 本棚 */}
-          <div className={styles.top}>
-            <div className={styles.bookshelf}>
-              {booksTop.map((color, index) => (
-                <div
-                className={styles.book}
-                key={index}
-                style={{
-                  backgroundColor: color
-                }}
-                />
-              ))}
-              </div>
-            <div className={styles.trapezoidTop}></div>
+          <div className={styles.head}>
+            <TfiWrite className={styles.headIcon}/>
+            <p className={styles.headTitle}>Shere Markdown</p>
+            {isLoggedIn ? (
+              <Link href={"/Library"} className={styles.headButton}><FaBook />Library</Link>
+            ) : (
+              <Link href={"/Auth"} className={styles.headButton}><PiSignIn />Sign in</Link>
+            )}
           </div>
-
-          {/* middle new note */}
-          <div className={styles.middle}>
-            <p className={styles.siteName}>
-              {/* ShereText */}
-              <span>S</span>
-              <span>h</span>
-              <span>e</span>
-              <span>r</span>
-              <span>e</span>
-              <span>T</span>
-              <span>e</span>
-              <span>x</span>
-              <span>t</span>
-            </p>
-            <form action="" method="post">
-              <label htmlFor="title">Note Title</label>
-              <input type="text" id="title"/>
-              <button>New Note</button>
-            </form>
-          </div>
-
-          {/* bottom本棚 */}
-          <div className={styles.bottom}>
-            <div className={styles.trapezoidBottom}></div>
-            <div className={styles.bookshelf}>
-              {booksBottom.map((color, index) => (
-                <div
-                className={styles.book}
-                key={index}
-                style={{
-                  backgroundColor: color
-                }}
-                />
-              ))}
+          <div className={styles.content}>
+            <div className={styles.contentText}>
+              <p className={styles.mainText}>Collaborate on Notes Together</p>
+              <p className={styles.subText}>ノートを作成し、チーム間で共有できます。新規ノートの作成から始めましょう。</p>
             </div>
+            <input type="text" placeholder="Enter note title..." className={styles.contentInput} value={noteTitle} onChange={(e) => setNoteTitle(e.target.value)} />
+            {/* <Link href={`/Editor/0?title=${noteTitle}`} className={styles.submitButton}><TfiWrite />Create New Note</Link> */}
+            <Link href={`/Try?title=${noteTitle}`} className={styles.submitButton}><TfiWrite />Create New Note</Link>
           </div>
         </div>
       </main>

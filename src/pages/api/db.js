@@ -341,6 +341,38 @@ export default function handler(req, res) {
                 }
             }
         );
+    // MARK: プライベートグループ
+    } else if (req.query.table === 'privateGroup') {
+        const userId = req.query.userId;
+        pool.query(
+            `SELECT * FROM \`groups\` 
+             WHERE name = 'プライベート' 
+             AND \`delete\` = 0 AND created_by = ?;`, [userId],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
+    // MARK: ノートの作成
+    } else if (req.query.table === 'insertNote') {
+        const title = req.query.title;
+        const content = req.query.content;
+        const groupId = req.query.groupId;
+        const userId = req.query.userId;
+        pool.query(
+            `INSERT INTO notes (title, content, group_id, created_by) VALUES (?, ?, ?, ?);`,
+            [title, content, groupId, userId],
+            (err, results) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                } else {
+                    res.status(200).json({ results });
+                }
+            }
+        );
     // MARK: ユーザー検索
     } else if (req.query.table === 'suggestUsers') {
         const name = req.query.name;

@@ -1,80 +1,92 @@
 .contents{
     height: 100vh;
+}
+
+.head{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+.headIcon{
+    color: #44f;
+    font-size: 1.2rem;
+}
+.headTitle{
+    flex: 1;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #555;
+}
+.headButton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    color: #333;
+    text-decoration: none;
+    padding: 10px;
+    border: solid 1px #333;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+.headButton:hover{
+    background-color: #333;
+    color: #fff;
+}
+.content{
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 10px;
+    
+    background: radial-gradient(circle, #ddd 5%, transparent 11%);
+        background-size: 2em 2em;
+        background-color: #ffffff;
+        opacity: 1
 }
-.bookshelf{
-    width: 100%;
-    display: flex;
-    height: 20vh;
-    padding: 5px;
-    background-color: #723;
-}
-.book{
-    width: 30px;
-    height: 100%;
-    border: solid 1px #444;
-    transition: all 0.2s;
-}
-.book:hover{
-    scale: 1.2;
-}
-.top{
-    width: 100%;
-}
-.trapezoidTop{
-    height: 25px;
-    width: 100%;
-    background-color: #612;
-    clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
-}
-.siteName{
-    text-align: center;
-    font-size: 90px;
-    font-weight: bold;
-    color: #ddd;
-}
-.siteName span{
-    transition: all 0.3s;
-}
-.siteName span:hover{
-    color: #723;
-}
-.middle form{
+.contentText{
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 20px;
 }
-.middle label{
-    color: #777;
-    font-size: 0.7rem;
-}
-.middle input{
-    border: solid 1px #ccc;
-    border-radius: 5px;
-    padding: 10px;
-}
-.middle button{
-    color: #fff;
+.mainText{
+    font-size: 2rem;
     font-weight: bold;
-    background-color: #723;
-    border: solid 2px #723;
-    border-radius: 5px;
-    margin-top: 10px;
+    color: #333;
+}
+.subText{
+    font-size: 1rem;
+    color: #555;
+}
+.contentInput{
+    width: 500px;
     padding: 10px;
-    transition: all 0.2s;
+    border: solid 1px #ccc;
+    outline: none;
+    border-radius: 10px;
 }
-.middle button:hover{
-    color: #723;
-    background-color: #fff;
+.submitButton{
+    width: 500px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: #44f;
+    border: none;
+    border-radius: 10px;
+    transition: all 0.3s ease;
 }
-.bottom{
-    width: 100%;
+.submitButton:hover{
+    background-color: #22d;
 }
-.trapezoidBottom{
-    height: 25px;
-    width: 100%;
-    background-color: #834;
-    clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
-}
+
