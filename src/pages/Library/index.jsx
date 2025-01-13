@@ -38,11 +38,14 @@ export default function Library() {
     // MARK:通知
     const [notifications, setNotifications] = useState([]);
     useEffect(() => {
-        fetchNotifications();
+        if (userId) {
+            fetchNotifications();
+        }
     }, [userId]);
     const fetchNotifications = async () => {
         const notice = await fetch(`/api/db?table=notifications&userId=${userId}`);
         const noticeResult = await notice.json();
+        toast.dismiss();
         setNotifications(noticeResult.results);
     };
     // MARK:通知設定
@@ -71,12 +74,19 @@ export default function Library() {
     // MARK:アカウントToノート
     const [allNotes, setAllNotes] = useState([]);
     useEffect(() => {
-        const fetchNotes = async () => {
-            const response = await fetch(`/api/db?table=allNotes&userId=${userId}`);
-            const allNotes = await response.json();
-            setAllNotes(allNotes);
-        };
-        fetchNotes();
+        if (userId) {
+            const fetchNotes = async () => {
+                try {
+                    const response = await fetch(`/api/db?table=allNotes&userId=${userId}`);
+                    const data = await response.json();
+                    setAllNotes(data.results || []);
+                } catch (error) {
+                    console.error('Failed to fetch notes:', error);
+                    setAllNotes([]);
+                }
+            };
+            fetchNotes();
+        }
     }, [userId]);
     
     
@@ -94,20 +104,18 @@ export default function Library() {
     }
     
     // MARK:表示 - アカウント
-    const [userInfo, setUserInfo] = useState([]);
-    console.log(userId,'>> userInfo :',userInfo);
+    const [userInfo, setUserInfo] = useState({});
     useEffect(() => {
         const fetchUser = async () => {
             const response = await fetch(`/api/db?table=userInfo&userId=${userId}`);
-            const userInfo = await response.json();
-            setUserInfo(userInfo.results);
+            const result = await response.json();
+            setUserInfo(result.results[0]);
         };  
         fetchUser();
     }, [userId]);
 
     // MARK:ログアウト
     const handleLogout = () => {
-        // sessionStorage.clear();
         Cookies.remove('id', { path: '/' });
         window.location.assign('/Auth');
     }
@@ -118,9 +126,11 @@ export default function Library() {
         e.preventDefault();
         setSearchValue(e.target.value);
     }
-    const filteredNotes = allNotes.filter(note =>
-        note.title.toLowerCase().includes(searchValue.toLowerCase())
-    );
+    const filteredNotes = Array.isArray(allNotes) 
+        ? allNotes.filter(note =>
+            note.title.toLowerCase().includes(searchValue.toLowerCase())
+          )
+        : [];
     
     // MARK:切替 - 設定
     const [modalSetting, setModalSetting] = useState(false);
@@ -156,12 +166,19 @@ export default function Library() {
     // MARK:アカウントToグループ
     const [allGroups, setAllGroups] = useState([]);
     useEffect(() => {
-        fetchGroup();
+        if (userId) {
+            fetchGroup();
+        }
     }, [userId]);
     const fetchGroup = async () => {
-        const response = await fetch(`/api/db?table=joinedGroups&userId=${userId}`);
-        const allGroups = await response.json();
-        setAllGroups(allGroups);
+        try {
+            const response = await fetch(`/api/db?table=joinedGroups&userId=${userId}`);
+            const data = await response.json();
+            setAllGroups(data.results || []);
+        } catch (error) {
+            console.error('Failed to fetch groups:', error);
+            setAllGroups([]);
+        }
     };
 
     // MARK: グループ退会
@@ -181,7 +198,6 @@ export default function Library() {
         const permissions = await response.json();
         setCheckPermission(permissions.results);
     };
-    console.log(checkPermission);
 
     // MARK: 切替 - 新規ノート
     const [modalNewNote, setModalNewNote] = useState(false);
@@ -216,7 +232,7 @@ export default function Library() {
         if (selectedGroupId) {
             const response = await fetch(`/api/db?table=selectedGroup&groupId=${selectedGroupId}`);
             const notes = await response.json();
-            setSelectedGroupNotes(notes);
+            setSelectedGroupNotes(notes.results || []);
         }
     };
     useEffect(() => {
@@ -284,10 +300,12 @@ export default function Library() {
     const handleAddMember = async (e, user) => {
         e.preventDefault();
         const newMemberId = user.id;
-        await fetch(`/api/db?table=addMember&groupId=${selectedGroupId}&userId=${newMemberId}`);
+        // await fetch(`/api/db?table=addMember&groupId=${selectedGroupId}&userId=${newMemberId}`);
+        await fetch(`/api/db?table=inviteGroup&groupId=${selectedGroupId}&inviteUserId=${newMemberId}&userId=${userId}`);
         setSearchUser('');
         // メンバーリストを再取得
         await fetchGroupInMember();
+        toast.success('メンバーを招待しました', defaultToastOptions);
     }
 
     // MARK:製作管理
@@ -314,7 +332,7 @@ export default function Library() {
         const fetchPermission = async () => {
             const response = await fetch(`/api/db?table=permission`);
             const permissions = await response.json();
-            setPermission(permissions);
+            setPermission(permissions.results || []);
         };
         fetchPermission();
     }, []);
@@ -369,11 +387,13 @@ export default function Library() {
     const toggleModalSearchGroup = () => {
         setModalSearchGroup(!modalSearchGroup);
     }
+
     // MARK: グループ名から検索
     const [searchGroup, setSearchGroup] = useState('');
     const handleSearchGroup = (e) => {
         setSearchGroup(e.target.value);
     }
+
     // MARK: 検索結果
     const [searchGroupResult, setSearchGroupResult] = useState([]);
     useEffect(() => {
@@ -384,12 +404,14 @@ export default function Library() {
         const groups = await response.json();
         setSearchGroupResult(groups.results);
     }
+
     // MARK: グループ参加リクエスト
     const handleRequestGroup = async (e, groupId, createdBy) => {
         e.preventDefault();
         await fetch(`/api/db?table=requestGroup&groupId=${groupId}&fromUserId=${userId}&toUserId=${createdBy}`);
         toast.success('グループ参加リクエストを送信しました', defaultToastOptions);
     }
+
     // MARK: リクエストの承認&招待
     const handleAccept = async (notificationId, groupId, inviteUserId, typeId) => {
         await fetch(`/api/db?table=acceptRequest&notificationId=${notificationId}`);
@@ -402,6 +424,7 @@ export default function Library() {
         }
         fetchNotifications();
     };
+
     // MARK: リクエストの拒否
     const handleReject = async (notificationId) => {
         await fetch(`/api/db?table=rejectRequest&notificationId=${notificationId}`);
@@ -409,33 +432,35 @@ export default function Library() {
         toast.success('拒否しました', defaultToastOptions);
     };
     useEffect(() => {
-        notifications.forEach((notification) => {
-            toast(
-                ({ closeToast }) => (
-                <div className={styles.message}>
-                    {notification.type_id === 1 ? (
-                        <>
-                            <div className={styles.messageContent}>
-                                <p><span className={styles.noticeUserName}>{notification.username}さん</span>から<span className={styles.noticeGroupName}>「{notification.name}」</span>への<span className={styles.noticeTypeRequest}>参加リクエスト</span>があります</p>
-                                <button className={styles.acceptBtn} onClick={() => {handleAccept(notification.id, notification.group_id, notification.sender_id, notification.type_id); closeToast();}}>承認</button>
-                            </div>
-                            <button className={styles.rejectBtn} onClick={() => {handleReject(notification.id); closeToast();}}><BsX size={30}/></button>
-                        </>
-                    ) : null}
-                    {notification.type_id === 2 ? (
-                        <>
-                            <div className={styles.messageContent}>
-                                <p><span className={styles.noticeUserName}>{notification.username}さん</span>から<span className={styles.noticeGroupName}>「{notification.name}」</span>への<span className={styles.noticeTypeInvite}>招待</span>があります</p>
-                                <button className={styles.acceptBtn} onClick={() => {handleAccept(notification.id, notification.group_id, notification.user_id, notification.type_id); closeToast();}}>承認</button>
-                            </div>
-                            <button className={styles.rejectBtn} onClick={() => {handleReject(notification.id); closeToast();}}><BsX size={30}/></button>
-                        </>
-                    ) : null}
-                </div>
-                ),
-                customToastOptions
-            );
-        });
+        if (notifications && notifications.length > 0) {
+            notifications.forEach((notification) => {
+                toast(
+                    ({ closeToast }) => (
+                        <div className={styles.message}>
+                            {notification.type_id === 1 ? (
+                                <>
+                                    <div className={styles.messageContent}>
+                                        <p><span className={styles.noticeUserName}>{notification.username}さん</span>から<span className={styles.noticeGroupName}>「{notification.name}」</span>への<span className={styles.noticeTypeRequest}>参加リクエスト</span>があります</p>
+                                        <button className={styles.acceptBtn} onClick={() => {handleAccept(notification.id, notification.group_id, notification.sender_id, notification.type_id); closeToast();}}>承認</button>
+                                    </div>
+                                    <button className={styles.rejectBtn} onClick={() => {handleReject(notification.id); closeToast();}}><BsX size={30}/></button>
+                                </>
+                            ) : null}
+                            {notification.type_id === 2 ? (
+                                <>
+                                    <div className={styles.messageContent}>
+                                        <p><span className={styles.noticeUserName}>{notification.username}さん</span>から<span className={styles.noticeGroupName}>「{notification.name}」</span>への<span className={styles.noticeTypeInvite}>招待</span>があります</p>
+                                        <button className={styles.acceptBtn} onClick={() => {handleAccept(notification.id, notification.group_id, notification.user_id, notification.type_id); closeToast();}}>承認</button>
+                                    </div>
+                                    <button className={styles.rejectBtn} onClick={() => {handleReject(notification.id); closeToast();}}><BsX size={30}/></button>
+                                </>
+                            ) : null}
+                        </div>
+                    ),
+                    customToastOptions
+                );
+            });
+        }
     }, [notifications]);
 
     // MARK:ヘッドライン
@@ -591,8 +616,8 @@ export default function Library() {
                 <div className={styles.accountContent}>
                     <FaRegUser/>
                     <div className={styles.accountInfo}>
-                        <p className={styles.accountName}>{userInfo[0].username}</p>
-                        <p className={styles.accountEmail}>{userInfo[0].email}</p>
+                        <p className={styles.accountName}>{userInfo.username}</p>
+                        <p className={styles.accountEmail}>{userInfo.email}</p>
                     </div>
                 </div>
                 <div className={styles.groupBtnContainer}>
@@ -653,7 +678,14 @@ export default function Library() {
         ) : null}
 
         {/* MARK:メニュー */}
-        <Menu setSelectedGroupId={setSelectedGroupId} userInfo={userInfo[0]} allGroups={allGroups} fetchGroup={fetchGroup} toggleModalSetting={toggleModalSetting} checkPermission={checkPermission}/>
+        <Menu 
+            setSelectedGroupId={setSelectedGroupId} 
+            userInfo={userInfo} 
+            allGroups={allGroups || []} 
+            fetchGroup={fetchGroup} 
+            toggleModalSetting={toggleModalSetting} 
+            checkPermission={checkPermission}
+        />
 
         <div className={styles.contents}>
             {/* MARK:ヘッドライン */}
@@ -664,14 +696,19 @@ export default function Library() {
                 {selectedGroupNotes.length > 0 && (
                     <div className={styles.notesTitles}>
                         <p className={styles.notesTitle}>{selectedGroupNotes[0].groupName}</p>
-                        {checkPermission.some(permission => permission.group_id === selectedGroupId && permission.permission_id === 1) && (
-                            <button className={styles.settingBtn} onClick={toggleModalSetting}><MdAdminPanelSettings /></button>
+                        {checkPermission.some(permission => 
+                            permission.group_id === selectedGroupId && 
+                            permission.permission_id === 1
+                        ) && (
+                            <button className={styles.settingBtn} onClick={toggleModalSetting}>
+                                <MdAdminPanelSettings />
+                            </button>
                         )}
                     </div>
                 )}
                 <NotesInGroup 
-                 notes={selectedGroupNotes} 
-                 isNotesClass={isNotesClass}
+                    notes={selectedGroupNotes || []}
+                    isNotesClass={isNotesClass}
                 />
                         
                 {/* MARK:検索結果 */}

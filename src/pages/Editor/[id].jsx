@@ -100,7 +100,8 @@ export default function MarkdownEditor({ id }) {
     // back
     const handleBack = (e) => {
         e.preventDefault();
-        router.push('/Library');
+        // router.push('/Library');
+        window.location.assign('/Library');
     }
 
     // toggle viewer

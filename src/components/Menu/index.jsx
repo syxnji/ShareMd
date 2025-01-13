@@ -9,7 +9,7 @@ import styles from "./menu.module.css";
 import 'react-toastify/dist/ReactToastify.css';
 import { MdAdminPanelSettings } from "react-icons/md";
 
-export function Menu({ setSelectedGroupId, userInfo, allGroups, fetchGroup, toggleModalSetting, checkPermission }) {
+export const Menu = ({ setSelectedGroupId, userInfo, allGroups = [], fetchGroup, toggleModalSetting, checkPermission }) => {
 
     // MARK:グループ選択
     const groupClick = (id) => {
@@ -156,7 +156,7 @@ export function Menu({ setSelectedGroupId, userInfo, allGroups, fetchGroup, togg
                         </button>
                     </div>
                     <div className={styles.groups}>
-                        {allGroups.map((group) => (
+                        {Array.isArray(allGroups) && allGroups.map((group) => (
                             <div className={styles.groupBox} key={group.id}>
                                 <button className={styles.group} onClick={() => groupClick(group.id)}>
                                     {group.name}
