@@ -21,7 +21,7 @@ export const getServerSideProps = async ({ params: { id } }) => ({
 });
 export default function MarkdownEditor({ id }) {
     
-    // グループに所属しているか確認
+    // MARK: ユーザー情報
     const [groupId, setGroupId] = useState('');
     const [userId, setUserId] = useState(null);
     useEffect(() => {
@@ -31,6 +31,8 @@ export default function MarkdownEditor({ id }) {
         };
         getUserId();
     }, []);
+    // MARK: グループに所属しているか確認
+    const [permission, setPermission] = useState(null);
     useEffect(() => {
         const fetchCheck = async () => {
             if (groupId) {
@@ -38,20 +40,26 @@ export default function MarkdownEditor({ id }) {
                 const result = await response.json();
                 if (!result.results || result.results.length === 0) {
                     window.location.assign('/404');
+                } else {
+                    const roleId = await result.results[0].role_id;
+
+                    const permissionResponse = await fetch(`/api/db?table=roleToPermission&roleId=${roleId}`);
+                    const permissionResult = await permissionResponse.json();
+                    setPermission(permissionResult.results[0].permission_id);
                 }
             }
         };
         fetchCheck();
     }, [groupId]);
     
-    const router = useRouter();
+    // const router = useRouter();
 
-    
+    // MARK: ノート情報
     const [noteTitle, setNoteTitle] = useState('');
     const [noteContent, setNoteContent] = useState('');
     const [noteUpdatedAt, setNoteUpdatedAt] = useState('');
     
-    // noteを取得
+    // MARK: noteを取得
     useEffect(() => {
         const fetchNote = async () => {
             try {
@@ -67,9 +75,8 @@ export default function MarkdownEditor({ id }) {
         };
         fetchNote();
     }, [id]);
-    
 
-    // change
+    // MARK: ノートの変更
     const handleChange = (e) => {
         setNoteContent(e.target.value);
     }
@@ -77,7 +84,7 @@ export default function MarkdownEditor({ id }) {
         setNoteTitle(e.target.value);
     }
     
-    // save
+    // MARK: ノートの保存
     const handleSave = (e) => {
         e.preventDefault();
         
@@ -97,27 +104,28 @@ export default function MarkdownEditor({ id }) {
         fetchNoteUpd();
     }
 
-    // back
+    // MARK: ノートの戻る
     const handleBack = (e) => {
         e.preventDefault();
         // router.push('/Library');
         window.location.assign('/Library');
     }
 
-    // toggle viewer
+    // MARK: ノートの表示形式
     const [view, setView] = useState(false)
     const toggleViewer = (e) => {
         e.preventDefault();
         setView(!view)
     }
 
-    // toggle screen
+    // MARK: ノートの表示形式
     const [screen, setScreen] = useState(false)
     const toggleScreen = (e) => {
         e.preventDefault();
         setScreen(!screen)
     }
 
+    // MARK: MAIN ━━━━━━━━━
     return (
         <>
         {screen ? (
@@ -169,7 +177,7 @@ export default function MarkdownEditor({ id }) {
                             </div>
                         </div>
 
-                        <Markdown id={id} content={noteContent} change={handleChange} view={view}/>
+                        <Markdown id={id} content={noteContent} change={handleChange} view={view} permission={permission}/>
                         <div className={styles.update}>
                             <p className={styles.last}>
                                 Last update:

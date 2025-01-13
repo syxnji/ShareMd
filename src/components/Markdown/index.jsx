@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm';
 
 
-export function Markdown({ content, change, view }) {
+export function Markdown({ content, change, view, permission }) {
 
     const MarkdownComponents = {
         h1: ({ children }) => (
@@ -177,6 +177,7 @@ export function Markdown({ content, change, view }) {
                     placeholder="Types here..."
                     value={content}
                     onChange={change}
+                    disabled={permission === 3}
                     />
                 </div>
             )}

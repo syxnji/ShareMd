@@ -207,6 +207,15 @@ export default function handler(req, res) {
                 );
                 res.status(200).json({ results });
             }
+            // MARK: roleToPermission
+            else if (req.query.table === 'roleToPermission') {
+                const roleId = req.query.roleId;
+                const results = await handleQuery(
+                    `SELECT role_permissions.permission_id FROM role_permissions WHERE role_id = ?`,
+                    [roleId]
+                );
+                res.status(200).json({ results });
+            }
             // MARK: updateNote
             else if (req.query.table === 'updateNote') {
                 const id = req.query.id;
