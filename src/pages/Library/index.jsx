@@ -269,6 +269,7 @@ export default function Library() {
         // メンバーリストを再取得
         await fetchGroupInMember();
         await fetchGroupRole();
+        toast.success('役職を更新しました', defaultToastOptions);
     }
     // メンバー削除
     const handleDeleteMember = async (e, userId) => {
@@ -276,6 +277,7 @@ export default function Library() {
         await fetch(`/api/db?table=deleteMember&groupId=${selectedGroupId}&userId=${userId}`);
         // メンバーリストを再取得
         await fetchGroupInMember();
+        toast.success('メンバーを削除しました', defaultToastOptions);
     }
     // ユーザー検索
     const [searchUser, setSearchUser] = useState('');
@@ -310,9 +312,10 @@ export default function Library() {
 
     // MARK:製作管理
     const handleDeleteProject = async (projectId) => {
-        await fetch(`/api/db?table=deleteProject&projectId=${projectId}`);
+        await fetch(`/api/db?table=deleteNote&id=${projectId}`);
         // メンバーリストを再取得
         await fetchNotes();
+        toast.success('ノートを削除しました', defaultToastOptions);
     }
 
     // MARK:役職権限管理
@@ -345,6 +348,7 @@ export default function Library() {
         const newPermitId = parseInt(e.target.value, 10);
         await fetch(`/api/db?table=updateRoleToPermit&roleId=${roleId}&permitId=${newPermitId}`);
         await fetchRoleToPermit();
+        toast.success('権限を更新しました', defaultToastOptions);
     }
     // 役職削除
     const handleDeleteRole = async (e, roleId) => {
@@ -352,6 +356,7 @@ export default function Library() {
         await fetch(`/api/db?table=deleteRole&roleId=${roleId}`);
         // 役職権限を再取得
         await fetchRoleToPermit();
+        toast.success('役職を削除しました', defaultToastOptions);
     }
     // 役職追加
     const handleAddRole = async (e) => {
@@ -361,6 +366,7 @@ export default function Library() {
             fetchRoleToPermit();
             setNewRoleName('');
             setNewPermitId(1);
+            toast.success('役職を追加しました', defaultToastOptions);
         }
     }
     // 役職名変更
@@ -645,7 +651,7 @@ export default function Library() {
                                 {checkPermission.some(permission => permission.group_id === group.id && permission.permission_id === 1) && (
                                     <button className={styles.settingBtn} onClick={(e) => {toggleModalSetting(); setSelectedGroupId(group.id); setModalJoinedGroups(false);}}><MdAdminPanelSettings /></button>
                                 )}
-                                <button className={styles.deleteBtn} onClick={(e) => {handleLeaveGroup(group.id);}}><BsX/></button>
+                                <button className={styles.deleteBtn} onClick={(e) => {handleLeaveGroup(group.id);}} disabled={group.name === 'プライベート'}><BsX/></button>
                             </div>
                         ))}
                     </div>
