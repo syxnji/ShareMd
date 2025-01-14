@@ -138,7 +138,7 @@ export default function handler(req, res) {
                 const groupId = req.query.groupId;
                 const userId = req.query.userId;
                 const results = await handleQuery(
-                    'UPDATE user_group_memberships SET delete = 1 WHERE group_id = ? AND user_id = ?',
+                    'UPDATE user_group_memberships SET \`delete\` = 1 WHERE group_id = ? AND user_id = ?',
                     [groupId, userId]
                 );
                 res.status(200).json({ results });
@@ -205,6 +205,12 @@ export default function handler(req, res) {
                     `SELECT * FROM notes WHERE notes.id = ?`,
                     [id]
                 );
+                res.status(200).json({ results });
+            }
+            // MARK: deleteNote
+            else if (req.query.table === 'deleteNote') {
+                const id = req.query.id;
+                const results = await handleQuery(`UPDATE notes SET \`delete\` = 1 WHERE id = ?`, [id]);
                 res.status(200).json({ results });
             }
             // MARK: roleToPermission
@@ -407,14 +413,14 @@ export default function handler(req, res) {
                 res.status(200).json({ results });
             }
             // MARK: deleteGroup
-            else if (req.query.table === 'deleteGroup') {
-                const projectId = req.query.projectId;
-                const results = await handleQuery(
-                    `UPDATE notes SET \`delete\` = 1 WHERE id = ?`,
-                    [projectId]
-                );
-                res.status(200).json({ results });
-            }
+            // else if (req.query.table === 'deleteGroup') {
+            //     const projectId = req.query.projectId;
+            //     const results = await handleQuery(
+            //         `UPDATE notes SET \`delete\` = 1 WHERE id = ?`,
+            //         [projectId]
+            //     );
+            //     res.status(200).json({ results });
+            // }
             // MARK: groupRole
             else if (req.query.table === 'groupRole') {
                 const groupId = req.query.groupId;
@@ -488,6 +494,80 @@ export default function handler(req, res) {
                     `INSERT INTO roles (name) VALUES (?)`,
                     [roleName]
                 );
+                res.status(200).json({ results });
+                const roleId = results.insertId;
+                const groupId = req.query.groupId;
+                await handleQuery(
+                    `INSERT INTO group_roles (group_id, role_id) VALUES (?, ?)`,
+                    [groupId, roleId]
+                );
+                const permissionId = req.query.permissionId;
+                await handleQuery(
+                    `INSERT INTO role_permissions (role_id, permission_id) VALUES (?, ?)`,
+                    [roleId, permissionId]
+                );
+            }
+            // MARK: dashboard
+            else if (req.query.table === 'dashboard') {
+                const results = await handleQuery(`
+                    SELECT 
+                    (SELECT COUNT(*) FROM users) AS users_count,
+                    (SELECT COUNT(*) FROM \`groups\`) AS groups_count,
+                    (SELECT COUNT(*) FROM roles) AS roles_count,
+                    (SELECT COUNT(*) FROM notes) AS notes_count;
+                `);
+                res.status(200).json({ results });
+            }
+            // MARK: management_users
+            else if (req.query.table === 'management_users') {
+                const offset = req.query.offset;
+                const results = await handleQuery(`SELECT * FROM users`);
+                res.status(200).json({ results });
+            }
+            // MARK: deleteUser
+            else if (req.query.table === 'deleteUser') {
+                const id = req.query.id;
+                const results = await handleQuery(`UPDATE users SET \`delete\` = 1 WHERE id = ?`, [id]);
+                res.status(200).json({ results });
+            }
+            // MARK: restoreUser
+            else if (req.query.table === 'restoreUser') {
+                const id = req.query.id;
+                const results = await handleQuery(`UPDATE users SET \`delete\` = 0 WHERE id = ?`, [id]);
+                res.status(200).json({ results });
+            }
+            // MARK: management_groups
+            else if (req.query.table === 'management_groups') {
+                const results = await handleQuery(`SELECT * FROM \`groups\``);
+                res.status(200).json({ results });
+            }
+            // MARK: deleteGroup
+            else if (req.query.table === 'deleteGroup') {
+                const id = req.query.id;
+                const results = await handleQuery(`UPDATE \`groups\` SET \`delete\` = 1 WHERE id = ?`, [id]);
+                res.status(200).json({ results });
+            }
+            // MARK: restoreGroup
+            else if (req.query.table === 'restoreGroup') {
+                const id = req.query.id;
+                const results = await handleQuery(`UPDATE \`groups\` SET \`delete\` = 0 WHERE id = ?`, [id]);
+                res.status(200).json({ results });
+            }
+            // MARK: management_roles
+            else if (req.query.table === 'management_roles') {
+                const results = await handleQuery(`SELECT * FROM roles`);
+                res.status(200).json({ results });
+            }
+            // MARK: deleteRole
+            // else if (req.query.table === 'deleteRole') {
+            //     const id = req.query.id;
+            //     const results = await handleQuery(`UPDATE roles SET \`delete\` = 1 WHERE id = ?`, [id]);
+            //     res.status(200).json({ results });
+            // }
+            // MARK: restoreRole
+            else if (req.query.table === 'restoreRole') {
+                const id = req.query.id;
+                const results = await handleQuery(`UPDATE roles SET \`delete\` = 0 WHERE id = ?`, [id]);
                 res.status(200).json({ results });
             }
         // MARK: エラー
