@@ -354,6 +354,10 @@ export default function handler(req, res) {
                             `INSERT INTO user_group_memberships (user_id, group_id, role_id) VALUES (?, ?, 1);`,
                             [memberId, groupId]
                         );
+                        pool.query(
+                            `INSERT INTO group_roles (group_id, role_id) VALUES (?, 1), (?, 2);`,
+                            [groupId, groupId]
+                        );
                     }
                 }))
                 .then(() => {
