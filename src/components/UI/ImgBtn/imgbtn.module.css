@@ -17,6 +17,7 @@
 .ImgBtn:hover{
     background-color: #333;
     color: #fff;
+    font-size: 1.3rem;
 }
 
 .mainColor{
@@ -37,4 +38,5 @@
 .mainColor:hover{
     background-color: #fff;
     color: #429;
+    font-size: 1.3rem;
 }

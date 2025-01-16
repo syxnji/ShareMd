@@ -368,6 +368,10 @@
     font-weight: bold;
     color: #333;
 }
+.reload:active svg{
+    transform: rotate(180deg);
+    transition: all 0.3s;
+}
 
 /* MARK:検索グループ */
 .searchGroupWindow{
@@ -508,5 +512,28 @@
     color: #f44;
 }
 
-
-
+.empty{
+    height: 30vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    border: 2px solid #ccc;
+    background: repeating-linear-gradient(45deg,
+     rgba(134, 134, 134, 0.3),
+     rgba(134, 134, 134, 0.3) 2px,
+     rgba(255, 255, 255, 1) 0,
+     rgba(255, 255, 255, 1) 12px);
+    transition: all 0.3s;
+}
+.emptyMain{
+    font-size: 2rem;
+    font-weight: bold;
+    color: #aaa;
+}
+.emptySub{
+    font-size: 1rem;
+    font-weight: bold;
+    color: #555;
+}

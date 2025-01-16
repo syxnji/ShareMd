@@ -9,13 +9,14 @@ import styles from "./menu.module.css";
 import 'react-toastify/dist/ReactToastify.css';
 import { MdAdminPanelSettings } from "react-icons/md";
 
-export const Menu = ({ setSelectedGroupId, userInfo, allGroups = [], fetchGroup, toggleModalSetting, checkPermission }) => {
+export const Menu = ({ setSelectedGroupId, userInfo, allGroups = [], fetchGroup, toggleModalSetting, checkPermission, setSelectedGroup }) => {
 
     console.log('userInfo:',userInfo);
 
     // MARK:グループ選択
     const groupClick = (id) => {
         setSelectedGroupId(id);
+        setSelectedGroup(allGroups.find((group) => group.id === id));
     }
 
     // MARK:メニュー表示/非表示
@@ -169,6 +170,11 @@ export const Menu = ({ setSelectedGroupId, userInfo, allGroups = [], fetchGroup,
                             </div>
                         ))}
                     </div>
+                    {allGroups.length === 1 && (
+                        <div className={styles.empty} onClick={toggleModalCreate}>
+                            <p className={styles.emptyMain}>グループを<br/>構築してみましょう</p>
+                        </div>
+                    )}
                     </>
                 ) : null}
             </div>

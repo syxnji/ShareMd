@@ -227,6 +227,7 @@ export default function Library() {
 
     // MARK:グループ < ノート
     const [selectedGroupId, setSelectedGroupId] = useState(null);
+    const [selectedGroup, setSelectedGroup] = useState(null);
     const [selectedGroupNotes, setSelectedGroupNotes] = useState([]);
     const fetchNotes = async () => {
         if (selectedGroupId) {
@@ -691,6 +692,7 @@ export default function Library() {
             fetchGroup={fetchGroup} 
             toggleModalSetting={toggleModalSetting} 
             checkPermission={checkPermission}
+            setSelectedGroup={setSelectedGroup}
         />
 
         <div className={styles.contents}>
@@ -699,9 +701,10 @@ export default function Library() {
 
             <div className={styles.content}>
                 {/* MARK:グループToノート */}
-                {selectedGroupNotes.length > 0 && (
+                {selectedGroupId && (
+                    <>
                     <div className={styles.notesTitles}>
-                        <p className={styles.notesTitle}>{selectedGroupNotes[0].groupName}</p>
+                        <p className={styles.notesTitle}>{selectedGroup.name}</p>
                         {checkPermission.some(permission => 
                             permission.group_id === selectedGroupId && 
                             permission.permission_id === 1
@@ -711,11 +714,13 @@ export default function Library() {
                             </button>
                         )}
                     </div>
+                    <NotesInGroup 
+                        notes={selectedGroupNotes || []}
+                        isNotesClass={isNotesClass}
+                        toggleModalNewNote={toggleModalNewNote}
+                    />
+                    </>
                 )}
-                <NotesInGroup 
-                    notes={selectedGroupNotes || []}
-                    isNotesClass={isNotesClass}
-                />
                         
                 {/* MARK:検索結果 */}
                 <div className={styles.notesTitles}>
@@ -727,7 +732,10 @@ export default function Library() {
                      isNotesClass={isNotesClass}
                     />
                 ) : (
-                    <p>ノートが見つかりません...</p>
+                    <div className={styles.empty} onClick={toggleModalNewNote}>
+                        <p className={styles.emptyMain}>ノートが見つかりません</p>
+                        <p className={styles.emptySub}>ここをクリックしてノートを作成</p>
+                    </div>
                 )}
 
             </div>

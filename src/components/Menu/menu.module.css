@@ -248,7 +248,32 @@
     color: #fff;
 }
 
-
-
-
-
+.empty{
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    border: 2px solid #ccc;
+    cursor: pointer;
+    background: repeating-linear-gradient(45deg,
+     rgba(134, 134, 134, 0.3),
+     rgba(134, 134, 134, 0.3) 2px,
+     rgba(255, 255, 255, 1) 0,
+     rgba(255, 255, 255, 1) 12px);
+    transition: all 0.3s;
+    margin-top: 10px;
+}
+.empty:hover{
+    background: repeating-linear-gradient(45deg,
+     rgba(40, 0, 255, 0.3),
+     rgba(40, 0, 255, 0.3) 2px,
+     rgba(255, 255, 255, 1) 0,
+     rgba(255, 255, 255, 1) 12px);
+}
+.emptyMain{
+    font-size: 1rem;
+    font-weight: bold;
+    color: #aaa;
+}

@@ -4,11 +4,18 @@ import { Notes } from "../SelectNote"
 import styles from "./notesInGroup.module.css"
 import styleNotes from "@/components/SelectNote/selectNote.module.css"
 
-export function NotesInGroup({ notes, isNotesClass }) {
+export function NotesInGroup({ notes, isNotesClass, toggleModalNewNote }) {
     return (
         <>
         {/* グリープの選択時と未選択時で表示を切り替え */}
-        {notes.length === 0 ? null : (
+        {notes.length === 0 ? (
+            <div className={styles.empty} onClick={() => {
+                toggleModalNewNote();
+            }}>
+                <p className={styles.emptyMain}>ノートがありません</p>
+                <p className={styles.emptySub}>ここをクリックでノートを作成</p>
+            </div>
+        ) : (
             <>
             {/* notes */}
             <div className={isNotesClass ? styles.grid : styles.list}>
