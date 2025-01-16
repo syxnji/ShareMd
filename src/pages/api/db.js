@@ -574,6 +574,27 @@ export default function handler(req, res) {
                 const results = await handleQuery(`UPDATE roles SET \`delete\` = 0 WHERE id = ?`, [id]);
                 res.status(200).json({ results });
             }
+            // MARK: management_notes
+            else if (req.query.table === 'management_notes') {
+                const results = await handleQuery(`
+                    SELECT notes.*, groups.name
+                    FROM notes
+                    JOIN \`groups\` ON notes.group_id = groups.id
+                `);
+                res.status(200).json({ results });
+            }
+            // MARK: deleteNote
+            // else if (req.query.table === 'deleteNote') {
+            //     const id = req.query.id;
+            //     const results = await handleQuery(`UPDATE notes SET \`delete\` = 1 WHERE id = ?`, [id]);
+            //     res.status(200).json({ results });
+            // }
+            // MARK: restoreNote
+            else if (req.query.table === 'restoreNote') {
+                const id = req.query.id;
+                const results = await handleQuery(`UPDATE notes SET \`delete\` = 0 WHERE id = ?`, [id]);
+                res.status(200).json({ results });
+            }
         // MARK: エラー
         } catch (err) {
             console.error('Database error:', err);

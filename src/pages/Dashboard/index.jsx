@@ -91,6 +91,27 @@ export default function Dashboard() {
         fetchRoles();
     }
 
+    // MARK: Notes
+    const [notes, setNotes] = useState([]);
+    const fetchNotes = async () => {
+        const resNotes = await fetch(`/api/db?table=management_notes`);
+        const retNotes = await resNotes.json();
+        setNotes(retNotes.results);
+    }
+    const filteredNotes = notes.filter((note) => {
+        return note.title.includes(search) || note.name.includes(search);
+    });
+    // MARK: ノート削除
+    const handleDeleteNote = async (id) => {
+        await fetch(`/api/db?table=deleteNote&id=${id}`);
+        fetchNotes();
+    }
+    // MARK: ノート復元
+    const handleRestoreNote = async (id) => {
+        await fetch(`/api/db?table=restoreNote&id=${id}`);
+        fetchNotes();
+    }
+
     // MARK: 項目切り替え
     useEffect(() => {
         if (active === "dashboard") {
@@ -104,6 +125,9 @@ export default function Dashboard() {
         }
         if (active === "roles") {
             fetchRoles();
+        }
+        if (active === "notes") {
+            fetchNotes();
         }
     }, [active]);
 
@@ -146,10 +170,10 @@ export default function Dashboard() {
                     <table className={styles.Table}>
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th className={styles.tableId}>ID</th>
                                 <th>username</th>
                                 <th>Email</th>
-                                <th>Actions</th>
+                                <th className={styles.tableActions}>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -180,9 +204,9 @@ export default function Dashboard() {
                     <table className={styles.Table}>
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th className={styles.tableId}>ID</th>
                                 <th>Name</th>
-                                <th>Actions</th>
+                                <th className={styles.tableActions}>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -211,9 +235,9 @@ export default function Dashboard() {
                     <table className={styles.Table}>
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th className={styles.tableId}>ID</th>
                                 <th>Name</th>
-                                <th>Actions</th>
+                                <th className={styles.tableActions}>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -239,7 +263,35 @@ export default function Dashboard() {
             )}
             {active === "notes" && (
                 <div className={styles.notesContent}>
-                    <p>Notes</p>
+                    <input type="search" placeholder="Search" className={styles.Search} onChange={(e) => setSearch(e.target.value)}/>
+                    <table className={styles.Table}>
+                        <thead>
+                            <tr>
+                                <th className={styles.tableId}>ID</th>
+                                <th>Title</th>
+                                <th>Group</th>
+                                <th className={styles.tableActions}>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredNotes.map((note) => (
+                                <tr key={note.id}>
+                                    <td>{note.id}</td>
+                                    <td>{note.title}</td>
+                                    <td>{note.name}</td>
+                                    <td>
+                                        <div className={styles.groupsTableBtns}>
+                                            {!note.delete ? (
+                                                <button className={styles.deleteBtn} onClick={() => handleDeleteNote(note.id)}>Delete</button>
+                                            ) : (
+                                                <button className={styles.restoreBtn} onClick={() => handleRestoreNote(note.id)}>Restore</button>
+                                            )}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             )}
         </main>
