@@ -3,11 +3,16 @@
 }
 
 .head{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
     display: flex;
     gap: 10px;
     align-items: center;
     padding: 10px;
     border-bottom: 1px solid #ccc;
+    background-color: #fff;
 }
 .headIcon{
     color: #44f;
@@ -18,6 +23,9 @@
     font-size: 1.2rem;
     font-weight: bold;
     color: #555;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .headButton{
     display: flex;
@@ -49,6 +57,7 @@
         opacity: 1
 }
 .contentText{
+    width: 90%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -65,14 +74,16 @@
     color: #555;
 }
 .contentInput{
-    width: 500px;
+    min-width: 90%;
+    /* width: 500px; */
     padding: 10px;
     border: solid 1px #ccc;
     outline: none;
     border-radius: 10px;
 }
 .submitButton{
-    width: 500px;
+    min-width: 90%;
+    /* width: 500px; */
     padding: 10px;
     display: flex;
     align-items: center;

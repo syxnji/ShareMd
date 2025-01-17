@@ -24,7 +24,7 @@
 /* open */
 .open{
     z-index: 100;
-    width: 300px;
+    /* width: 300px; */
     height: 100vh;
     position: sticky;
     top: 0;
@@ -32,6 +32,32 @@
     background-color: #fff;
     border-right: solid 1px #999;
     transition: all 0.3s;
+}
+/* デスクトップ */
+@media (min-width: 1024px) {
+    .open{
+        width: 300px;
+    }
+}
+/* タブレット */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .open{
+        width: 300px;
+    }
+}
+/* スマホ */
+@media (max-width: 767px) {
+    .open{
+        position: fixed;
+        width: 80vw;
+    }
+}
+/* スマホ */
+@media (max-width: 480px) {
+    .open{
+        position: fixed;
+        width: 80vw;
+    }
 }
 
 /* close */

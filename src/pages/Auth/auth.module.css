@@ -4,6 +4,7 @@
     height: 80vh;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 10px;
     align-items: center;
     position: fixed;
@@ -17,8 +18,70 @@
     box-shadow:  20px 20px 60px #bebebe,
                  -20px -20px 60px #ffffff;
 }
+/* デスクトップ */
+@media (min-width: 1024px) {
+    .auth {
+        width: 600px;
+    }
+    .toggleBtns{
+        width: 500px;
+    }
+    .loginForm input, .registerForm input{
+        width: 500px;
+    }
+    .loginForm button, .registerForm button{
+        width: 500px;
+    }
+}
+/* タブレット */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .auth {
+        width: 600px;
+    }
+    .toggleBtns{
+        width: 500px;
+    }
+    .loginForm input, .registerForm input{
+        width: 500px;
+    }
+    .loginForm button, .registerForm button{
+        width: 500px;
+    }
+}
+/* スマホ */
+@media (max-width: 767px) and (min-width: 481px) {
+    .auth {
+        width: 600px;
+    }
+    .toggleBtns{
+        width: 500px;
+    }
+    .loginForm input, .registerForm input{
+        width: 500px;
+    }
+    .loginForm button, .registerForm button{
+        width: 500px;
+    }
+}
+/* スマホ */
+@media (max-width: 480px) {
+    .auth {
+        width: 400px;
+    }
+    .toggleBtns{
+        width: 300px;
+    }
+    .loginForm input, .registerForm input{
+        width: 300px;
+    }
+    .loginForm button, .registerForm button{
+        width: 300px;
+    }
+}
+
+
 .toggleBtns{
-    width: 500px;
+    /* width: 500px; */
     display: flex;
     justify-content: center;
     gap: 5px;
@@ -53,14 +116,14 @@
     gap: 10px;
 }
 .loginForm input, .registerForm input{
-    width: 500px;
+    /* width: 500px; */
     padding: 10px;
     border: solid 1px #ddd;
     border-radius: 10px;
     outline: none;
 }
 .loginForm button, .registerForm button{
-    width: 500px;
+    /* width: 500px; */
     padding: 10px;
     font-weight: bold;
     color: #fff;
