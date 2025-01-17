@@ -172,6 +172,17 @@ export default function handler(req, res) {
                 );
                 res.status(200).json({ results });
             }
+            // MARK: selectedGroupNotes
+            else if (req.query.table === 'selectedGroupNotes') {
+                const selectGroupId = req.query.groupId;
+                const results = await handleQuery(`
+                    SELECT *
+                    FROM notes
+                    JOIN \`groups\` ON notes.group_id = groups.id
+                    WHERE notes.group_id = ? AND notes.delete = 0
+                `, [selectGroupId]);
+                res.status(200).json({ results });
+            }
             // MARK: group
             else if (req.query.table === 'group') {
                 const id = req.query.id;

@@ -99,7 +99,11 @@ export default function Dashboard() {
         setNotes(retNotes.results);
     }
     const filteredNotes = notes.filter((note) => {
-        return note.title.includes(search) || note.name.includes(search);
+        if (!note || typeof note !== 'object') return false;
+        const searchTerm = search.toLowerCase();
+        const title = (note.title || '').toLowerCase();
+        const name = (note.name || '').toLowerCase();
+        return title.includes(searchTerm) || name.includes(searchTerm);
     });
     // MARK: ノート削除
     const handleDeleteNote = async (id) => {

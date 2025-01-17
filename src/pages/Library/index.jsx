@@ -231,7 +231,11 @@ export default function Library() {
     const [selectedGroupNotes, setSelectedGroupNotes] = useState([]);
     const fetchNotes = async () => {
         if (selectedGroupId) {
-            const response = await fetch(`/api/db?table=selectedGroup&groupId=${selectedGroupId}`);
+            const groupResponse = await fetch(`/api/db?table=selectedGroup&groupId=${selectedGroupId}`);
+            const groupData = await groupResponse.json();
+            setSelectedGroup(groupData.results[0]);
+
+            const response = await fetch(`/api/db?table=selectedGroupNotes&groupId=${selectedGroupId}`);
             const notes = await response.json();
             setSelectedGroupNotes(notes.results || []);
         }
@@ -701,7 +705,7 @@ export default function Library() {
 
             <div className={styles.content}>
                 {/* MARK:グループToノート */}
-                {selectedGroupId && (
+                {selectedGroupId && selectedGroup && (
                     <>
                     <div className={styles.notesTitles}>
                         <p className={styles.notesTitle}>{selectedGroup.name}</p>
