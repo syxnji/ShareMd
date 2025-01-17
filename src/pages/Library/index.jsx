@@ -239,6 +239,7 @@ export default function Library() {
             const notes = await response.json();
             setSelectedGroupNotes(notes.results || []);
         }
+        console.log("*",selectedGroup)
     };
     useEffect(() => {
         fetchNotes();

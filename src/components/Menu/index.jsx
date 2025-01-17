@@ -11,7 +11,7 @@ import { MdAdminPanelSettings } from "react-icons/md";
 
 export const Menu = ({ setSelectedGroupId, userInfo, allGroups = [], fetchGroup, toggleModalSetting, checkPermission, setSelectedGroup }) => {
 
-    console.log('userInfo:',userInfo);
+    // console.log('userInfo:',userInfo);
 
     // MARK:グループ選択
     const groupClick = (id) => {
