@@ -3,8 +3,8 @@ import { useState, useEffect} from 'react'
 import { useRouter } from "next/router"
 import Cookies from 'js-cookie';
 // component
-// import { SidebarInNotes } from "@/components/SidebarInNotes/index";
-import Markdown from "@/components/Markdown";
+import { SidebarInNotes } from "@/components/SidebarInNotes";
+import { Markdown } from "@/components/Markdown";
 import { ImgBtn } from '@/components/UI/ImgBtn/index.jsx';
 import { ToastContainer, toast } from 'react-toastify';
 import { Menu } from '@/components/Menu';
@@ -126,13 +126,19 @@ export default function MarkdownEditor({ id }) {
         setScreen(!screen)
     }
 
+    const menuContents = (
+        <>
+        <SidebarInNotes selectNoteId={id} />
+        </>
+    )
+
     // MARK: MAIN ━━━━━━━━━
     return (
         <>
         {screen ? (
             <main className={styles.full}>
                 <ToastContainer />
-                <div className={styles.content}>
+                <div className={styles.fullContent}>
                     <Markdown content={noteContent} change={handleChange} view={view}/>
                 </div>
                 <div className={styles.menu}>
@@ -142,7 +148,7 @@ export default function MarkdownEditor({ id }) {
                     <div className={styles.screenBtn}>
                         <ImgBtn img={screen ? <BsFullscreenExit /> : <BsFullscreen />} click={toggleScreen}/>
                     </div>
-                    <div className={styles.viewBtn}>
+                    <div className={view ? styles.md : styles.edit}>
                         <ImgBtn img={view ? <IoLogoMarkdown /> : <CiTextAlignLeft />} click={toggleViewer}/>
                     </div>
                 </div>
@@ -150,7 +156,7 @@ export default function MarkdownEditor({ id }) {
         ) : (
             <main className={styles.main}>
                 <ToastContainer />
-                <Menu/>
+                <Menu menuContents={menuContents}/>
                 {/* <SidebarInNotes selectNoteId={id} /> */}
 
                 <div className={styles.content}> 
@@ -170,7 +176,7 @@ export default function MarkdownEditor({ id }) {
                                 <div className={styles.screenBtn}>
                                     <ImgBtn img={screen ? <BsFullscreenExit /> : <BsFullscreen />} click={toggleScreen}/>
                                 </div>
-                                <div className={styles.viewBtn}>
+                                <div className={view ? styles.md : styles.edit}>
                                     <ImgBtn img={view ? <IoLogoMarkdown /> : <CiTextAlignLeft />} click={toggleViewer}/>
                                 </div>
                                 <div className={styles.saveBtn}>
