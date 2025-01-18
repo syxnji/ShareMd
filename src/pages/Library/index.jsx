@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { ToastContainer, toast } from 'react-toastify';
 // component
+// import { Menu } from '@/components/Menu';
 import { Menu } from '@/components/Menu';
-import { NewMenu } from '@/components/newMenu';
 import { GroupHeadline } from "@/components/GroupHeadline";
 import { NotesInGroup } from '@/components/NotesInGroup';
 import { ImgBtn } from '@/components/UI/ImgBtn';
@@ -386,7 +386,7 @@ export default function Library() {
     const handleChangeNewRoleName = async (e) => {
         setNewRoleName(e.target.value);
     }
-    
+
     // MARK:役職権限変更
     const [newPermitId, setNewPermitId] = useState(1);
     const handleChangeNewPermit = async (e) => {
@@ -852,7 +852,7 @@ export default function Library() {
             checkPermission={checkPermission}
             setSelectedGroup={setSelectedGroup}
         /> */}
-        <NewMenu
+        <Menu
             menuContents={LibraryMenu}
         />
 

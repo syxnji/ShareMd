@@ -3,10 +3,11 @@ import { useState, useEffect} from 'react'
 import { useRouter } from "next/router"
 import Cookies from 'js-cookie';
 // component
-import { SidebarInNotes } from "@/components/SidebarInNotes/index";
-import { Markdown } from "@/components/Markdown";
+// import { SidebarInNotes } from "@/components/SidebarInNotes/index";
+import Markdown from "@/components/Markdown";
 import { ImgBtn } from '@/components/UI/ImgBtn/index.jsx';
 import { ToastContainer, toast } from 'react-toastify';
+import { Menu } from '@/components/Menu';
 // style
 import styles from "./editor.module.css"
 import 'react-toastify/dist/ReactToastify.css';
@@ -149,7 +150,8 @@ export default function MarkdownEditor({ id }) {
         ) : (
             <main className={styles.main}>
                 <ToastContainer />
-                <SidebarInNotes selectNoteId={id} />
+                <Menu/>
+                {/* <SidebarInNotes selectNoteId={id} /> */}
 
                 <div className={styles.content}> 
                     <form>
