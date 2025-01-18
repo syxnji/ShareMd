@@ -107,11 +107,13 @@ export default function handler(req, res) {
             else if (req.query.table === 'joinedGroups') {
                 const userId = req.query.userId;
                 const results = await handleQuery(`
-                    SELECT groups.id, name 
+                    SELECT groups.id, groups.name 
                     FROM \`groups\` 
                     JOIN user_group_memberships 
                     ON groups.id = user_group_memberships.group_id 
-                    WHERE user_group_memberships.user_id = ? AND groups.delete = 0 AND user_group_memberships.delete = 0
+                    WHERE user_group_memberships.user_id = ? 
+                    AND groups.delete = 0 
+                    AND user_group_memberships.delete = 0
                     `, [userId]
                 );
                 res.status(200).json({ results });

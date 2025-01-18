@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import { ToastContainer, toast } from 'react-toastify';
 // component
 import { Menu } from '@/components/Menu';
+import { NewMenu } from '@/components/newMenu';
 import { GroupHeadline } from "@/components/GroupHeadline";
 import { NotesInGroup } from '@/components/NotesInGroup';
 import { ImgBtn } from '@/components/UI/ImgBtn';
@@ -11,7 +12,7 @@ import { MemberManagement } from '@/components/MemberManagement';
 import { ProjectManagement } from '@/components/ProjectManagement';
 import { PermissionManagement } from '@/components/PermissionManagement';
 // icon
-import { BsList, BsFileEarmarkPlus, BsGrid3X3, BsGear, BsX, BsBuildings, BsArrowRepeat} from "react-icons/bs";
+import { BsList, BsFileEarmarkPlus, BsGrid3X3, BsX, BsBuildings, BsArrowRepeat} from "react-icons/bs";
 import { FaRegUser } from 'react-icons/fa6';
 // style
 import styles from "./library.module.css";
@@ -225,72 +226,82 @@ export default function Library() {
         window.location.assign(`/Editor/${result.results.insertId}`);
     }
 
-    // MARK:グループ < ノート
-    const [selectedGroupId, setSelectedGroupId] = useState(null);
-    const [selectedGroup, setSelectedGroup] = useState(null);
+    // MARK:selectedGroup
+    // const [selectedGroupId, setSelectedGroupId] = useState(null);
+    const [selectedGroup, setSelectedGroup] = useState({id: null, name: null});
+
+    // MARK:selectedGroup → ノート
     const [selectedGroupNotes, setSelectedGroupNotes] = useState([]);
     const fetchNotes = async () => {
-        if (selectedGroupId) {
-            const groupResponse = await fetch(`/api/db?table=selectedGroup&groupId=${selectedGroupId}`);
-            const groupData = await groupResponse.json();
-            setSelectedGroup(groupData.results[0]);
+        if (selectedGroup.id) {
+            // const groupResponse = await fetch(`/api/db?table=selectedGroup&groupId=${selectedGroupId}`);
+            // const groupData = await groupResponse.json();
+            // setSelectedGroup(groupData.results[0]);
 
-            const response = await fetch(`/api/db?table=selectedGroupNotes&groupId=${selectedGroupId}`);
+            const response = await fetch(`/api/db?table=selectedGroupNotes&groupId=${selectedGroup.id}`);
             const notes = await response.json();
             setSelectedGroupNotes(notes.results || []);
         }
-        console.log("*",selectedGroup)
     };
-    useEffect(() => {
-        fetchNotes();
-    }, [selectedGroupId]);
 
-    // MARK: グループ < メンバー
+    // MARK: selectedGroup → メンバー
     const [groupInMember, setGroupInMember] = useState([]);
     const fetchGroupInMember = async () => {
-        if (selectedGroupId) {
-            const response = await fetch(`/api/db?table=groupInMember&groupId=${selectedGroupId}`);
+        if (selectedGroup.id) {
+            const response = await fetch(`/api/db?table=groupInMember&groupId=${selectedGroup.id}`);
             const members = await response.json();
             setGroupInMember(members.results);
         }
     };
-    useEffect(() => {
-        fetchGroupInMember();
-    }, [selectedGroupId]);
 
-    // MARK:ロール管理
+    // MARK:selectedGroup → ロール
     const [groupRole, setGroupRole] = useState([]);
-    useEffect(() => {
-        fetchGroupRole();
-    }, [selectedGroupId]);
     const fetchGroupRole = async () => {
-        const response = await fetch(`/api/db?table=groupRole&groupId=${selectedGroupId}`);
+        const response = await fetch(`/api/db?table=groupRole&groupId=${selectedGroup.id}`);
         const roles = await response.json();
         setGroupRole(roles.results);
     };
-    // ロール変更
+
+    // MARK:selectedGroup → ロール - 権限
+    const [roleToPermit, setRoleToPermit] = useState([]);
+    const fetchRoleToPermit = async () => {
+        const response = await fetch(`/api/db?table=roleToPermit&groupId=${selectedGroup.id}`);
+        const roles = await response.json();
+        setRoleToPermit(roles.results);
+    };
+
+    // MARK: selectedGroup useEffect
+    useEffect(() => {
+        fetchNotes();
+        fetchGroupInMember();
+        fetchGroupRole();
+        fetchRoleToPermit();
+    }, [selectedGroup]);
+
+    // MARK: ロール変更
     const handleChangeRole = async (e, userId) => {
         const newRoleId = parseInt(e.target.value, 10);
-        await fetch(`/api/db?table=changeRole&groupId=${selectedGroupId}&userId=${userId}&roleId=${newRoleId}`);
+        await fetch(`/api/db?table=changeRole&groupId=${selectedGroup.id}&userId=${userId}&roleId=${newRoleId}`);
         // メンバーリストを再取得
         await fetchGroupInMember();
         await fetchGroupRole();
         toast.success('役職を更新しました', defaultToastOptions);
     }
-    // メンバー削除
+
+    // MARK: メンバー削除
     const handleDeleteMember = async (e, userId) => {
         e.preventDefault();
-        await fetch(`/api/db?table=deleteMember&groupId=${selectedGroupId}&userId=${userId}`);
+        await fetch(`/api/db?table=deleteMember&groupId=${selectedGroup.id}&userId=${userId}`);
         // メンバーリストを再取得
         await fetchGroupInMember();
         toast.success('メンバーを削除しました', defaultToastOptions);
     }
-    // ユーザー検索
+    
+    // MARK:ユーザー検索
     const [searchUser, setSearchUser] = useState('');
     const handleSearchUser = (e) => {
         setSearchUser(e.target.value);
     }
-    // メンバー候補
     const [memberSuggest, setMemberSuggest] = useState([]);
     useEffect(() => {
         const fetchMemberSuggest = async () => {
@@ -304,12 +315,13 @@ export default function Library() {
         };
         fetchMemberSuggest();
     }, [searchUser]);
-    // メンバー追加
+
+    // MARK:メンバー追加
     const handleAddMember = async (e, user) => {
         e.preventDefault();
         const newMemberId = user.id;
         // await fetch(`/api/db?table=addMember&groupId=${selectedGroupId}&userId=${newMemberId}`);
-        await fetch(`/api/db?table=inviteGroup&groupId=${selectedGroupId}&inviteUserId=${newMemberId}&userId=${userId}`);
+        await fetch(`/api/db?table=inviteGroup&groupId=${selectedGroup.id}&inviteUserId=${newMemberId}&userId=${userId}`);
         setSearchUser('');
         // メンバーリストを再取得
         await fetchGroupInMember();
@@ -324,18 +336,7 @@ export default function Library() {
         toast.success('ノートを削除しました', defaultToastOptions);
     }
 
-    // MARK:役職権限管理
-    const [roleToPermit, setRoleToPermit] = useState([]);
-    useEffect(() => {
-        fetchRoleToPermit();
-    }, [selectedGroupId]);
-    // 役職権限を取得
-    const fetchRoleToPermit = async () => {
-        const response = await fetch(`/api/db?table=roleToPermit&groupId=${selectedGroupId}`);
-        const roles = await response.json();
-        setRoleToPermit(roles.results);
-    };
-    // 権限を取得
+    // MARK:権限を取得
     const [permission, setPermission] = useState([]);
     useEffect(() => {
         const fetchPermission = async () => {
@@ -345,18 +346,21 @@ export default function Library() {
         };
         fetchPermission();
     }, []);
-    // 役職名変更
+
+    // MARK:役職名変更
     const handleChangeRoleName = async (e, roleId) => {
         await fetch(`/api/db?table=updateRoleName&roleId=${roleId}&roleName=${e.target.value}`);
     }
-    // 役職権限変更
+
+    // MARK:役職権限変更
     const handleChangePermit = async (e, roleId) => {
         const newPermitId = parseInt(e.target.value, 10);
         await fetch(`/api/db?table=updateRoleToPermit&roleId=${roleId}&permitId=${newPermitId}`);
         await fetchRoleToPermit();
         toast.success('権限を更新しました', defaultToastOptions);
     }
-    // 役職削除
+
+    // MARK:役職削除
     const handleDeleteRole = async (e, roleId) => {
         e.preventDefault();
         await fetch(`/api/db?table=deleteRole&roleId=${roleId}`);
@@ -364,23 +368,26 @@ export default function Library() {
         await fetchRoleToPermit();
         toast.success('役職を削除しました', defaultToastOptions);
     }
-    // 役職追加
+
+    // MARK:役職追加
     const handleAddRole = async (e) => {
         if (newRoleName.length > 0) {
             e.preventDefault();
-            await fetch(`/api/db?table=insertRole&roleName=${newRoleName}&groupId=${selectedGroupId}&permissionId=${newPermitId}`);
+            await fetch(`/api/db?table=insertRole&roleName=${newRoleName}&groupId=${selectedGroup.id}&permissionId=${newPermitId}`);
             fetchRoleToPermit();
             setNewRoleName('');
             setNewPermitId(1);
             toast.success('役職を追加しました', defaultToastOptions);
         }
     }
-    // 役職名変更
+
+    // MARK:役職名変更
     const [newRoleName, setNewRoleName] = useState('');
     const handleChangeNewRoleName = async (e) => {
         setNewRoleName(e.target.value);
     }
-    // 役職権限変更
+    
+    // MARK:役職権限変更
     const [newPermitId, setNewPermitId] = useState(1);
     const handleChangeNewPermit = async (e) => {
         setNewPermitId(e.target.value);
@@ -391,7 +398,7 @@ export default function Library() {
     const [isNotesClass, setIsNotesClass] = useState(true);
     const toggleView = () => {
       setIsGridView(!isGridView);
-      setIsNotesClass(!isNotesClass);
+      setIsNotesClass(!isNotesClass);[]
     };
 
     // MARK:切替 - 検索グループ
@@ -474,6 +481,152 @@ export default function Library() {
             });
         }
     }, [notifications]);
+
+    // MARK: グループ構築 ━━━━━━
+    const [modalCreateGroup, setModalCreateGroup] = useState(false);
+    const toggleModalCreateGroup = () => {
+        setModalCreateGroup(!modalCreateGroup);
+    }
+
+    // MARK: グループ名
+    const [createName, setCreateName] = useState('');
+    const handleChangeCreateName = (e) => {
+        setCreateName(e.target.value);
+    }
+
+    // MARK: メンバー検索
+    const [searchCreateGroupMember, setSearchCreateGroupMember] = useState('');
+    const handleSearchCreateGroupMember = (e) => {
+        setSearchCreateGroupMember(e.target.value);
+    }
+    useEffect(() => {
+        fetchCreateGroupMember();
+    }, [searchCreateGroupMember]);
+
+    // MARK: メンバー候補
+    const [createGroupMemberSuggest, setCreateGroupMemberSuggest] = useState([]);
+    const fetchCreateGroupMember = async () => {
+        if (searchCreateGroupMember.length > 0) {  
+            const response = await fetch(`/api/db?table=suggestUsers&name=${searchCreateGroupMember}`);
+            const suggestUsers = await response.json();
+            setCreateGroupMemberSuggest(suggestUsers.results);
+        } else {
+            setCreateGroupMemberSuggest([]);
+        }
+    }
+    // MARK:メンバーリスト
+    const [createGroupMemberList, setCreateGroupMemberList] = useState([]);
+    if (userInfo && createGroupMemberList.length === 0) {
+        setCreateGroupMemberList([{id: userInfo.id, username: userInfo.username}]);
+    }
+    // MARK:メンバー追加
+    const handleAddCreateGroupMember = (e, user) => {
+        e.preventDefault();
+        const newMember = {
+            id: user.id,
+            username: user.username
+        };
+        if (createGroupMemberList.some(member => member.id === newMember.id)) {
+            toast.error('既に追加されています');
+            setSearchCreateGroupMember("");
+            return;
+        }
+        setCreateGroupMemberList([...createGroupMemberList, newMember]);
+        setSearchCreateGroupMember("");
+    }
+
+    // MARK:メンバー削除
+    const handleDeleteCreateGroupMember = (e, memberToDelete) => {
+        e.preventDefault();
+        if (memberToDelete.id === userInfo.id) {
+            toast.error('自分は削除できません');
+        } else {
+            setCreateGroupMemberList(createGroupMemberList.filter((m) => m.id !== memberToDelete.id));
+        }
+    }
+
+    // MARK: メンバーIDs
+    const [memberIds, setMemberIds] = useState([]);
+    useEffect(() => {
+        setMemberIds(createGroupMemberList.map((member) => member.id));
+    }, [createGroupMemberList]);
+
+    // MARK: グループ作成
+    const handleCreateGroup = async (e) => {
+        e.preventDefault();
+        await fetch(`/api/db?table=createGroup&name=${createName}&userId=${userId}&memberIds=${memberIds}`);
+        toggleModalCreateGroup();
+        setCreateName("");
+        setCreateGroupMemberList([]);
+        toast.success('グループを作成しました', defaultToastOptions);
+    }
+    // MARK: グループ作成モーダル
+    const LibraryMenu = (
+        <>
+        {modalCreateGroup ? (
+            <form className={styles.modalNewGroupWindow} onSubmit={handleCreateGroup}>
+                <button className={styles.modalNewGroupClose} onClick={toggleModalCreateGroup} type='button'><BsX/></button>
+                <div className={styles.modalNewGroupContents}>
+                    {/* グループ名 */}
+                    <div className={styles.newGroupTitle}>
+                        <label className={styles.newGroupLabel}>グループ名</label>
+                        <input type="text" placeholder="例：チームα" className={styles.newGroupInput} onChange={handleChangeCreateName} value={createName} required/>
+                    </div>
+                    {/* メンバー検索 */}
+                    <div className={styles.newGroupMembers}>
+                        <label className={styles.newGroupLabel}>メンバー</label>
+                        <input type="text" placeholder="ユーザー名で検索" className={styles.newGroupInput} onChange={handleSearchCreateGroupMember} value={searchCreateGroupMember}/>
+                        {createGroupMemberSuggest.length > 0 && (
+                            // メンバー候補
+                            <div className={styles.newGroupSuggest}>
+                                <div className={styles.suggestMemberBox}>
+                                    {createGroupMemberSuggest.map((user) => (
+                                        <button className={styles.suggestMember} key={user.id} onClick={(e) => handleAddCreateGroupMember(e, user)}>{user.username}</button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                    {/* メンバーリスト */}
+                    <div className={styles.newGroupMemberListBox}>
+                        <p className={styles.newGroupLabel}>メンバーリスト</p>
+                        <div className={styles.newGroupMemberList}>
+                            {createGroupMemberList.map((member) => (
+                                <div className={styles.member} key={member.id}>
+                                    <p>{member.username}</p>
+                                    <button className={styles.memberDelete} onClick={(e) => handleDeleteCreateGroupMember(e, member)}><BsX/></button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <button className={styles.newGroupBtn} type="submit">構築</button>
+                </div>
+            </form>
+        ) : null}
+
+        <button className={styles.addGroupBtn} onClick={toggleModalCreateGroup}>
+            <BsBuildings/>
+            <p>グループを構築</p>
+        </button>
+        <div className={styles.groups}>
+            {Array.isArray(allGroups) && allGroups.map((group) => (
+                <div className={styles.groupBox} key={group.id}>
+                    <button className={styles.group} onClick={() => setSelectedGroup({id: group.id, name: group.name})}>
+                        {group.name}
+                    </button>
+                    {checkPermission.some(permission => permission.group_id === group.id && permission.permission_id === 1) && (
+                        <button className={styles.settingBtn} onClick={(e) => {toggleModalSetting(); setSelectedGroup({id: group.id, name: group.name});}}><MdAdminPanelSettings /></button>
+                    )}
+                </div>
+            ))}
+        </div>
+        {allGroups.length === 1 && (
+            <div className={styles.empty} onClick={toggleModalCreate}>
+                <p className={styles.emptyMain}>グループを<br/>構築してみましょう</p>
+            </div>
+        )}
+        </>
+    )
 
     // MARK:ヘッドライン
     const headLeft = (
@@ -690,7 +843,7 @@ export default function Library() {
         ) : null}
 
         {/* MARK:メニュー */}
-        <Menu 
+        {/* <Menu 
             setSelectedGroupId={setSelectedGroupId} 
             userInfo={userInfo} 
             allGroups={allGroups || []} 
@@ -698,6 +851,9 @@ export default function Library() {
             toggleModalSetting={toggleModalSetting} 
             checkPermission={checkPermission}
             setSelectedGroup={setSelectedGroup}
+        /> */}
+        <NewMenu
+            menuContents={LibraryMenu}
         />
 
         <div className={styles.contents}>
@@ -706,18 +862,18 @@ export default function Library() {
 
             <div className={styles.content}>
                 {/* MARK:グループToノート */}
-                {selectedGroupId && selectedGroup && (
+                {selectedGroup.id !== null && (
                     <>
                     <div className={styles.notesTitles}>
                         <p className={styles.notesTitle}>{selectedGroup.name}</p>
-                        {checkPermission.some(permission => 
+                        {/* {checkPermission.some(permission => 
                             permission.group_id === selectedGroupId && 
                             permission.permission_id === 1
                         ) && (
                             <button className={styles.settingBtn} onClick={toggleModalSetting}>
                                 <MdAdminPanelSettings />
                             </button>
-                        )}
+                        )} */}
                     </div>
                     <NotesInGroup 
                         notes={selectedGroupNotes || []}

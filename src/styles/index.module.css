@@ -73,8 +73,32 @@
     font-size: 1rem;
     color: #555;
 }
+/* デスクトップ */
+@media (min-width: 1024px) {
+    .contentInput, .submitButton{
+        width: 500px;
+    }
+}
+/* タブレット */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .contentInput, .submitButton{
+        width: 500px;
+    }
+}
+/* スマホ */
+@media (max-width: 767px) and (min-width: 481px) {
+    .contentInput, .submitButton{
+        width: 90%;
+    }
+}
+/* スマホ */
+@media (max-width: 480px) {
+    .contentInput, .submitButton{
+        width: 90%;
+    }
+}
 .contentInput{
-    min-width: 90%;
+    /* min-width: 90%; */
     /* width: 500px; */
     padding: 10px;
     border: solid 1px #ccc;
@@ -82,7 +106,7 @@
     border-radius: 10px;
 }
 .submitButton{
-    min-width: 90%;
+    /* min-width: 90%; */
     /* width: 500px; */
     padding: 10px;
     display: flex;
