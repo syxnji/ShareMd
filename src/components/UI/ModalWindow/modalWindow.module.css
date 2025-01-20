@@ -1,0 +1,21 @@
+.modalWindow{
+    z-index: 150;
+    width: 600px;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    border: solid 1px #ddd;
+    overflow: hidden;
+    animation: slideIn 0.3s ease-in-out forwards;
+    box-shadow:  20px 20px 60px #bebebe,
+                 -20px -20px 60px #ffffff;
+}

@@ -7,7 +7,7 @@ import { SidebarInNotes } from "@/components/SidebarInNotes";
 import { Markdown } from "@/components/Markdown";
 import { ImgBtn } from '@/components/UI/ImgBtn/index.jsx';
 import { ToastContainer, toast } from 'react-toastify';
-import { Menu } from '@/components/Menu';
+import { Menu } from '@/components/UI/Menu';
 // style
 import styles from "./editor.module.css"
 import 'react-toastify/dist/ReactToastify.css';

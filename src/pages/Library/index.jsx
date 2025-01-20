@@ -2,15 +2,18 @@
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { ToastContainer, toast } from 'react-toastify';
-// component
-// import { Menu } from '@/components/Menu';
-import { Menu } from '@/components/Menu';
-import { GroupHeadline } from "@/components/GroupHeadline";
-import { NotesInGroup } from '@/components/NotesInGroup';
+// modals
+import { NewNoteModal } from '@/components/Modals/NewNote';
+import { JoinedGroupsModal } from '@/components/Modals/joinedGroups';
+import { MemberManagement } from '@/components/Modals/MemberManagement';
+import { ProjectManagement } from '@/components/Modals/ProjectManagement';
+import { PermissionManagement } from '@/components/Modals/PermissionManagement';
+// ui
 import { ImgBtn } from '@/components/UI/ImgBtn';
-import { MemberManagement } from '@/components/MemberManagement';
-import { ProjectManagement } from '@/components/ProjectManagement';
-import { PermissionManagement } from '@/components/PermissionManagement';
+import { Menu } from '@/components/UI/Menu';
+import { GroupHeadline } from "@/components/GroupHeadline";
+// component
+import { NotesInGroup } from '@/components/NotesInGroup';
 // icon
 import { BsList, BsFileEarmarkPlus, BsGrid3X3, BsX, BsBuildings, BsArrowRepeat} from "react-icons/bs";
 import { FaRegUser } from 'react-icons/fa6';
@@ -139,24 +142,21 @@ export default function Library() {
         setModalSetting(!modalSetting);
         setModalJoinedGroups(false);
     }
-
-    // MARK:切替 - 設定 - 構成員
+    // 構成員
     const [modalMember, setModalMember] = useState(true);
     const toggleModalMember = () => {
         setModalMember(true);
         setModalProject(false);
         setModalPermit(false);
     }
-    
-    // MARK:切替 - 設定 - 製作
+    // 製作
     const [modalProject, setModalProject] = useState(false);
     const toggleModalProject = () => {
         setModalProject(true);
         setModalMember(false);
         setModalPermit(false);
     }
-    
-    // MARK:切替 - 設定 - 権限
+    // 権限
     const [modalPermit, setModalPermit] = useState(false);
     const toggleModalPermit = () => {
         setModalPermit(true);
@@ -164,7 +164,7 @@ export default function Library() {
         setModalProject(false);
     }
     
-    // MARK:アカウントToグループ
+    // MARK:userId → allGroups
     const [allGroups, setAllGroups] = useState([]);
     useEffect(() => {
         if (userId) {
@@ -177,7 +177,6 @@ export default function Library() {
             const data = await response.json();
             setAllGroups(data.results || []);
         } catch (error) {
-            console.error('Failed to fetch groups:', error);
             setAllGroups([]);
         }
     };
@@ -227,17 +226,12 @@ export default function Library() {
     }
 
     // MARK:selectedGroup
-    // const [selectedGroupId, setSelectedGroupId] = useState(null);
     const [selectedGroup, setSelectedGroup] = useState({id: null, name: null});
 
     // MARK:selectedGroup → ノート
     const [selectedGroupNotes, setSelectedGroupNotes] = useState([]);
     const fetchNotes = async () => {
         if (selectedGroup.id) {
-            // const groupResponse = await fetch(`/api/db?table=selectedGroup&groupId=${selectedGroupId}`);
-            // const groupData = await groupResponse.json();
-            // setSelectedGroup(groupData.results[0]);
-
             const response = await fetch(`/api/db?table=selectedGroupNotes&groupId=${selectedGroup.id}`);
             const notes = await response.json();
             setSelectedGroupNotes(notes.results || []);
@@ -621,7 +615,7 @@ export default function Library() {
                             {group.name}
                         </button>
                         {checkPermission.some(permission => permission.group_id === group.id && permission.permission_id === 1) && (
-                            <button className={styles.settingBtn} onClick={(e) => {toggleModalSetting(); setSelectedGroup({id: group.id, name: group.name});}}><MdAdminPanelSettings /></button>
+                            <button className={styles.settingBtn} onClick={() => {toggleModalSetting(); setSelectedGroup({id: group.id, name: group.name});}}><MdAdminPanelSettings /></button>
                         )}
                     </div>
                 ))}
@@ -751,35 +745,20 @@ export default function Library() {
 
         {/* MARK:新規ノート */}
         {modalNewNote ? (
-            <form className={styles.modalNewNoteWindow} onSubmit={handleCreateNote}>
-                {/* 閉じる */}
-                <button className={styles.newNoteClose} onClick={toggleModalNewNote}><BsX/></button>
-                <div className={styles.newNoteContents}>
-                    <div className={styles.newNoteGroup}>
-                        <label htmlFor="newNoteGroup" className={styles.newNoteLabel}>保存先グループ</label>
-                        {/* グループ選択 */}
-                        <select className={styles.newNoteGroupSelect} required onChange={handleChangeNewNoteGroup} defaultValue="">
-                            <option value="" disabled>選択してください</option>
-                            {allGroups.map((group) => (
-                                <option key={group.id} value={group.id}>{group.name}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className={styles.newNoteTitle}>
-                        <label htmlFor="newNoteName" className={styles.newNoteLabel}>ノートタイトル</label>
-                        {/* ノートタイトル */}
-                        <input className={styles.newNoteInput} type="text" placeholder='ToDo List' onChange={handleChangeNewNoteTitle} value={newNoteTitle} required/>
-                    </div>
-                    <button className={styles.newNoteSubmit} type="submit">作成</button>
-                </div>
-            </form>
+            <NewNoteModal 
+                allGroups={allGroups}
+                toggleModalNewNote={toggleModalNewNote}
+                handleCreateNote={handleCreateNote}
+                handleChangeNewNoteGroup={handleChangeNewNoteGroup}
+                handleChangeNewNoteTitle={handleChangeNewNoteTitle}
+                newNoteTitle={newNoteTitle}
+            />
         ) : null}
 
         {/* MARK:設定 */}
         {modalSetting ? modalSettingWindow : null}
 
         {/* MARK:アカウント */}
-        {/* アカウントモーダル切替 */}
         <button className={styles.account} onClick={toggleAccountView}>
             {accountView ?  <BsX/> : <FaRegUser/>}
         </button>
@@ -805,24 +784,15 @@ export default function Library() {
 
         {/* MARK:グループモーダル */}
         {modalJoinedGroups ? (
-            <div className={styles.joinedGroupsWindow}>
-                {/* 閉じる */}
-                <button className={styles.joinedGroupsClose} onClick={toggleModalJoinedGroups}><BsX/></button>
-                <div className={styles.joinedGroupsContent}>
-                    <div className={styles.GroupsList}>
-                        {allGroups.map((group) => (
-                            <div className={styles.group} key={group.id}>
-                                <p className={styles.modalGroupName}>{group.name}</p>
-                                {/* 設定モーダル切替 / グループ選択 / 別モーダル閉じる */}
-                                {checkPermission.some(permission => permission.group_id === group.id && permission.permission_id === 1) && (
-                                    <button className={styles.settingBtn} onClick={(e) => {toggleModalSetting(); setSelectedGroupId(group.id); setModalJoinedGroups(false);}}><MdAdminPanelSettings /></button>
-                                )}
-                                <button className={styles.deleteBtn} onClick={(e) => {handleLeaveGroup(group.id);}} disabled={group.name === 'プライベート'}><BsX/></button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
+            <JoinedGroupsModal
+                allGroups={allGroups}
+                toggleModalJoinedGroups={toggleModalJoinedGroups}
+                checkPermission={checkPermission}
+                handleLeaveGroup={handleLeaveGroup}
+                toggleModalSetting={toggleModalSetting}
+                setSelectedGroup={setSelectedGroup}
+                setModalJoinedGroups={setModalJoinedGroups}
+            />
         ) : null}
 
         {/* MARK:検索グループ */}
@@ -850,15 +820,6 @@ export default function Library() {
         ) : null}
 
         {/* MARK:メニュー */}
-        {/* <Menu 
-            setSelectedGroupId={setSelectedGroupId} 
-            userInfo={userInfo} 
-            allGroups={allGroups || []} 
-            fetchGroup={fetchGroup} 
-            toggleModalSetting={toggleModalSetting} 
-            checkPermission={checkPermission}
-            setSelectedGroup={setSelectedGroup}
-        /> */}
         <Menu
             menuContents={LibraryMenu}
         />
@@ -873,14 +834,6 @@ export default function Library() {
                     <>
                     <div className={styles.notesTitles}>
                         <p className={styles.notesTitle}>{selectedGroup.name}</p>
-                        {/* {checkPermission.some(permission => 
-                            permission.group_id === selectedGroupId && 
-                            permission.permission_id === 1
-                        ) && (
-                            <button className={styles.settingBtn} onClick={toggleModalSetting}>
-                                <MdAdminPanelSettings />
-                            </button>
-                        )} */}
                     </div>
                     <NotesInGroup 
                         notes={selectedGroupNotes || []}

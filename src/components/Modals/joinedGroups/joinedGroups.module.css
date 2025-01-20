@@ -1,0 +1,50 @@
+.joinedGroupsClose{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+}
+.joinedGroupsContent{
+    width: 500px;
+    height: 100%;
+}
+.groupList{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.group{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: solid 1px #ddd;
+    gap: 10px;
+}
+.modalGroupName{
+    flex: 1;
+}
+.settingBtn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #eee;
+    border-radius: 100%;
+    border: solid 1px #ddd;
+    padding: 10px;
+    transition: all 0.3s;
+}
+.settingBtn:hover{
+    background-color: #fff;
+    color: #333;
+}
+.deleteBtn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+}

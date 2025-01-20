@@ -35,7 +35,7 @@ export const MemberManagement = ({
                )}
            </div>
            <div className={styles.memberList}>
-               {groupInMember.map((member) => (
+               {groupInMember?.map((member) => (
                    <div className={styles.member} key={member.id}>
                        <p>{member.username}</p>
                        <select
@@ -44,7 +44,7 @@ export const MemberManagement = ({
                            value={member.role_id}
                            disabled={member.role_id === 1}
                        >
-                           {groupRole.map((role) => (
+                           {groupRole?.map((role) => (
                                <option key={role.id} value={role.id}>
                                    {role.name}
                                </option>
