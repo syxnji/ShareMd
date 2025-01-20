@@ -8,6 +8,9 @@ import { JoinedGroupsModal } from '@/components/Modals/joinedGroups';
 import { MemberManagement } from '@/components/Modals/MemberManagement';
 import { ProjectManagement } from '@/components/Modals/ProjectManagement';
 import { PermissionManagement } from '@/components/Modals/PermissionManagement';
+import { NewGroup } from '@/components/Modals/NewGroup';
+// menu
+import { LibraryMenu } from '@/components/Menus/LibraryMenu';
 // ui
 import { ImgBtn } from '@/components/UI/ImgBtn';
 import { Menu } from '@/components/UI/Menu';
@@ -228,7 +231,7 @@ export default function Library() {
     // MARK:selectedGroup
     const [selectedGroup, setSelectedGroup] = useState({id: null, name: null});
 
-    // MARK:selectedGroup → ノート
+    // MARK:selectedGroup → selectedGroupNotes
     const [selectedGroupNotes, setSelectedGroupNotes] = useState([]);
     const fetchNotes = async () => {
         if (selectedGroup.id) {
@@ -238,7 +241,7 @@ export default function Library() {
         }
     };
 
-    // MARK: selectedGroup → メンバー
+    // MARK: selectedGroup → groupInMember
     const [groupInMember, setGroupInMember] = useState([]);
     const fetchGroupInMember = async () => {
         if (selectedGroup.id) {
@@ -248,7 +251,7 @@ export default function Library() {
         }
     };
 
-    // MARK:selectedGroup → ロール
+    // MARK:selectedGroup → groupRole
     const [groupRole, setGroupRole] = useState([]);
     const fetchGroupRole = async () => {
         const response = await fetch(`/api/db?table=groupRole&groupId=${selectedGroup.id}`);
@@ -256,7 +259,7 @@ export default function Library() {
         setGroupRole(roles.results);
     };
 
-    // MARK:selectedGroup → ロール - 権限
+    // MARK:selectedGroup → roleToPermit
     const [roleToPermit, setRoleToPermit] = useState([]);
     const fetchRoleToPermit = async () => {
         const response = await fetch(`/api/db?table=roleToPermit&groupId=${selectedGroup.id}`);
@@ -554,78 +557,32 @@ export default function Library() {
         setCreateGroupMemberList([]);
         toast.success('グループを作成しました', defaultToastOptions);
     }
-    // MARK: Menu
-    const LibraryMenu = (
+    // MARK: MenuContents
+    const menuContents = (
         <>
+        {/* グループ追加 */}
         {modalCreateGroup ? (
-            <form className={styles.modalNewGroupWindow}>
-                <button className={styles.modalNewGroupClose} onClick={toggleModalCreateGroup} type='button'><BsX/></button>
-                <div className={styles.modalNewGroupContents}>
-                    {/* グループ名 */}
-                    <div className={styles.newGroupTitle}>
-                        <label className={styles.newGroupLabel}>グループ名</label>
-                        <input type="text" placeholder="例：チームα" className={styles.newGroupInput} onChange={handleChangeCreateName} value={createName} required/>
-                    </div>
-                    {/* メンバー検索 */}
-                    <div className={styles.newGroupMembers}>
-                        <label className={styles.newGroupLabel}>メンバー</label>
-                        <input type="text" placeholder="ユーザー名で検索" className={styles.newGroupInput} onChange={handleSearchCreateGroupMember} value={searchCreateGroupMember}/>
-                        {createGroupMemberSuggest.length > 0 && (
-                            // メンバー候補
-                            <div className={styles.newGroupSuggest}>
-                                <div className={styles.suggestMemberBox}>
-                                    {createGroupMemberSuggest.map((user) => (
-                                        <button className={styles.suggestMember} key={user.id} onClick={(e) => handleAddCreateGroupMember(e, user)}>{user.username}</button>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                    {/* メンバーリスト */}
-                    <div className={styles.newGroupMemberListBox}>
-                        <p className={styles.newGroupLabel}>メンバーリスト</p>
-                        <div className={styles.newGroupMemberList}>
-                            {createGroupMemberList.map((member, index) => (
-                                <div className={styles.member} key={`${member.id}-${index}`}>
-                                    <p>{member.username}</p>
-                                    <button 
-                                        className={styles.memberDelete} 
-                                        onClick={(e) => handleDeleteCreateGroupMember(e, member)}
-                                    >
-                                        <BsX/>
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                    <button className={styles.newGroupBtn} onClick={handleCreateGroup}>構築</button>
-                </div>
-            </form>
+            <NewGroup
+                toggleModalCreateGroup={toggleModalCreateGroup}
+                createName={createName}
+                handleChangeCreateName={handleChangeCreateName}
+                createGroupMemberSuggest={createGroupMemberSuggest}
+                handleSearchCreateGroupMember={handleSearchCreateGroupMember}
+                handleAddCreateGroupMember={handleAddCreateGroupMember}
+                handleDeleteCreateGroupMember={handleDeleteCreateGroupMember}
+                handleCreateGroup={handleCreateGroup}
+                searchCreateGroupMember={searchCreateGroupMember}
+                createGroupMemberList={createGroupMemberList}
+            />
         ) : null}
-
-        <div className={styles.menuContents}>
-            <button className={styles.addGroupBtn} onClick={toggleModalCreateGroup}>
-                <BsBuildings/>
-                <p>グループを構築</p>
-            </button>
-            <div className={styles.groups}>
-                {Array.isArray(allGroups) && allGroups.map((group) => (
-                    <div className={styles.groupBox} key={group.id}>
-                        <button className={styles.group} onClick={() => setSelectedGroup({id: group.id, name: group.name})}>
-                            {group.name}
-                        </button>
-                        {checkPermission.some(permission => permission.group_id === group.id && permission.permission_id === 1) && (
-                            <button className={styles.settingBtn} onClick={() => {toggleModalSetting(); setSelectedGroup({id: group.id, name: group.name});}}><MdAdminPanelSettings /></button>
-                        )}
-                    </div>
-                ))}
-            </div>
-            {allGroups.length === 1 && (
-                <div className={styles.empty} onClick={toggleModalCreateGroup}>
-                    <p className={styles.emptyMain}>グループを<br/>構築してみましょう</p>
-                </div>
-            )}
-        </div>
+        {/* グループ */}
+        <LibraryMenu
+            toggleModalCreateGroup={toggleModalCreateGroup}
+            allGroups={allGroups}
+            setSelectedGroup={setSelectedGroup}
+            checkPermission={checkPermission}
+            toggleModalSetting={toggleModalSetting}
+        />
         </>
     )
 
@@ -820,16 +777,14 @@ export default function Library() {
         ) : null}
 
         {/* MARK:メニュー */}
-        <Menu
-            menuContents={LibraryMenu}
-        />
+        <Menu menuContents={menuContents}/>
 
         <div className={styles.contents}>
             {/* MARK:ヘッドライン */}
             <GroupHeadline headLeft={headLeft} headRight={headRight} />
 
             <div className={styles.content}>
-                {/* MARK:グループToノート */}
+                {/* MARK:selectedGroup → selectedGroupNotes */}
                 {selectedGroup.id !== null && (
                     <>
                     <div className={styles.notesTitles}>
@@ -843,10 +798,11 @@ export default function Library() {
                     </>
                 )}
                         
-                {/* MARK:検索結果 */}
+                {/* MARK: SearchResult → filteredNotes */}
                 <div className={styles.notesTitles}>
                     <p className={styles.notesTitle}>検索結果「{searchValue}」</p>
                 </div>
+                {/* ! empty */}
                 {filteredNotes.length > 0 ? (
                     <NotesInGroup 
                      notes={filteredNotes} 

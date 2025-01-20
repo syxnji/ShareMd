@@ -1,0 +1,78 @@
+
+/* MARK:メニュー */
+.menuContents{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 10px;
+}
+/* グループ追加 */
+.addGroupBtn{
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: left;
+    color: #429;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 10px;
+    background-color: transparent;
+    border: none;
+    border-bottom: solid 1px #ddd;
+    margin-bottom: 10px;
+    transition: all 0.3s;
+}
+.addGroupBtn:hover{
+    background-color: #eee;
+    border-radius: 10px;
+}
+/* グループ */
+.groups{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+.groupBox{
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.group{
+    display: flex;
+    justify-content: flex-start;
+    padding: 10px;
+    color: #555;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    background-color: transparent;
+    text-wrap: nowrap;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+.group:hover{
+    background-color: #ddd;
+}
+.settingBtn{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    right: 10px;
+    background-color: #eee;
+    border: none;
+    border-radius: 100%;
+    padding: 10px;
+    color: #333;
+    transition: all 0.3s;
+}
+.settingBtn:hover{
+    background-color: #ddd;
+    color: #333;
+}

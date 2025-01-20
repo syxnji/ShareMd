@@ -1,6 +1,5 @@
 'use client'
 import { useState, useEffect} from 'react'
-import { useRouter } from "next/router"
 import Cookies from 'js-cookie';
 // component
 import { SidebarInNotes } from "@/components/SidebarInNotes";
@@ -127,14 +126,13 @@ export default function MarkdownEditor({ id }) {
     }
 
     const menuContents = (
-        <>
         <SidebarInNotes selectNoteId={id} />
-        </>
     )
 
     // MARK: MAIN ━━━━━━━━━
     return (
         <>
+        {/* MARK: フルスクリーン */}
         {screen ? (
             <main className={styles.full}>
                 <ToastContainer />
@@ -155,10 +153,13 @@ export default function MarkdownEditor({ id }) {
             </main>
         ) : (
             <main className={styles.main}>
+                {/* MARK: Toast */}
                 <ToastContainer />
-                <Menu menuContents={menuContents}/>
-                {/* <SidebarInNotes selectNoteId={id} /> */}
 
+                {/* MARK: Menu */}
+                <Menu menuContents={menuContents}/>
+
+                {/* MARK: Content */}
                 <div className={styles.content}> 
                     <form>
                         <div className={styles.head}>
