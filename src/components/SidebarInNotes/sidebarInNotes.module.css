@@ -1,14 +1,31 @@
+.sidebar{
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    height: 100vh;
+}
+.headline{
+    padding: 10px;
+    border-bottom: solid 1px #ddd;
+}
 .groupName{
     text-wrap: nowrap;
     overflow: hidden;
-    font-size: 1.4rem;
+    font-size: 1rem;
     font-weight: bold;
     color: #333;
 }
-.note{
+.notes{
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+.note{
+    border-radius: 10px;
+    border: none;
 }
 .note a{
     color: #333;
@@ -21,7 +38,6 @@
 }
 .active{
     font-weight: bold;
-    border-radius: 5px;
     color: #333;
     background-color: #eee;
 }

@@ -7,7 +7,7 @@ import { BsArrowBarLeft, BsArrowBarRight} from "react-icons/bs";
 
 export function Menu({menuContents}) {
     // MARK: メニューの表示/非表示
-    const [menuState, setMenuState] = useState(true);
+    const [menuState, setMenuState] = useState(false);
     const toggleMenuState = () => {
         setMenuState(!menuState);
     }

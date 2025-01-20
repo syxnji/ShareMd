@@ -1,6 +1,8 @@
 .markdownContent{
     flex: 1;
     height: 100%;
+    overflow: scroll;
+    scrollbar-width: none;
 }
 .noteInput{
     width: 100%;
@@ -23,6 +25,7 @@
     padding: 10px;
     font-size: 1rem;
     background-color: #f5f5f5;
+    /* scrollbar-width: none; */
 }
 .noteInput textarea::placeholder{
     color: #999;

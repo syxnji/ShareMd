@@ -45,12 +45,17 @@
     background-color: #fff;
 }
 .backBtn{
-    width: 32px;
+    width: 42px;
+    height: 42px;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: transparent;
     border: none;
+    border-radius: 10px;
+}
+.backBtn:hover{
+    background-color: #ddd;
 }
 @media (max-width: 767px) {
     .title{
@@ -206,7 +211,7 @@
 
 /* update */
 .update{
-    position: absolute;
+    position: sticky;
     bottom: 10px;
     right: 10px;
     width: 100%;

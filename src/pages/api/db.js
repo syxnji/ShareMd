@@ -342,8 +342,8 @@ export default function handler(req, res) {
                 );
                 res.status(200).json({ results });
             }
-            // MARK: insertGroup
-            else if (req.query.table === 'insertGroup') {
+            // MARK: createGroup
+            else if (req.query.table === 'createGroup') {
                 const name = req.query.name;
                 const userId = req.query.userId;
                 const memberIds = req.query.memberIds.split(',');

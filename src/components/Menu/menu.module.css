@@ -1,8 +1,12 @@
 .menu{
-    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
     height: 100vh;
-    position: relative;
-    transition: all 0.3s;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    transition: width 0.3s;
     border-right: solid 1px #ddd;
     background-color: #fff;
 }
@@ -21,20 +25,14 @@
 /* スマホ */
 @media (max-width: 767px) {
     .menuOpen{
-        position: fixed;
         width: 80vw;
     }
 }
 /* スマホ */
 @media (max-width: 480px) {
     .menuOpen{
-        position: fixed;
         width: 80vw;
     }
-}
-.menuOpen{
-    /* width: px; */
-    padding: 10px;
 }
 .menuClose{
     width: 5px;

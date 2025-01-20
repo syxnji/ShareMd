@@ -41,35 +41,33 @@ export function SidebarInNotes({selectNoteId}){
             fetchNotes();
         }
     }, [selectNoteId, group]);
-    
-    // GroupHeadline
-    const headLeft = (
-        group ? (
-            <p className={styles.groupName}>{group.name}</p>
-        ):(
-            <p>不明</p>
-        )
-    )
+
 
     return(
         <>
         <div className={styles.sidebar}>
-            <GroupHeadline headLeft={headLeft}/>
+            <div className={styles.headline}>
+                {group ? (
+                    <p className={styles.groupName}>{group.name}</p>
+                ):(
+                    <p>不明</p>
+                )}
+            </div>
             <div className={styles.notes}>
-                <div className={styles.note}>
-                    {Array.isArray(notes) && notes.length > 0 ? (
-                        notes.map(note => (
+                {Array.isArray(notes) && notes.length > 0 ? (
+                    notes.map(note => (
+                        <div className={styles.note}>
                             <Link href={`/Editor/${note.id}`} key={note.id} >
                                 <p className={selectNoteId === String(note.id) ? styles.active : ''}>
                                     {note.title}
                                 </p>
                             </Link>
-                        ))
-                        ) : (
-                            <p>ノートがありません</p>
-                        )
-                    }
-                </div>
+                        </div>
+                    ))
+                    ) : (
+                        <p>ノートがありません</p>
+                    )
+                }
             </div>
         </div>
         </>

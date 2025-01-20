@@ -560,11 +560,11 @@ export default function Library() {
         setCreateGroupMemberList([]);
         toast.success('グループを作成しました', defaultToastOptions);
     }
-    // MARK: グループ作成モーダル
+    // MARK: Menu
     const LibraryMenu = (
         <>
         {modalCreateGroup ? (
-            <form className={styles.modalNewGroupWindow} onSubmit={handleCreateGroup}>
+            <form className={styles.modalNewGroupWindow}>
                 <button className={styles.modalNewGroupClose} onClick={toggleModalCreateGroup} type='button'><BsX/></button>
                 <div className={styles.modalNewGroupContents}>
                     {/* グループ名 */}
@@ -591,40 +591,47 @@ export default function Library() {
                     <div className={styles.newGroupMemberListBox}>
                         <p className={styles.newGroupLabel}>メンバーリスト</p>
                         <div className={styles.newGroupMemberList}>
-                            {createGroupMemberList.map((member) => (
-                                <div className={styles.member} key={member.id}>
+                            {createGroupMemberList.map((member, index) => (
+                                <div className={styles.member} key={`${member.id}-${index}`}>
                                     <p>{member.username}</p>
-                                    <button className={styles.memberDelete} onClick={(e) => handleDeleteCreateGroupMember(e, member)}><BsX/></button>
+                                    <button 
+                                        className={styles.memberDelete} 
+                                        onClick={(e) => handleDeleteCreateGroupMember(e, member)}
+                                    >
+                                        <BsX/>
+                                    </button>
                                 </div>
                             ))}
                         </div>
                     </div>
-                    <button className={styles.newGroupBtn} type="submit">構築</button>
+                    <button className={styles.newGroupBtn} onClick={handleCreateGroup}>構築</button>
                 </div>
             </form>
         ) : null}
 
-        <button className={styles.addGroupBtn} onClick={toggleModalCreateGroup}>
-            <BsBuildings/>
-            <p>グループを構築</p>
-        </button>
-        <div className={styles.groups}>
-            {Array.isArray(allGroups) && allGroups.map((group) => (
-                <div className={styles.groupBox} key={group.id}>
-                    <button className={styles.group} onClick={() => setSelectedGroup({id: group.id, name: group.name})}>
-                        {group.name}
-                    </button>
-                    {checkPermission.some(permission => permission.group_id === group.id && permission.permission_id === 1) && (
-                        <button className={styles.settingBtn} onClick={(e) => {toggleModalSetting(); setSelectedGroup({id: group.id, name: group.name});}}><MdAdminPanelSettings /></button>
-                    )}
-                </div>
-            ))}
-        </div>
-        {allGroups.length === 1 && (
-            <div className={styles.empty} onClick={toggleModalCreate}>
-                <p className={styles.emptyMain}>グループを<br/>構築してみましょう</p>
+        <div className={styles.menuContents}>
+            <button className={styles.addGroupBtn} onClick={toggleModalCreateGroup}>
+                <BsBuildings/>
+                <p>グループを構築</p>
+            </button>
+            <div className={styles.groups}>
+                {Array.isArray(allGroups) && allGroups.map((group) => (
+                    <div className={styles.groupBox} key={group.id}>
+                        <button className={styles.group} onClick={() => setSelectedGroup({id: group.id, name: group.name})}>
+                            {group.name}
+                        </button>
+                        {checkPermission.some(permission => permission.group_id === group.id && permission.permission_id === 1) && (
+                            <button className={styles.settingBtn} onClick={(e) => {toggleModalSetting(); setSelectedGroup({id: group.id, name: group.name});}}><MdAdminPanelSettings /></button>
+                        )}
+                    </div>
+                ))}
             </div>
-        )}
+            {allGroups.length === 1 && (
+                <div className={styles.empty} onClick={toggleModalCreateGroup}>
+                    <p className={styles.emptyMain}>グループを<br/>構築してみましょう</p>
+                </div>
+            )}
+        </div>
         </>
     )
 
@@ -638,7 +645,7 @@ export default function Library() {
                  placeholder="Note name ..." 
                  type="search"
                  onChange={handleSearch}
-                />
+                 />
             </form>
         </div>
         </>
