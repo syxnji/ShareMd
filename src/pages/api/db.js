@@ -276,8 +276,9 @@ export default function handler(req, res) {
             else if (req.query.table === 'privateGroup') {
                 const userId = req.query.userId;
                 const results = await handleQuery(
-                    'SELECT * FROM groups WHERE created_by = ? AND name = \'プライベート\'',
-                    [userId]
+                    `SELECT * FROM \`groups\` 
+                     WHERE created_by = ? AND name = 'プライベート';
+                     `,[userId]
                 );
                 res.status(200).json({ results });
             }
@@ -947,21 +948,6 @@ export default function handler(req, res) {
     //             } else {
     //                 res.status(200).json({ results });
     //                 const noteId = results.insertId;
-    //             }
-    //         }
-    //     );
-    // // MARK: プライベートグループ
-    // } else if (req.query.table === 'privateGroup') {
-    //     const userId = req.query.userId;
-    //     pool.query(
-    //         `SELECT * FROM \`groups\` 
-    //          WHERE name = 'プライベート' 
-    //          AND \`delete\` = 0 AND created_by = ?;`, [userId],
-    //         (err, results) => {
-    //             if (err) {
-    //                 res.status(500).json({ error: err.message });
-    //             } else {
-    //                 res.status(200).json({ results });
     //             }
     //         }
     //     );

@@ -55,9 +55,11 @@ export default function TryCreateNote() {
         if (Cookies.get('id')) {
             // ユーザーIDを取得
             const currentUserId = parseInt(Cookies.get('id'));
+            console.log('ログイン済:',currentUserId)
             // プライベートグループを取得
             const response = await fetch(`/api/db?table=privateGroup&userId=${currentUserId}`);
             const privateGroup = await response.json();
+            console.log('res:',privateGroup)
             const privateGroupId = privateGroup.results[0].id;
             // ノートの内容をエンコード
             const encodedContent = encodeURIComponent(noteContent);
