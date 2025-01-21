@@ -85,8 +85,8 @@ export default function MarkdownEditor({ id }) {
     }
     
     // MARK: ノートの保存
-    const handleSave = (e) => {
-        e.preventDefault();
+    const handleSave = async (e) => {
+        if (e) e.preventDefault();
         
         const fetchNoteUpd = async () => {
             try {
@@ -128,6 +128,21 @@ export default function MarkdownEditor({ id }) {
     const menuContents = (
         <SidebarInNotes selectNoteId={id} />
     )
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                handleSave();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [handleSave]);
 
     // MARK: MAIN ━━━━━━━━━
     return (

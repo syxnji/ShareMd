@@ -22,7 +22,7 @@ import { BsList, BsFileEarmarkPlus, BsGrid3X3, BsX, BsBuildings, BsArrowRepeat} 
 import { FaRegUser } from 'react-icons/fa6';
 // style
 import styles from "./library.module.css";
-import { MdAdminPanelSettings, MdLogout, MdOutlineWifiFind } from 'react-icons/md';
+import { MdLogout, MdOutlineWifiFind } from 'react-icons/md';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function Library() {
@@ -275,7 +275,7 @@ export default function Library() {
         fetchRoleToPermit();
     }, [selectedGroup]);
 
-    // MARK: ロール変更
+    // MARK: handleChangeRole
     const handleChangeRole = async (e, userId) => {
         const newRoleId = parseInt(e.target.value, 10);
         await fetch(`/api/db?table=changeRole&groupId=${selectedGroup.id}&userId=${userId}&roleId=${newRoleId}`);
@@ -285,7 +285,7 @@ export default function Library() {
         toast.success('役職を更新しました', defaultToastOptions);
     }
 
-    // MARK: メンバー削除
+    // MARK: deleteMember
     const handleDeleteMember = async (e, userId) => {
         e.preventDefault();
         await fetch(`/api/db?table=deleteMember&groupId=${selectedGroup.id}&userId=${userId}`);
@@ -294,7 +294,7 @@ export default function Library() {
         toast.success('メンバーを削除しました', defaultToastOptions);
     }
     
-    // MARK:ユーザー検索
+    // MARK: searchUser
     const [searchUser, setSearchUser] = useState('');
     const handleSearchUser = (e) => {
         setSearchUser(e.target.value);
@@ -313,7 +313,7 @@ export default function Library() {
         fetchMemberSuggest();
     }, [searchUser]);
 
-    // MARK:メンバー追加
+    // MARK: addMember
     const handleAddMember = async (e, user) => {
         e.preventDefault();
         const newMemberId = user.id;
