@@ -84,6 +84,7 @@
     gap: 10px;
 }
 .deleteBtn{
+    width: 48px;
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -96,6 +97,7 @@
     background-color: #efefef;
 }
 .restoreBtn{
+    width: 48px;
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 5px;

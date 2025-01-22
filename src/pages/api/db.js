@@ -544,6 +544,28 @@ export default async function handler(req, res) {
                 const results = await handleQuery(`SELECT * FROM users`);
                 res.status(200).json({ results });
             }
+            // MARK: admin_selectUser
+            else if (req.query.table === 'admin_selectUser') {
+                const userId = req.query.userId;
+                const results = await handleQuery(`
+                    SELECT 
+                        users.id AS userId, 
+                        users.username AS userName,
+                        groups.id AS groupId, 
+                        groups.name AS groupName,
+                        user_group_memberships.role_id AS roleId,
+                        roles.name AS roleName
+                    FROM user_group_memberships
+                    JOIN users ON user_group_memberships.user_id = users.id
+                    JOIN \`groups\` ON user_group_memberships.group_id = groups.id
+                    JOIN roles ON user_group_memberships.role_id = roles.id
+                    WHERE users.id = ? 
+                    AND groups.delete = 0 
+                    AND roles.delete = 0 
+                    AND user_group_memberships.delete = 0
+                    `, [userId]);
+                res.status(200).json({ results });
+            }
             // MARK: deleteUser
             else if (req.query.table === 'deleteUser') {
                 const id = req.query.id;

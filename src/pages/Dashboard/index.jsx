@@ -7,8 +7,10 @@ import { LuUsersRound } from "react-icons/lu";
 import { FaObjectUngroup } from "react-icons/fa6";
 import { RiShieldUserFill } from "react-icons/ri";
 import { PiNote } from "react-icons/pi";
+import { MdDelete, MdOutlineRestore } from "react-icons/md";
 // component
 import { AdminHeader } from '@/components/AdminHeader';
+import { AdminUserInfo } from '@/components/Modals/AdminUserInfo';
 
 export default function Dashboard() {
     const [active, setActive] = useState("dashboard");
@@ -38,6 +40,19 @@ export default function Dashboard() {
     const filteredUsers = users.filter((user) => {
         return user.username.includes(search);
     });
+    // MARK: ユーザークリック
+    const [modalUser, setModalUser] = useState(false);
+    const toggleModalAdminUserInfo = () => {
+        setModalUser(!modalUser);
+    }
+    const [selectedUserInfo, setSelectedUserInfo] = useState([]);
+    const handleUserClick = async (id) => {
+        const selectedUserId = id;
+        const resSelectUser = await fetch(`/api/db?table=admin_selectUser&userId=${selectedUserId}`);
+        const retSelectUser = await resSelectUser.json();
+        setSelectedUserInfo(retSelectUser.results);
+        setModalUser(true);
+    }
     // MARK: ユーザー削除
     const handleDeleteUser = async (id) => {
         await fetch(`/api/db?table=deleteUser&id=${id}`);
@@ -170,6 +185,9 @@ export default function Dashboard() {
             )}
             {active === "users" && (
                 <div className={styles.usersContent}>
+                    {modalUser  && (
+                        <AdminUserInfo userInfo={selectedUserInfo} toggleModalAdminUserInfo={toggleModalAdminUserInfo} />
+                    )}
                     <input type="search" placeholder="Search" className={styles.Search} onChange={(e) => setSearch(e.target.value)}/>
                     <table className={styles.Table}>
                         <thead>
@@ -182,7 +200,7 @@ export default function Dashboard() {
                         </thead>
                         <tbody>
                             {filteredUsers.map((user) => (
-                                <tr key={user.id}>
+                                <tr key={user.id} onClick={() => handleUserClick(user.id)}>
                                     <td style={user.delete ? {textDecoration: "line-through"} : {}}>{user.id}</td>
                                     <td style={user.delete ? {textDecoration: "line-through"} : {}}>{user.username}</td>
                                     <td style={user.delete ? {textDecoration: "line-through"} : {}}>{user.email}</td>
@@ -190,9 +208,9 @@ export default function Dashboard() {
                                         <div className={styles.usersTableBtns}>
                                             {/* <button className={styles.usersTableBtn}>Edit</button> */}
                                             {!user.delete ? (
-                                                <button className={styles.deleteBtn} onClick={() => handleDeleteUser(user.id)}>Delete</button>
+                                                <button className={styles.deleteBtn} onClick={() => handleDeleteUser(user.id)}><MdDelete/></button>
                                             ) : (
-                                                <button className={styles.restoreBtn} onClick={() => handleRestoreUser(user.id)}>Restore</button>
+                                                <button className={styles.restoreBtn} onClick={() => handleRestoreUser(user.id)}><MdOutlineRestore /></button>
                                             )}
                                         </div>
                                     </td>
@@ -221,9 +239,9 @@ export default function Dashboard() {
                                     <td>
                                         <div className={styles.groupsTableBtns}>
                                             {!group.delete ? (
-                                                <button className={styles.deleteBtn} onClick={() => handleDeleteGroup(group.id)}>Delete</button>
+                                                <button className={styles.deleteBtn} onClick={() => handleDeleteGroup(group.id)}><MdDelete/></button>
                                             ) : (
-                                                <button className={styles.restoreBtn} onClick={() => handleRestoreGroup(group.id)}>Restore</button>
+                                                <button className={styles.restoreBtn} onClick={() => handleRestoreGroup(group.id)}><MdOutlineRestore /></button>
                                             )}
                                         </div>
                                     </td>
@@ -252,9 +270,9 @@ export default function Dashboard() {
                                     <td>
                                         <div className={styles.rolesTableBtns}>
                                             {!role.delete ? (
-                                                <button className={styles.deleteBtn} onClick={() => handleDeleteRole(role.id)}>Delete</button>
+                                                <button className={styles.deleteBtn} onClick={() => handleDeleteRole(role.id)}><MdDelete/></button>
                                             ) : (
-                                                <button className={styles.restoreBtn} onClick={() => handleRestoreRole(role.id)}>Restore</button>
+                                                <button className={styles.restoreBtn} onClick={() => handleRestoreRole(role.id)}><MdOutlineRestore /></button>
                                             )}
                                         </div>
                                     </td>
@@ -286,9 +304,9 @@ export default function Dashboard() {
                                     <td>
                                         <div className={styles.groupsTableBtns}>
                                             {!note.delete ? (
-                                                <button className={styles.deleteBtn} onClick={() => handleDeleteNote(note.id)}>Delete</button>
+                                                <button className={styles.deleteBtn} onClick={() => handleDeleteNote(note.id)}><MdDelete/></button>
                                             ) : (
-                                                <button className={styles.restoreBtn} onClick={() => handleRestoreNote(note.id)}>Restore</button>
+                                                <button className={styles.restoreBtn} onClick={() => handleRestoreNote(note.id)}><MdOutlineRestore /></button>
                                             )}
                                         </div>
                                     </td>
