@@ -15,6 +15,7 @@ import { IoLogoMarkdown, IoSaveOutline } from "react-icons/io5";
 import { BsFullscreen, BsFullscreenExit } from "react-icons/bs";
 import { MdArrowBackIos } from "react-icons/md";
 import { CiTextAlignLeft } from "react-icons/ci";
+import { HiDownload } from "react-icons/hi";
 
 export const getServerSideProps = async ({ params: { id } }) => ({
     props: { id },
@@ -104,6 +105,21 @@ export default function MarkdownEditor({ id }) {
         fetchNoteUpd();
     }
 
+    // MARK: ノートのエクスポート
+    const handleExport = (e) => {
+        e.preventDefault();
+        const blob = new Blob([noteContent], { type: 'text/markdown' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${noteTitle || 'untitled'}.md`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        toast.success('エクスポートしました');
+    }
+
     // MARK: ノートの戻る
     const handleBack = (e) => {
         e.preventDefault();
@@ -158,6 +174,9 @@ export default function MarkdownEditor({ id }) {
                     <div className={styles.saveBtn}>
                         <ImgBtn img={<IoSaveOutline/>} click={handleSave} color="main"/>
                     </div>
+                    <div className={styles.exportBtn}>
+                        <ImgBtn img={<HiDownload/>} click={handleExport} color="main"/>
+                    </div>
                     <div className={styles.screenBtn}>
                         <ImgBtn img={screen ? <BsFullscreenExit /> : <BsFullscreen />} click={toggleScreen}/>
                     </div>
@@ -194,6 +213,9 @@ export default function MarkdownEditor({ id }) {
                                 </div>
                                 <div className={view ? styles.md : styles.edit}>
                                     <ImgBtn img={view ? <IoLogoMarkdown /> : <CiTextAlignLeft />} click={toggleViewer}/>
+                                </div>
+                                <div className={styles.exportBtn}>
+                                    <ImgBtn img={<HiDownload/>} click={handleExport} color="main"/>
                                 </div>
                                 <div className={styles.saveBtn}>
                                     <ImgBtn img={<IoSaveOutline/>} click={handleSave} color="main"/>

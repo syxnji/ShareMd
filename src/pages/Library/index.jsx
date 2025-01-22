@@ -202,30 +202,82 @@ export default function Library() {
         setCheckPermission(permissions.results);
     };
 
-    // MARK: 切替 - 新規ノート
+    // MARK: modalNewNote
     const [modalNewNote, setModalNewNote] = useState(false);
     const toggleModalNewNote = () => {
         setModalNewNote(!modalNewNote);
     }
 
-    // MARK: 新規ノート - グループ選択
-    const [newNoteGroup, setNewNoteGroup] = useState(null);
+    // MARK: newNoteGroup
+    const [newNoteGroup, setNewNoteGroup] = useState('');
     const handleChangeNewNoteGroup = (e) => {
         setNewNoteGroup(e.target.value);
     }
 
-    // MARK: 新規ノート - タイトル
+    // MARK: newNoteTitle
     const [newNoteTitle, setNewNoteTitle] = useState('');
     const handleChangeNewNoteTitle = (e) => {
         setNewNoteTitle(e.target.value);
     }
 
-    // MARK:新規ノート作成
+    // MARK: newNoteContent
+    const [newNoteContent, setNewNoteContent] = useState('');
+
+    // MARK: handleImport
+    const handleImport = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        if (!file.name.endsWith('.md')) {
+            alert('.mdファイルのみインポート可能です');
+            e.target.value = '';
+            return;
+        }
+
+        // ファイル名をタイトルとして設定（.mdを除く）
+        const fileName = file.name.replace('.md', '');
+        setNewNoteTitle(fileName);
+
+        // ファイルの内容を読み込む
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            setNewNoteContent(e.target.result);
+        };
+        reader.readAsText(file);
+    }
+
+    // MARK: newNoteCreate
     const handleCreateNote = async (e) => {
         e.preventDefault();
-        const response = await fetch(`/api/db?table=newNote&groupId=${newNoteGroup}&noteName=${newNoteTitle}&userId=${userId}`);
-        const result = await response.json();
-        window.location.assign(`/Editor/${result.results.insertId}`);
+        
+        try {
+            const noteData = {
+                groupId: newNoteGroup,
+                title: newNoteTitle,
+                content: newNoteContent,
+                userId
+            };
+
+            const { data, success, message } = await fetch('/api/post', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(noteData)
+            }).then(res => res.json());
+
+            if (success) {
+                window.location.assign(`/Editor/${data.id}`);
+                toast.success('ノートを作成しました');
+                setNewNoteTitle('');
+                setNewNoteContent('');
+                fetchNotifications();
+                return;
+            }
+
+            toast.error(message);
+
+        } catch {
+            toast.error('ノートの作成に失敗しました');
+        }
     }
 
     // MARK:selectedGroup
@@ -709,6 +761,8 @@ export default function Library() {
                 handleChangeNewNoteGroup={handleChangeNewNoteGroup}
                 handleChangeNewNoteTitle={handleChangeNewNoteTitle}
                 newNoteTitle={newNoteTitle}
+                handleImport={handleImport}
+                setNoteContent={setNewNoteContent}
             />
         ) : null}
 

@@ -2,10 +2,25 @@ import { ModalWindow } from "@/components/UI/ModalWindow";
 import { BsX } from "react-icons/bs";
 import styles from "./newNote.module.css";
 
-export function NewNoteModal({ allGroups, toggleModalNewNote, handleCreateNote, handleChangeNewNoteGroup, handleChangeNewNoteTitle, newNoteTitle }){
+export function NewNoteModal({ 
+    allGroups, 
+    toggleModalNewNote, 
+    handleCreateNote, 
+    handleChangeNewNoteGroup, 
+    handleChangeNewNoteTitle,
+    newNoteTitle,
+    setNewNoteTitle,
+    setNoteContent,
+    handleImport
+ }){
+
+
     return(
         <ModalWindow>
-        <form onSubmit={handleCreateNote}>
+        <form onSubmit={(e) => {
+            e.preventDefault();
+            handleCreateNote(e);
+        }}>
             {/* 閉じる */}
             <button className={styles.newNoteClose} onClick={toggleModalNewNote}><BsX/></button>
             <div className={styles.newNoteContents}>
@@ -24,7 +39,22 @@ export function NewNoteModal({ allGroups, toggleModalNewNote, handleCreateNote, 
                     {/* ノートタイトル */}
                     <input className={styles.newNoteInput} type="text" placeholder='ToDo List' onChange={handleChangeNewNoteTitle} value={newNoteTitle} required/>
                 </div>
-                <button className={styles.newNoteSubmit} type="submit">作成</button>
+                <div className={styles.import}>
+                    <label htmlFor="newNoteImport" className={styles.newNoteLabel}>インポート</label>
+                    <input 
+                        className={styles.newNoteInput} 
+                        type="file" 
+                        accept=".md"
+                        onChange={handleImport}
+                        id="newNoteImport"
+                    />
+                </div>
+                <button 
+                    className={styles.newNoteSubmit} 
+                    type="submit"
+                >
+                    作成
+                </button>
             </div>
         </form>
         </ModalWindow>

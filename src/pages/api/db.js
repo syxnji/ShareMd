@@ -1,14 +1,17 @@
 import mysql from 'mysql2';
 const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: 'P@ssw0rd',
-  database: 'md',
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
 // APIリクエストのハンドリング
 // export default function handler(req, res) {
-export default function handler(req, res) {
+export default async function handler(req, res) {
     // プロミス版のプールを取得
     const promisePool = pool.promise();
     
@@ -261,17 +264,17 @@ export default function handler(req, res) {
                 res.status(200).json({ results });
             }
             // MARK: newNote
-            else if (req.query.table === 'newNote') {
-                const groupId = req.query.groupId;
-                const noteName = req.query.noteName;
-                const userId = req.query.userId;
-                const results = await handleQuery(
-                    `INSERT INTO notes (title, group_id, created_by, created_at, updated_at)
-                     VALUES (?, ?, ?, NOW(), NOW());`,
-                    [noteName, groupId, userId]
-                );
-                res.status(200).json({ results });
-            }
+            // else if (req.query.table === 'newNote') {
+            //     const groupId = req.query.groupId;
+            //     const noteName = req.query.noteName;
+            //     const userId = req.query.userId;
+            //     const results = await handleQuery(
+            //         `INSERT INTO notes (title, group_id, created_by, created_at, updated_at)
+            //          VALUES (?, ?, ?, NOW(), NOW());`,
+            //         [noteName, groupId, userId]
+            //     );
+            //     res.status(200).json({ results });
+            // }
             // MARK: privateGroup
             else if (req.query.table === 'privateGroup') {
                 const userId = req.query.userId;

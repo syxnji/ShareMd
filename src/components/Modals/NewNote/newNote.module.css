@@ -51,7 +51,11 @@
     color: #fff;
     transition: all 0.3s;
 }
-.newNoteSubmit:hover{
+/* .newNoteSubmit:hover{
     background-color: #fff;
     color: #333;
+} */
+.newNoteSubmit:active{
+    background-color: #429;
+    color: #fff;
 }
