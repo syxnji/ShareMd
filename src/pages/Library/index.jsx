@@ -28,7 +28,7 @@ import 'react-toastify/dist/ReactToastify.css';
 export default function Library() {
 
     
-    // MARK:セッションToアカウント
+    // MARK:Cookies.id → userId
     const [userId, setUserId] = useState(null);
     useEffect(() => {
         const getUserId = async () => {
@@ -42,7 +42,7 @@ export default function Library() {
         getUserId();
     }, [userId]);
 
-    // MARK:通知
+    // MARK: userId → notifications
     const [notifications, setNotifications] = useState([]);
     useEffect(() => {
         if (userId) {
@@ -55,7 +55,8 @@ export default function Library() {
         toast.dismiss();
         setNotifications(noticeResult.results);
     };
-    // MARK:通知設定
+
+    // MARK: Toast Settings
     const customToastOptions = {
         position: "bottom-right",
         autoClose: false,
@@ -70,7 +71,7 @@ export default function Library() {
         draggable: true,
     }
 
-    // MARK:リロード
+    // MARK: refresh
     const refresh = () => {
         toast.dismiss();
         fetchNotifications();
@@ -78,7 +79,7 @@ export default function Library() {
         fetchNotes();
     }
 
-    // MARK:アカウントToノート
+    // MARK: userId → allNotes
     const [allNotes, setAllNotes] = useState([]);
     useEffect(() => {
         if (userId) {
@@ -97,20 +98,20 @@ export default function Library() {
     }, [userId]);
     
     
-    // MARK:切替 - アカウント
+    // MARK: accountView
     const [accountView, setAccountView] = useState(false);
     const toggleAccountView = () => {
         setAccountView(!accountView);
     }
     
-    // MARK:切替 - グループ
+    // MARK: modalJoinedGroups
     const [modalJoinedGroups, setModalJoinedGroups] = useState(false);
     const toggleModalJoinedGroups = () => {
         setModalJoinedGroups(!modalJoinedGroups);
         setModalSetting(false);
     }
     
-    // MARK:表示 - アカウント
+    // MARK: userId → userInfo
     const [userInfo, setUserInfo] = useState({});
     useEffect(() => {
         const fetchUser = async () => {
@@ -121,45 +122,46 @@ export default function Library() {
         fetchUser();
     }, [userId]);
 
-    // MARK:ログアウト
+    // MARK: logout
     const handleLogout = () => {
         Cookies.remove('id', { path: '/' });
         window.location.assign('/Auth');
     }
     
-    // MARK: タイトルToノート
+    // MARK: searchValue
     const [searchValue, setSearchValue] = useState('');
     const handleSearch = (e) => {
         e.preventDefault();
         setSearchValue(e.target.value);
     }
+    // MARK: filteredNotes
     const filteredNotes = Array.isArray(allNotes) 
         ? allNotes.filter(note =>
             note.title.toLowerCase().includes(searchValue.toLowerCase())
           )
         : [];
     
-    // MARK:切替 - 設定
+    // MARK: modalSetting
     const [modalSetting, setModalSetting] = useState(false);
     const toggleModalSetting = () => {
         setModalSetting(!modalSetting);
         setModalJoinedGroups(false);
     }
-    // 構成員
+    // modalMember
     const [modalMember, setModalMember] = useState(true);
     const toggleModalMember = () => {
         setModalMember(true);
         setModalProject(false);
         setModalPermit(false);
     }
-    // 製作
+    // modalProject
     const [modalProject, setModalProject] = useState(false);
     const toggleModalProject = () => {
         setModalProject(true);
         setModalMember(false);
         setModalPermit(false);
     }
-    // 権限
+    // modalPermit
     const [modalPermit, setModalPermit] = useState(false);
     const toggleModalPermit = () => {
         setModalPermit(true);
@@ -167,7 +169,7 @@ export default function Library() {
         setModalProject(false);
     }
     
-    // MARK:userId → allGroups
+    // MARK: userId → allGroups
     const [allGroups, setAllGroups] = useState([]);
     useEffect(() => {
         if (userId) {
@@ -184,14 +186,14 @@ export default function Library() {
         }
     };
 
-    // MARK: グループ退会
+    // MARK: leaveGroup
     const handleLeaveGroup = async (groupId) => {
         await fetch(`/api/db?table=leaveGroup&groupId=${groupId}&userId=${userId}`);
         fetchGroup();
         toast.success('グループを退会しました', defaultToastOptions);
     }
 
-    // MARK: 権限チェック
+    // MARK: checkPermission
     const [checkPermission, setCheckPermission] = useState([]);
     useEffect(() => {
         fetchCheckPermission();
@@ -223,7 +225,7 @@ export default function Library() {
     // MARK: newNoteContent
     const [newNoteContent, setNewNoteContent] = useState('');
 
-    // MARK: handleImport
+    // MARK: importNote
     const handleImport = (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -233,11 +235,9 @@ export default function Library() {
             e.target.value = '';
             return;
         }
-
         // ファイル名をタイトルとして設定（.mdを除く）
         const fileName = file.name.replace('.md', '');
         setNewNoteTitle(fileName);
-
         // ファイルの内容を読み込む
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -249,7 +249,6 @@ export default function Library() {
     // MARK: newNoteCreate
     const handleCreateNote = async (e) => {
         e.preventDefault();
-        
         try {
             const noteData = {
                 groupId: newNoteGroup,
@@ -257,7 +256,6 @@ export default function Library() {
                 content: newNoteContent,
                 userId
             };
-
             const { data, success, message } = await fetch('/api/post', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -272,9 +270,7 @@ export default function Library() {
                 fetchNotifications();
                 return;
             }
-
             toast.error(message);
-
         } catch {
             toast.error('ノートの作成に失敗しました');
         }
@@ -377,7 +373,7 @@ export default function Library() {
         toast.success('メンバーを招待しました', defaultToastOptions);
     }
 
-    // MARK:製作管理
+    // MARK: deleteProject
     const handleDeleteProject = async (projectId) => {
         await fetch(`/api/db?table=deleteNote&id=${projectId}`);
         // メンバーリストを再取得
@@ -385,7 +381,7 @@ export default function Library() {
         toast.success('ノートを削除しました', defaultToastOptions);
     }
 
-    // MARK:権限を取得
+    // MARK: permission
     const [permission, setPermission] = useState([]);
     useEffect(() => {
         const fetchPermission = async () => {
@@ -396,12 +392,12 @@ export default function Library() {
         fetchPermission();
     }, []);
 
-    // MARK:役職名変更
+    // MARK: changeRoleName
     const handleChangeRoleName = async (e, roleId) => {
         await fetch(`/api/db?table=updateRoleName&roleId=${roleId}&roleName=${e.target.value}`);
     }
 
-    // MARK:役職権限変更
+    // MARK: changePermit
     const handleChangePermit = async (e, roleId) => {
         const newPermitId = parseInt(e.target.value, 10);
         await fetch(`/api/db?table=updateRoleToPermit&roleId=${roleId}&permitId=${newPermitId}`);
@@ -409,7 +405,7 @@ export default function Library() {
         toast.success('権限を更新しました', defaultToastOptions);
     }
 
-    // MARK:役職削除
+    // MARK: deleteRole
     const handleDeleteRole = async (e, roleId) => {
         e.preventDefault();
         await fetch(`/api/db?table=deleteRole&roleId=${roleId}`);
@@ -418,7 +414,7 @@ export default function Library() {
         toast.success('役職を削除しました', defaultToastOptions);
     }
 
-    // MARK:役職追加
+    // MARK: addRole
     const handleAddRole = async (e) => {
         if (newRoleName.length > 0) {
             e.preventDefault();
@@ -430,19 +426,19 @@ export default function Library() {
         }
     }
 
-    // MARK:役職名変更
+    // MARK: newRoleName
     const [newRoleName, setNewRoleName] = useState('');
     const handleChangeNewRoleName = async (e) => {
         setNewRoleName(e.target.value);
     }
 
-    // MARK:役職権限変更
+    // MARK: newPermitId
     const [newPermitId, setNewPermitId] = useState(1);
     const handleChangeNewPermit = async (e) => {
         setNewPermitId(e.target.value);
     }
 
-    // MARK:切替え グリッド/リスト
+    // MARK: isGridView
     const [isGridView, setIsGridView] = useState(true);
     const [isNotesClass, setIsNotesClass] = useState(true);
     const toggleView = () => {
@@ -450,19 +446,19 @@ export default function Library() {
       setIsNotesClass(!isNotesClass);[]
     };
 
-    // MARK:切替 - 検索グループ
+    // MARK: modalSearchGroup
     const [modalSearchGroup, setModalSearchGroup] = useState(false);
     const toggleModalSearchGroup = () => {
         setModalSearchGroup(!modalSearchGroup);
     }
 
-    // MARK: グループ名から検索
+    // MARK: searchGroup
     const [searchGroup, setSearchGroup] = useState('');
     const handleSearchGroup = (e) => {
         setSearchGroup(e.target.value);
     }
 
-    // MARK: 検索結果
+    // MARK: searchGroupResult
     const [searchGroupResult, setSearchGroupResult] = useState([]);
     useEffect(() => {
         fetchSearchGroup();
@@ -473,14 +469,14 @@ export default function Library() {
         setSearchGroupResult(groups.results);
     }
 
-    // MARK: グループ参加リクエスト
+    // MARK: requestGroup
     const handleRequestGroup = async (e, groupId, createdBy) => {
         e.preventDefault();
         await fetch(`/api/db?table=requestGroup&groupId=${groupId}&fromUserId=${userId}&toUserId=${createdBy}`);
         toast.success('グループ参加リクエストを送信しました', defaultToastOptions);
     }
 
-    // MARK: リクエストの承認&招待
+    // MARK: acceptRequest
     const handleAccept = async (notificationId, groupId, inviteUserId, typeId) => {
         await fetch(`/api/db?table=acceptRequest&notificationId=${notificationId}`);
         if (typeId === 1) {
@@ -493,12 +489,14 @@ export default function Library() {
         fetchNotifications();
     };
 
-    // MARK: リクエストの拒否
+    // MARK: rejectRequest
     const handleReject = async (notificationId) => {
         await fetch(`/api/db?table=rejectRequest&notificationId=${notificationId}`);
         fetchNotifications();
         toast.success('拒否しました', defaultToastOptions);
     };
+
+    // MARK: Reqest Toast
     useEffect(() => {
         if (notifications && notifications.length > 0) {
             notifications.forEach((notification) => {
@@ -531,19 +529,19 @@ export default function Library() {
         }
     }, [notifications]);
 
-    // MARK: グループ構築 ━━━━━━
+    // MARK: modal CreateGroup
     const [modalCreateGroup, setModalCreateGroup] = useState(false);
     const toggleModalCreateGroup = () => {
         setModalCreateGroup(!modalCreateGroup);
     }
 
-    // MARK: グループ名
+    // MARK: createName
     const [createName, setCreateName] = useState('');
     const handleChangeCreateName = (e) => {
         setCreateName(e.target.value);
     }
 
-    // MARK: メンバー検索
+    // MARK: searchCreateMember
     const [searchCreateGroupMember, setSearchCreateGroupMember] = useState('');
     const handleSearchCreateGroupMember = (e) => {
         setSearchCreateGroupMember(e.target.value);
@@ -552,7 +550,7 @@ export default function Library() {
         fetchCreateGroupMember();
     }, [searchCreateGroupMember]);
 
-    // MARK: メンバー候補
+    // MARK: createGroup MemberSuggest
     const [createGroupMemberSuggest, setCreateGroupMemberSuggest] = useState([]);
     const fetchCreateGroupMember = async () => {
         if (searchCreateGroupMember.length > 0) {  
@@ -563,12 +561,12 @@ export default function Library() {
             setCreateGroupMemberSuggest([]);
         }
     }
-    // MARK:メンバーリスト
+    // MARK: createGroup MemberList
     const [createGroupMemberList, setCreateGroupMemberList] = useState([]);
     if (userInfo && createGroupMemberList.length === 0) {
         setCreateGroupMemberList([{id: userInfo.id, username: userInfo.username}]);
     }
-    // MARK:メンバー追加
+    // MARK: addCreateGroupMember
     const handleAddCreateGroupMember = (e, user) => {
         e.preventDefault();
         const newMember = {
@@ -584,7 +582,7 @@ export default function Library() {
         setSearchCreateGroupMember("");
     }
 
-    // MARK:メンバー削除
+    // MARK: deleteCreateGroupMember
     const handleDeleteCreateGroupMember = (e, memberToDelete) => {
         e.preventDefault();
         if (memberToDelete.id === userInfo.id) {
@@ -594,13 +592,13 @@ export default function Library() {
         }
     }
 
-    // MARK: メンバーIDs
+    // MARK: memberIds
     const [memberIds, setMemberIds] = useState([]);
     useEffect(() => {
         setMemberIds(createGroupMemberList.map((member) => member.id));
     }, [createGroupMemberList]);
 
-    // MARK: グループ作成
+    // MARK: createGroup
     const handleCreateGroup = async (e) => {
         e.preventDefault();
         await fetch(`/api/db?table=createGroup&name=${createName}&userId=${userId}&memberIds=${memberIds}`);
@@ -609,7 +607,7 @@ export default function Library() {
         setCreateGroupMemberList([]);
         toast.success('グループを作成しました', defaultToastOptions);
     }
-    // MARK: MenuContents
+    // MARK: menuContents
     const menuContents = (
         <>
         {/* グループ追加 */}
@@ -638,7 +636,7 @@ export default function Library() {
         </>
     )
 
-    // MARK:ヘッドライン
+    // MARK:headLine
     const headLeft = (
         <>
         {/* 検索 */}
@@ -674,8 +672,8 @@ export default function Library() {
             </div>
         </>
     )
-    
-    // MARK:設定コンポーネント
+        
+    // MARK: settingWindow
     const modalSettingWindow = (
         <div className={styles.modalSettingWindow}>
             {/* 閉じる */}
@@ -745,14 +743,14 @@ export default function Library() {
         </div>
     );
 
-    // MARK:メイン ━━━━━━━
+    // MARK: main
     return(
         <main className={styles.main}>
             
-        {/* MARK:トースト */}
+        {/* MARK: Toast */}
         <ToastContainer />
 
-        {/* MARK:新規ノート */}
+        {/* MARK: modalNewNote*/}
         {modalNewNote ? (
             <NewNoteModal 
                 allGroups={allGroups}
@@ -766,10 +764,10 @@ export default function Library() {
             />
         ) : null}
 
-        {/* MARK:設定 */}
+        {/* MARK: modalSetting */}
         {modalSetting ? modalSettingWindow : null}
 
-        {/* MARK:アカウント */}
+        {/* MARK: accountView */}
         <button className={styles.account} onClick={toggleAccountView}>
             {accountView ?  <BsX/> : <FaRegUser/>}
         </button>
@@ -793,7 +791,7 @@ export default function Library() {
             </div>
         ) : null}
 
-        {/* MARK:グループモーダル */}
+        {/* MARK: modalJOinedGroups */}
         {modalJoinedGroups ? (
             <JoinedGroupsModal
                 allGroups={allGroups}
@@ -806,7 +804,7 @@ export default function Library() {
             />
         ) : null}
 
-        {/* MARK:検索グループ */}
+        {/* MARK: modalSearchGroup */}
         {modalSearchGroup ? (
             <div className={styles.searchGroupWindow}>
                 <button className={styles.searchGroupClose} onClick={toggleModalSearchGroup}><BsX/></button>
@@ -830,11 +828,11 @@ export default function Library() {
             </div>
         ) : null}
 
-        {/* MARK:メニュー */}
+        {/* MARK: menu */}
         <Menu menuContents={menuContents}/>
 
         <div className={styles.contents}>
-            {/* MARK:ヘッドライン */}
+            {/* MARK: headLine */}
             <GroupHeadline headLeft={headLeft} headRight={headRight} />
 
             <div className={styles.content}>
