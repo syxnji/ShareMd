@@ -16,14 +16,19 @@ export function NewGroup({
 }){
     return(
         <ModalWindow>
-        <form>
+
+            {/* 閉じるボタン */}
             <button className={styles.modalNewGroupClose} onClick={toggleModalCreateGroup} type='button'><BsX/></button>
+
+            {/* コンテンツ */}
             <div className={styles.modalNewGroupContents}>
+            <form className={styles.modalNewGroupForm} onSubmit={handleCreateGroup}>
                 {/* グループ名 */}
                 <div className={styles.newGroupTitle}>
                     <label className={styles.newGroupLabel}>グループ名</label>
                     <input type="text" placeholder="例：チームα" className={styles.newGroupInput} onChange={handleChangeCreateName} value={createName} required/>
                 </div>
+
                 {/* メンバー検索 */}
                 <div className={styles.newGroupMembers}>
                     <label className={styles.newGroupLabel}>メンバー</label>
@@ -39,6 +44,7 @@ export function NewGroup({
                         </div>
                     )}
                 </div>
+
                 {/* メンバーリスト */}
                 <div className={styles.newGroupMemberListBox}>
                     <p className={styles.newGroupLabel}>メンバーリスト</p>
@@ -56,9 +62,11 @@ export function NewGroup({
                         ))}
                     </div>
                 </div>
-                <button className={styles.newGroupBtn} onClick={handleCreateGroup}>構築</button>
+
+                {/* グループ作成 */}
+                <button className={styles.newGroupBtn} type="submit">構築</button>
+            </form>
             </div>
-        </form>
         </ModalWindow>
     )
 }
