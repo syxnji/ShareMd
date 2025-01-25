@@ -595,34 +595,6 @@ export default function Library() {
         setCreateGroupMemberList([]);
         toast.success('グループを作成しました', defaultToastOptions);
     }
-    // MARK: menuContents
-    const menuContents = (
-        <>
-        {/* グループ追加 */}
-        {modalCreateGroup ? (
-            <NewGroup
-                toggleModalCreateGroup={toggleModalCreateGroup}
-                createName={createName}
-                handleChangeCreateName={handleChangeCreateName}
-                createGroupMemberSuggest={createGroupMemberSuggest}
-                handleSearchCreateGroupMember={handleSearchCreateGroupMember}
-                handleAddCreateGroupMember={handleAddCreateGroupMember}
-                handleDeleteCreateGroupMember={handleDeleteCreateGroupMember}
-                handleCreateGroup={handleCreateGroup}
-                searchCreateGroupMember={searchCreateGroupMember}
-                createGroupMemberList={createGroupMemberList}
-            />
-        ) : null}
-        {/* グループ */}
-        <LibraryMenu
-            toggleModalCreateGroup={toggleModalCreateGroup}
-            allGroups={allGroups}
-            setSelectedGroup={setSelectedGroup}
-            checkPermission={checkPermission}
-            toggleModalSetting={toggleModalSetting}
-        />
-        </>
-    )
 
     // MARK:headLine
     const headLeft = (
@@ -850,7 +822,29 @@ export default function Library() {
         </header>
 
         {/* MARK: === MENU === */}
-        <Menu menuContents={menuContents} menuState={menuState}/>
+        {modalCreateGroup ? (
+            <NewGroup
+                toggleModalCreateGroup={toggleModalCreateGroup}
+                createName={createName}
+                handleChangeCreateName={handleChangeCreateName}
+                createGroupMemberSuggest={createGroupMemberSuggest}
+                handleSearchCreateGroupMember={handleSearchCreateGroupMember}
+                handleAddCreateGroupMember={handleAddCreateGroupMember}
+                handleDeleteCreateGroupMember={handleDeleteCreateGroupMember}
+                handleCreateGroup={handleCreateGroup}
+                searchCreateGroupMember={searchCreateGroupMember}
+                createGroupMemberList={createGroupMemberList}
+            />
+        ) : null}
+
+        <LibraryMenu
+            toggleModalCreateGroup={toggleModalCreateGroup}
+            allGroups={allGroups}
+            setSelectedGroup={setSelectedGroup}
+            checkPermission={checkPermission}
+            toggleModalSetting={toggleModalSetting}
+            menuState={menuState}
+        />
 
         {/* MARK: === CONTENTS === */}
         <div className={styles.contents}>

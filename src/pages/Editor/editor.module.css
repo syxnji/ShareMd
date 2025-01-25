@@ -33,20 +33,37 @@
     height: 100vh;
 }
 
-/* head */
+/* MARK: HEAD */
 .head{
-    position: sticky;
+    /* position: sticky;
     top: 0px;
     display: flex;
     align-items: center;
     gap: 10px;
     border-bottom: solid 2px #aaa;
     padding-bottom: 10px;
+    background-color: #fff; */
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 50px;
+    width: 100%;
     background-color: #fff;
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: solid 1px #ddd;
+    padding: 0 10px;
 }
-.backBtn{
-    width: 42px;
-    height: 42px;
+.editorMenu{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.editorMenuBtn{
+    width: 32px;
+    height: 32px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -54,20 +71,30 @@
     border: none;
     border-radius: 10px;
 }
-.backBtn:hover{
-    background-color: #ddd;
-}
-@media (max-width: 767px) {
-    .title{
-        width: 50%;
-    }
+.backBtn{
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    border-radius: 10px;
 }
 .title{
     flex: 1;
-    height: 48px;
+    display: flex;
+    flex-direction: column;
+}
+.titleLabel{
+    font-size: 0.5rem;
+    font-weight: bold;
+    color: #aaa;
+}
+.titleInput{
     font-family: inherit;
-    text-align: center;
-    font-size: 1.4rem;
+    text-align: left;
+    font-size: 1rem;
     font-weight: bold;
     color: #333;
     border: none;
@@ -75,14 +102,42 @@
     outline: none;
     overflow: hidden;
 }
+.update{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #aaa;
+}
+.updateTitle{
+    font-size: 0.7rem;
+}
+.date{
+    font-size: 0.7rem;
+}
 .btns{
     display: flex;
     gap: 10px;
 }
-.md button{
+.btns button{
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    border-radius: 100px;
+    color: #44f;
+    transition: all 0.3s;
+}
+.btns button:hover{
+    scale: 1.2;
+}
+
+/* .md button{
     background-color: #333;
     color: #fff;
-}
+} */
 
 /* common */
 /* .mdHeads{
@@ -210,7 +265,7 @@
 }
 
 /* update */
-.update{
+/* .update{
     position: fixed;
     bottom: 10px;
     right: 70px;
@@ -218,7 +273,6 @@
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    /* margin-top: 10px; */
 }
 .last{
     color: #aaa;
@@ -226,4 +280,4 @@
 }
 .date{
     color: #aaa;
-}
+} */

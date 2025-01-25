@@ -5,7 +5,7 @@ import styles from './menu.module.css';
 // icon
 import { BsArrowBarLeft, BsArrowBarRight} from "react-icons/bs";
 
-export function Menu({menuContents, menuState}) {
+export function Menu({children, menuState}) {
     // MARK: メニューの表示/非表示
     // const [menuState, setMenuState] = useState(false);
     // const toggleMenuState = () => {
@@ -15,7 +15,7 @@ export function Menu({menuContents, menuState}) {
         <div className={styles.menu + (menuState ? ' ' + styles.menuOpen : ' ' + styles.menuClose)}>
             {menuState ? (
             <div className={styles.contents}>
-                {menuContents}
+                {children}
             </div>
             ) :
             null

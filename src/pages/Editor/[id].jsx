@@ -13,9 +13,10 @@ import 'react-toastify/dist/ReactToastify.css';
 // icon
 import { IoLogoMarkdown, IoSaveOutline } from "react-icons/io5";
 import { BsFullscreen, BsFullscreenExit } from "react-icons/bs";
-import { MdArrowBackIos } from "react-icons/md";
+import { MdArrowBack, MdArrowBackIos, MdClose, MdHelpOutline, MdMenu } from "react-icons/md";
 import { CiTextAlignLeft } from "react-icons/ci";
 import { HiDownload } from "react-icons/hi";
+import { EditorMenu } from '@/components/Menus/EditorMenu';
 
 export const getServerSideProps = async ({ params: { id } }) => ({
     props: { id },
@@ -53,7 +54,20 @@ export default function MarkdownEditor({ id }) {
         fetchCheck();
     }, [groupId]);
     
-    // const router = useRouter();
+    const [menuContentGroup, setMenuContentGroup] = useState(null);
+    const [menuContentNote, setMenuContentNote] = useState(null);
+    const fetchMenuContent = async () => {
+        const resMenuGroup = await fetch(`/api/db?table=editorMenuGroup&userId=${userId}`);
+        const retMenuGroup = await resMenuGroup.json();
+        setMenuContentGroup(retMenuGroup.results);
+
+        const resMenuNote = await fetch(`/api/db?table=editorMenuNote&userId=${userId}`);
+        const retMenuNote = await resMenuNote.json();
+        setMenuContentNote(retMenuNote.results);
+    }
+    useEffect(() => {
+        fetchMenuContent();
+    }, [userId]);
 
     // MARK: ノート情報
     const [noteTitle, setNoteTitle] = useState('');
@@ -141,9 +155,9 @@ export default function MarkdownEditor({ id }) {
         setScreen(!screen)
     }
 
-    const menuContents = (
-        <SidebarInNotes selectNoteId={id} />
-    )
+    // const menuContents = (
+    //     <SidebarInNotes selectNoteId={id} />
+    // )
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -159,6 +173,13 @@ export default function MarkdownEditor({ id }) {
             document.removeEventListener('keydown', handleKeyDown);
         };
     }, [handleSave]);
+
+    // MARK: メニューの表示
+    const [menuState, setMenuState] = useState(true);
+    const toggleMenuState = (e) => {
+        e.preventDefault();
+        setMenuState(!menuState);
+    }
 
     // MARK: MAIN ━━━━━━━━━
     return (
@@ -191,13 +212,14 @@ export default function MarkdownEditor({ id }) {
                 <ToastContainer />
 
                 {/* MARK: Menu */}
-                <Menu menuContents={menuContents}/>
+                {/* <Menu menuContents={menuContents}/> */}
+                <EditorMenu menuState={menuState} menuContentGroup={menuContentGroup} menuContentNote={menuContentNote}/>
 
                 {/* MARK: Content */}
                 <div className={styles.content}> 
                     <form>
                         <div className={styles.head}>
-                            <button className={styles.backBtn} onClick={handleBack}>
+                            {/* <button className={styles.backBtn} onClick={handleBack}>
                                 <MdArrowBackIos />
                             </button>
                             <input 
@@ -220,10 +242,57 @@ export default function MarkdownEditor({ id }) {
                                 <div className={styles.saveBtn}>
                                     <ImgBtn img={<IoSaveOutline/>} click={handleSave} color="main"/>
                                 </div>
+                            </div> */}
+                            {/* メニューの表示/非表示 */}   
+                            <button className={styles.editorMenuBtn} onClick={(e) => toggleMenuState(e)}>
+                                {menuState ? <MdClose/> : <MdMenu/>} 
+                            </button>
+
+                            {/* ノートの戻る */}
+                            <button className={styles.backBtn} onClick={handleBack}>
+                                <MdArrowBack />
+                            </button>
+
+                            {/* ノートのタイトル */}
+                            <div className={styles.title}>
+                                <label htmlFor='title' className={styles.titleLabel}>
+                                    Title
+                                </label>
+                            <input 
+                                name='title'
+                                className={styles.titleInput} 
+                                value={noteTitle}
+                                onChange={handleChangeTitle}
+                                placeholder='Click to edit title...'
+                                />
+                            </div>
+
+                            {/* ボタン */}
+                            <div className={styles.btns}>
+                                <div className={styles.update}>
+                                    <p className={styles.updateTitle}>
+                                        Last update:
+                                    </p>
+                                    <p className={styles.date}>
+                                        {noteUpdatedAt ? new Date(noteUpdatedAt).toLocaleString() : 'N/A'}
+                                    </p>
+                                </div>
+                                <button className={styles.viewBtn}>
+                                    {view ? <IoLogoMarkdown /> : <CiTextAlignLeft />}
+                                </button>
+                                <button className={styles.exportBtn}>
+                                    <HiDownload/>
+                                </button>
+                                <button className={styles.saveBtn}>
+                                    <IoSaveOutline/>
+                                </button>
+                                <button className={styles.helpBtn}>
+                                    <MdHelpOutline />
+                                </button>
                             </div>
                         </div>
 
-                        <Markdown id={id} content={noteContent} change={handleChange} view={view} permission={permission}/>
+                        {/* <Markdown id={id} content={noteContent} change={handleChange} view={view} permission={permission}/>
                         <div className={styles.update}>
                             <p className={styles.last}>
                                 Last update:
@@ -231,7 +300,7 @@ export default function MarkdownEditor({ id }) {
                             <p className={styles.date}>
                                 {noteUpdatedAt ? new Date(noteUpdatedAt).toLocaleString() : 'N/A'}
                             </p>
-                        </div>
+                        </div> */}
                     </form>
                 </div>
             </main>

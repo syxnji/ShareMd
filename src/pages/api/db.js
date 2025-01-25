@@ -237,6 +237,37 @@ export default async function handler(req, res) {
                 );
                 res.status(200).json({ results });
             }
+            // MARK: editorMenuGroup
+            else if (req.query.table === 'editorMenuGroup') {
+                const userId = req.query.userId;
+                const results = await handleQuery(
+                    `SELECT groups.id, groups.name
+                     FROM \`groups\`
+                     JOIN user_group_memberships
+                     ON groups.id = user_group_memberships.group_id
+                     WHERE user_group_memberships.user_id = ?
+                     AND groups.delete = 0
+                     AND user_group_memberships.delete = 0
+                    `,
+                    [userId]
+                );
+                res.status(200).json({ results });
+            }
+            // MARK: editorMenuNote
+            else if (req.query.table === 'editorMenuNote') {
+                const userId = req.query.userId;
+                const results = await handleQuery(
+                    `SELECT notes.id, notes.title, notes.group_id
+                     FROM notes
+                     JOIN user_group_memberships
+                     ON notes.group_id = user_group_memberships.group_id
+                     WHERE user_group_memberships.user_id = ?
+                     AND notes.delete = 0
+                    `,
+                    [userId]
+                );
+                res.status(200).json({ results });
+            }
             // MARK: updateNote
             else if (req.query.table === 'updateNote') {
                 const id = req.query.id;
