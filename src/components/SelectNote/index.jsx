@@ -1,3 +1,4 @@
+import { FiCalendar } from "react-icons/fi";
 import styles from "./selectNote.module.css";
 import Link from "next/link";
 
@@ -20,9 +21,7 @@ export function Notes({id, className, title, preview, last}) {
                     </div>
                 ) : null}
                 <div className={styles.history}>
-                    <p>
-                        Last Edited:
-                    </p>
+                    <FiCalendar/>
                     <p>
                         {last}
                     </p>

@@ -40,7 +40,7 @@ export function NewNoteModal({
                     <input className={styles.newNoteInput} type="text" placeholder='ToDo List' onChange={handleChangeNewNoteTitle} value={newNoteTitle} required/>
                 </div>
                 <div className={styles.import}>
-                    <label htmlFor="newNoteImport" className={styles.newNoteLabel}>インポート</label>
+                    <label htmlFor="newNoteImport" className={styles.newNoteLabel}>インポート(任意.md)</label>
                     <input 
                         className={styles.newNoteInput} 
                         type="file" 

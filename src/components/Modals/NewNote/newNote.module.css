@@ -42,20 +42,18 @@
     border-radius: 10px;
     padding: 10px;
 }
+.import{
+    width: 100%;
+}
 .newNoteSubmit{
     width: 100%;
-    border: solid 1px #333;
+    border: none;
     border-radius: 10px;
     padding: 10px;
-    background-color: #333;
+    background-color: #44f;
     color: #fff;
     transition: all 0.3s;
 }
-/* .newNoteSubmit:hover{
-    background-color: #fff;
-    color: #333;
-} */
-.newNoteSubmit:active{
-    background-color: #429;
-    color: #fff;
+.newNoteSubmit:hover{
+    scale: 1.02;
 }

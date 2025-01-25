@@ -18,12 +18,14 @@ import { GroupHeadline } from "@/components/GroupHeadline";
 // component
 import { NotesInGroup } from '@/components/NotesInGroup';
 // icon
-import { BsList, BsFileEarmarkPlus, BsGrid3X3, BsX, BsBuildings, BsArrowRepeat} from "react-icons/bs";
+import { BsList, BsFileEarmarkPlus, BsGrid3X3, BsX, BsBuildings, BsArrowRepeat, BsFolder} from "react-icons/bs";
 import { FaRegUser } from 'react-icons/fa6';
 // style
 import styles from "./library.module.css";
-import { MdLogout, MdOutlineWifiFind } from 'react-icons/md';
+import { MdClose, MdFormatListBulleted, MdLogout, MdMenu, MdOutlineWifiFind } from 'react-icons/md';
 import 'react-toastify/dist/ReactToastify.css';
+import { IoNotificationsOutline, IoSearch } from 'react-icons/io5';
+import { RiNotification2Line } from 'react-icons/ri';
 
 export default function Library() {
 
@@ -81,23 +83,34 @@ export default function Library() {
 
     // MARK: userId → allNotes
     const [allNotes, setAllNotes] = useState([]);
-    useEffect(() => {
-        if (userId) {
-            const fetchNotes = async () => {
-                try {
-                    const response = await fetch(`/api/db?table=allNotes&userId=${userId}`);
-                    const data = await response.json();
-                    setAllNotes(data.results || []);
-                } catch (error) {
-                    console.error('Failed to fetch notes:', error);
-                    setAllNotes([]);
-                }
-            };
-            fetchNotes();
+    
+    // MARK:selectedGroup
+    const [selectedGroup, setSelectedGroup] = useState({id: null, name: null});
+    
+    // MARK:selectedGroup → selectedGroupNotes
+    const [selectedGroupNotes, setSelectedGroupNotes] = useState([]);
+    
+    // MARK: searchValue
+    const [searchValue, setSearchValue] = useState('');
+    
+    // MARK: filteredNotes
+    const filteredNotes = selectedGroupNotes?.filter((note) => {
+        return note.title.includes(searchValue);
+    }) || [];
+    
+    // MARK: handlers
+    const handleSearch = (e) => {
+        setSearchValue(e.target.value);
+    }
+    
+    const fetchNotes = async () => {
+        if (selectedGroup.id) {
+            const response = await fetch(`/api/db?table=selectedGroupNotes&groupId=${selectedGroup.id}`);
+            const notes = await response.json();
+            setSelectedGroupNotes(notes.results || []);
         }
-    }, [userId]);
-    
-    
+    };
+
     // MARK: accountView
     const [accountView, setAccountView] = useState(false);
     const toggleAccountView = () => {
@@ -127,19 +140,6 @@ export default function Library() {
         Cookies.remove('id', { path: '/' });
         window.location.assign('/Auth');
     }
-    
-    // MARK: searchValue
-    const [searchValue, setSearchValue] = useState('');
-    const handleSearch = (e) => {
-        e.preventDefault();
-        setSearchValue(e.target.value);
-    }
-    // MARK: filteredNotes
-    const filteredNotes = Array.isArray(allNotes) 
-        ? allNotes.filter(note =>
-            note.title.toLowerCase().includes(searchValue.toLowerCase())
-          )
-        : [];
     
     // MARK: modalSetting
     const [modalSetting, setModalSetting] = useState(false);
@@ -276,20 +276,7 @@ export default function Library() {
         }
     }
 
-    // MARK:selectedGroup
-    const [selectedGroup, setSelectedGroup] = useState({id: null, name: null});
-
-    // MARK:selectedGroup → selectedGroupNotes
-    const [selectedGroupNotes, setSelectedGroupNotes] = useState([]);
-    const fetchNotes = async () => {
-        if (selectedGroup.id) {
-            const response = await fetch(`/api/db?table=selectedGroupNotes&groupId=${selectedGroup.id}`);
-            const notes = await response.json();
-            setSelectedGroupNotes(notes.results || []);
-        }
-    };
-
-    // MARK: selectedGroup → groupInMember
+    // MARK:selectedGroup → groupInMember
     const [groupInMember, setGroupInMember] = useState([]);
     const fetchGroupInMember = async () => {
         if (selectedGroup.id) {
@@ -672,6 +659,12 @@ export default function Library() {
             </div>
         </>
     )
+    
+    // MARK: menuState
+    const [menuState, setMenuState] = useState(true);
+    const toggleMenuState = () => {
+        setMenuState(!menuState);
+    }
         
     // MARK: settingWindow
     const modalSettingWindow = (
@@ -750,7 +743,9 @@ export default function Library() {
         {/* MARK: Toast */}
         <ToastContainer />
 
-        {/* MARK: modalNewNote*/}
+        {/* MARK === MODALS === */}
+
+        {/* modalNewNote*/}
         {modalNewNote ? (
             <NewNoteModal 
                 allGroups={allGroups}
@@ -764,13 +759,13 @@ export default function Library() {
             />
         ) : null}
 
-        {/* MARK: modalSetting */}
+        {/* modalSetting */}
         {modalSetting ? modalSettingWindow : null}
 
-        {/* MARK: accountView */}
-        <button className={styles.account} onClick={toggleAccountView}>
+        {/* accountView */}
+        {/* <button className={styles.account} onClick={toggleAccountView}>
             {accountView ?  <BsX/> : <FaRegUser/>}
-        </button>
+        </button> */}
         {accountView ? (
             <div className={styles.accountWindow}>
                 <div className={styles.accountContent}>
@@ -791,7 +786,7 @@ export default function Library() {
             </div>
         ) : null}
 
-        {/* MARK: modalJOinedGroups */}
+        {/* modalJoinedGroups */}
         {modalJoinedGroups ? (
             <JoinedGroupsModal
                 allGroups={allGroups}
@@ -804,7 +799,7 @@ export default function Library() {
             />
         ) : null}
 
-        {/* MARK: modalSearchGroup */}
+        {/* modalSearchGroup */}
         {modalSearchGroup ? (
             <div className={styles.searchGroupWindow}>
                 <button className={styles.searchGroupClose} onClick={toggleModalSearchGroup}><BsX/></button>
@@ -828,15 +823,115 @@ export default function Library() {
             </div>
         ) : null}
 
-        {/* MARK: menu */}
-        <Menu menuContents={menuContents}/>
+        {/* MARK: === HEADER === */}
+        <header className={styles.header}>
+            {/* メニューボタン */}
+            <div className={styles.headerMenu}>
+                <button className={styles.menuBtn} onClick={toggleMenuState}>
+                    {menuState ? <MdClose/> : <MdMenu/>}
+                </button>
+            </div>
 
+            {/* サービス名 */}
+            <p className={styles.headerServiceName}>ShareMd</p>
+
+            {/* 検索 */}
+            <div className={styles.headerSearch}>
+                <div className={styles.searchIcon}>
+                    <IoSearch />
+                </div>
+                <form className={styles.searchForm}>
+                    <input 
+                        placeholder="Search Notes" 
+                        type="text"
+                        onChange={handleSearch}
+                    />
+                </form>
+            </div>
+
+            {/* ヘッダーボタン */}
+            <div className={styles.headerButtons}>
+
+                {/* 通知 */}
+                <button className={styles.headerBtn}>
+                    <RiNotification2Line />
+                </button>
+
+                {/* アカウント */}
+                <button className={styles.headerBtn} onClick={toggleAccountView}>
+                    {accountView ?  <BsX/> : <FaRegUser/>}
+                </button>
+            </div>
+        </header>
+
+        {/* MARK === MENU === */}
+        <Menu menuContents={menuContents} menuState={menuState}/>
+
+        {/* MARK === CONTENTS === */}
         <div className={styles.contents}>
-            {/* MARK: headLine */}
-            <GroupHeadline headLeft={headLeft} headRight={headRight} />
 
-            <div className={styles.content}>
+            {/* MARK: contentsHeader */}
+            <div className={styles.contentsHeader}>
+                {/* グループ名 */}
+                <p className={styles.selectGroupName}>
+                    {selectedGroup.id ? selectedGroup.name : 'グループ'}
+                </p>
+
+                {/* ボタン */}
+                <div className={styles.contentsHeaderBtns}>
+
+                    {/* レイアウト */}
+                    <div className={styles.layouts}>
+                        <div className={isGridView ? styles.inactive : styles.active} onClick={toggleView}>
+                            <MdFormatListBulleted />
+                        </div>
+                        <div className={isGridView ? styles.active : styles.inactive} onClick={toggleView}>
+                            <BsGrid3X3/>
+                        </div>
+                    </div>
+
+                    {/* 新規ノート */}
+                    <div className={styles.newNoteBtn} onClick={toggleModalNewNote}>
+                        <BsFileEarmarkPlus/>
+                        <p className={styles.newNote}>新規ノート</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* MARK: contentsBody */}
+            {selectedGroup.id ? (
+                <>
                 {/* MARK:selectedGroup → selectedGroupNotes */}
+                <div className={styles.contentsBody}>
+                <NotesInGroup 
+                    selectedGroup={selectedGroup}
+                    notes={filteredNotes || []}
+                    isNotesClass={isNotesClass}
+                    toggleModalNewNote={toggleModalNewNote}
+                    />
+                </div>
+                </>
+            ) : (
+                <>
+                {/* <div className={styles.empty} onClick={toggleModalNewNote}>
+                    <p className={styles.emptyMain}>ノートが見つかりません</p>
+                    <p className={styles.emptySub}>ここをクリックしてノートを作成</p>
+                </div> */}
+                <div className={styles.notSelectGroupContents}>
+                    {allGroups.map((group) => (
+                        <button className={styles.notSelectGroupBtn} key={group.id} onClick={() => {setSelectedGroup(group);}}>
+                            <div className={styles.notSelectGroupBtnIcon}>
+                                <BsFolder/>
+                            </div>
+                            <p className={styles.notSelectGroupName}>{group.name}</p>
+                        </button>
+                    ))}
+                </div>
+                </>
+            ) }
+            {/* <GroupHeadline headLeft={headLeft} headRight={headRight} /> */}
+
+            {/* <div className={styles.content}>
                 {selectedGroup.id !== null && (
                     <>
                     <div className={styles.notesTitles}>
@@ -849,12 +944,10 @@ export default function Library() {
                     />
                     </>
                 )}
-                        
-                {/* MARK: SearchResult → filteredNotes */}
+            
                 <div className={styles.notesTitles}>
                     <p className={styles.notesTitle}>検索結果「{searchValue}」</p>
                 </div>
-                {/* ! empty */}
                 {filteredNotes.length > 0 ? (
                     <NotesInGroup 
                      notes={filteredNotes} 
@@ -868,7 +961,22 @@ export default function Library() {
                 )}
 
             </div>
-            
+             */}
+
+            {/* MARK: contentsFooter */}
+            <div className={styles.contentsFooter}>
+                <div className={styles.groupSearch}>
+                    <button className={styles.groupSearchBtn} onClick={toggleModalSearchGroup}>
+                        <MdOutlineWifiFind/>
+                        <p>グループ検索</p>
+                    </button>
+                </div>
+                <div className={styles.reload}>
+                    <button className={styles.reloadBtn} onClick={refresh}>
+                        <BsArrowRepeat/>
+                    </button>
+                </div>
+            </div>
         </div>
 
         </main>

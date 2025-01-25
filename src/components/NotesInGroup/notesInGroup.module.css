@@ -9,8 +9,21 @@
         transform: translateY(0);
     }
 }
+.notesTitles{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.notesTitle{
+    font-size: 0.8rem;
+    color: #777;
+    font-weight: bold;
+}
 .empty{
-    min-height: 30vh;
+    width: calc((100% - 20px) / 3);
+    height: 25vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -34,12 +47,12 @@
      rgba(255, 255, 255, 1) 12px);
 }
 .emptyMain{
-    font-size: 2rem;
+    font-size: 1rem;
     font-weight: bold;
     color: #aaa;
 }
 .emptySub{
-    font-size: 1rem;
+    font-size: 0.8rem;
     font-weight: bold;
     color: #555;
 }

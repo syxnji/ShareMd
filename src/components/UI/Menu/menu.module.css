@@ -1,27 +1,35 @@
 .menu{
+    z-index: 90;
     display: flex;
-    flex-direction: column;
-    position: fixed;
-    height: 100vh;
-    top: 0;
-    left: 0;
-    z-index: 100;
+    flex-direction: column;;
+    margin-top: 50px;
     transition: width 0.3s;
     border-right: solid 1px #ddd;
     background-color: #fff;
 }
-/* デスクトップ */
-@media (min-width: 1024px) {
+/* スマートフォン向け */
+@media (max-width: 767px) {
+    .menu{
+        position: fixed;
+    }
+    .menuOpen{
+        width: 80vw;
+    }
+  }
+  
+  /* タブレット向け */
+  @media (min-width: 768px) and (max-width: 1024px) {
     .menuOpen{
         width: 300px;
     }
-}
-/* タブレット */
-@media (min-width: 768px) and (max-width: 1023px) {
+  }
+  
+  /* デスクトップ向け */
+  @media (min-width: 1025px) {
     .menuOpen{
         width: 300px;
     }
-}
+  }
 /* スマホ */
 @media (max-width: 767px) {
     .menuOpen{
@@ -35,24 +43,5 @@
     }
 }
 .menuClose{
-    width: 5px;
-}
-.menuBtn{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 70px;
-    position: absolute;
-    bottom: 10px;
-    right: -35px;
-    padding: 10px;
-    transition: all 0.3s;
-    background-color: #fff;
-    color: #249;
-    border: solid 1px #ddd;
-    border-radius: 0 10px 10px 0;
-}
-.menuBtn:hover{
-    background-color: #249;
-    color: #fff;
+    width: 0px;
 }

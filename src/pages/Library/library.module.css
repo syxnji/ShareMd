@@ -22,10 +22,216 @@
     }
 }
 
+/* MARK: === HEADER === */
+.header{
+    z-index: 100;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background-color: #fff;
+    border-bottom: solid 1px #ddd;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    align-items: center;
+}
+.menuBtn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background-color: transparent;
+    color: #333;
+    border: none;
+    outline: none;
+}
+.headerServiceName{
+    font-family: DIN, sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #44f;
+}
+.headerSearch{
+    width: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 100px;
+    border: solid 1px #ddd;
+}
+.searchIcon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    color: #333;
+    border-radius: 100px;
+}
+.searchForm{
+    flex: 1;
+    width: 100%;
+}
+.headerSearch input{
+    border: none;
+    outline: none;
+    width: 100%;
+    background-color: transparent;
+}
+.headerButtons{
+    display: flex;
+    gap: 10px;
+}
+.headerBtn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border: none;
+    color: #333;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+/* MARK: === CONTENTS HEADER === */
+.contentsHeader{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.selectGroupName{
+    width: 100%;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+.contentsHeaderBtns{
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+.layouts{
+    display: flex;
+    gap: 5px;
+    padding: 5px;
+}
+.active{
+    height: 32px;
+    width: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    background-color: #fff;
+    background-color: #44f;
+    color: #fff;
+    cursor: pointer;
+}
+.inactive{
+    height: 32px;
+    width: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+    border: solid 1px #ddd;
+    cursor: pointer;
+}
+.active:hover{
+    scale: 1.05;
+}
+.inactive:hover{
+    scale: 1.05;
+}
+.newNoteBtn{
+    height: 32px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    background-color: #44f;
+    transition: all 0.3s;
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: #fff;
+    cursor: pointer;
+}
+.newNoteBtn:hover{
+    scale: 1.02;
+}
+.newNote{
+    font-size: 0.8rem;
+}
+
+/* MARK:CONTENTS FOOTER */
+.contentsFooter{
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: #fff;
+    border-top: solid 1px #ddd;
+    padding: 10px;
+}
+.groupSearch{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.groupSearchBtn{
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background-color: #44f;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+.groupSearchBtn:hover{
+    scale: 1.02;
+}
+.reload{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.reloadBtn{
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #44f;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+}
+.reloadBtn:hover{
+    scale: 1.02;
+}
+
 /* MARK:アカウント */
 .account{
     z-index: 100;
-    position: absolute;
+    position: fixed;
     width: 48px;
     height: 48px;
     bottom: 10px;
@@ -91,13 +297,55 @@
 
 /* MARK:ライブラリ */
 .contents{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-top: 50px;
     width: 100%;
+    min-height: 100vh;
     padding: 10px;
+
+    background-color: #e6edff;
+}
+.contentsBody{
+    flex: 1;
+    width: 100%;
 }
 .content{
     width: 100%;
 }
-@media (max-width: 1320px) {
+.notSelectGroupContents{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-height: 100px;
+}
+.notSelectGroupBtn{
+    width: calc((100% - 30px) / 4);
+    height: 20vh;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    color: #44f;
+    background-color: #fff;
+    border: solid 1px #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.notSelectGroupName{
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #777;
+}
+.notSelectGroupBtn:hover{
+    scale: 1.02;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* @media (max-width: 1320px) {
     .content{
         width: 100%;
     }
@@ -107,7 +355,7 @@
         width: 85%;
         margin: 0 auto;
     }
-}
+} */
 
 /* グループ名 */
 .groupName{
