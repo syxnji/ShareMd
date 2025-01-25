@@ -764,9 +764,6 @@ export default function Library() {
         {modalSetting ? modalSettingWindow : null}
 
         {/* accountView */}
-        {/* <button className={styles.account} onClick={toggleAccountView}>
-            {accountView ?  <BsX/> : <FaRegUser/>}
-        </button> */}
         {accountView ? (
             <div className={styles.accountWindow}>
                 <div className={styles.accountContent}>
@@ -852,13 +849,13 @@ export default function Library() {
             </div>
         </header>
 
-        {/* MARK === MENU === */}
+        {/* MARK: === MENU === */}
         <Menu menuContents={menuContents} menuState={menuState}/>
 
-        {/* MARK === CONTENTS === */}
+        {/* MARK: === CONTENTS === */}
         <div className={styles.contents}>
 
-            {/* MARK: contentsHeader */}
+            {/* MARK: === HEADER === */}
             <div className={styles.contentsHeader}>
                 {/* グループ名 */}
                 <p className={styles.selectGroupName}>
@@ -886,10 +883,10 @@ export default function Library() {
                 </div>
             </div>
 
-            {/* MARK: contentsBody */}
+            {/* MARK: === BODY === */}
             {selectedGroup.id ? (
                 <>
-                {/* MARK:selectedGroup → selectedGroupNotes */}
+                {/* selectedGroup → selectedGroupNotes */}
                 <div className={styles.contentsBody}>
                 <NotesInGroup 
                     selectedGroup={selectedGroup}
@@ -900,11 +897,6 @@ export default function Library() {
                 </div>
                 </>
             ) : (
-                <>
-                {/* <div className={styles.empty} onClick={toggleModalNewNote}>
-                    <p className={styles.emptyMain}>ノートが見つかりません</p>
-                    <p className={styles.emptySub}>ここをクリックしてノートを作成</p>
-                </div> */}
                 <div className={styles.notSelectGroupContents}>
                     {allGroups.map((group) => (
                         <button className={styles.notSelectGroupBtn} key={group.id} onClick={() => {setSelectedGroup(group);}}>
@@ -915,43 +907,9 @@ export default function Library() {
                         </button>
                     ))}
                 </div>
-                </>
             ) }
-            {/* <GroupHeadline headLeft={headLeft} headRight={headRight} /> */}
 
-            {/* <div className={styles.content}>
-                {selectedGroup.id !== null && (
-                    <>
-                    <div className={styles.notesTitles}>
-                        <p className={styles.notesTitle}>{selectedGroup.name}</p>
-                    </div>
-                    <NotesInGroup 
-                        notes={selectedGroupNotes || []}
-                        isNotesClass={isNotesClass}
-                        toggleModalNewNote={toggleModalNewNote}
-                    />
-                    </>
-                )}
-            
-                <div className={styles.notesTitles}>
-                    <p className={styles.notesTitle}>検索結果「{searchValue}」</p>
-                </div>
-                {filteredNotes.length > 0 ? (
-                    <NotesInGroup 
-                     notes={filteredNotes} 
-                     isNotesClass={isNotesClass}
-                    />
-                ) : (
-                    <div className={styles.empty} onClick={toggleModalNewNote}>
-                        <p className={styles.emptyMain}>ノートが見つかりません</p>
-                        <p className={styles.emptySub}>ここをクリックしてノートを作成</p>
-                    </div>
-                )}
-
-            </div>
-             */}
-
-            {/* MARK: contentsFooter */}
+            {/* MARK: === FOOTER === */}
             <div className={styles.contentsFooter}>
                 <div className={styles.groupSearch}>
                     <button className={styles.groupSearchBtn} onClick={toggleModalSearchGroup}>

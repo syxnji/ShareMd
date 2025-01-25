@@ -22,7 +22,7 @@
     }
 }
 
-/* MARK: === HEADER === */
+/* MARK: HEADER */
 .header{
     z-index: 100;
     position: fixed;
@@ -90,12 +90,17 @@
     align-items: center;
     padding: 10px;
     border: none;
+    border-radius: 100px;
     color: #333;
     background-color: transparent;
     cursor: pointer;
+    transition: all 0.3s;
+}
+.headerBtn:hover{
+    background-color: #eee;
 }
 
-/* MARK: === CONTENTS HEADER === */
+/* MARK: CONTENTS HEADER */
 .contentsHeader{
     display: flex;
     justify-content: space-between;
@@ -228,39 +233,29 @@
     scale: 1.02;
 }
 
-/* MARK:アカウント */
-.account{
-    z-index: 100;
-    position: fixed;
-    width: 48px;
-    height: 48px;
-    bottom: 10px;
-    right: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    border-radius: 50%;
-    background-color: #333;
-    color: #fff;
-}
+/* MARK: ACCOUNT */
 .accountWindow{
     z-index: 100;
-    position: absolute;
-    bottom: 10px;
+    position: fixed;
+    top: 60px;
     right: 10px;
     display: flex;
-    gap: 2px;
+    flex-direction: column;
+    gap: 5px;
     animation: slideLeft 0.3s ease-in-out forwards;
+    background-color: #fff;
+    border: solid 1px #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 20px 20px 60px #bebebe,
+                -20px -20px 60px #ffffff;
 }
 .accountContent{
+    width: 200px;
     display: flex;
     align-items: center;
     gap: 10px;
-    background-color: #333;
-    padding: 10px;
-    border-radius: 10px 0 0 10px;
-    color: #fff;
+    color: #333;
 }
 .accountName{
     font-weight: bold;
@@ -270,32 +265,34 @@
     font-size: 0.5rem;
 }
 .groupsBtn{
-    height: 100%;
-    padding: 10px;
-    background-color: #333;
-    border: solid 1px #333;
+    width: 100%;
+    height: 32px;
+    background-color: #44f;
     color: #fff;
+    border: none;
+    border-radius: 5px;
     transition: all 0.3s;
 }
 .groupsBtn:hover{
-    background-color: #fff;
-    color: #333;
+    scale: 1.09;
 }
 .logoutBtn{
-    height: 100%;
-    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 32px;
     background-color: #f44;
-    border: solid 1px #f44;
-    border-radius: 0 10px 10px 0;
+    border: none;
+    border-radius: 5px;
     color: #fff;
     transition: all 0.3s;
 }
 .logoutBtn:hover{
-    background-color: #fff;
-    color: #f44;
+    scale: 1.09;
 }
 
-/* MARK:ライブラリ */
+/* MARK: LIBRARY */
 .contents{
     position: relative;
     display: flex;
@@ -367,7 +364,7 @@
     margin-right: 10px;
 }
 
-/* MARK:検索 */
+/* MARK: SEARCH */
 /* .search{
     width: 100%;
 } */
@@ -408,7 +405,7 @@
     border-radius: 10px;
 }
 
-/* MARK:ノート */
+/* MARK: NOTE */
 .grid{
     display: flex;
     flex-wrap: wrap;
@@ -420,7 +417,7 @@
     gap: 10px;
 }
 
-/* MARK:設定 */
+/* MARK: SETTING */
 .modalSettingWindow{
     z-index: 150;
     width: 600px;
@@ -497,7 +494,7 @@
     transition: all 0.3s;
 }
 
-/* MARK:通知 */
+/* MARK: NOTIFICATION */
 .notifications{
     position: absolute;
     width: 300px;
