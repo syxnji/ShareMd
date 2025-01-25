@@ -9,6 +9,7 @@ import { MemberManagement } from '@/components/Modals/MemberManagement';
 import { ProjectManagement } from '@/components/Modals/ProjectManagement';
 import { PermissionManagement } from '@/components/Modals/PermissionManagement';
 import { NewGroup } from '@/components/Modals/NewGroup';
+import { SearchGroups } from '@/components/Modals/SearchGroups';
 // menu
 import { LibraryMenu } from '@/components/Menus/LibraryMenu';
 // ui
@@ -801,26 +802,13 @@ export default function Library() {
 
         {/* modalSearchGroup */}
         {modalSearchGroup ? (
-            <div className={styles.searchGroupWindow}>
-                <button className={styles.searchGroupClose} onClick={toggleModalSearchGroup}><BsX/></button>
-                <div className={styles.searchGroupContent}>
-                    <input className={styles.searchGroupInput} type="text" placeholder="グループ名で検索" onChange={handleSearchGroup} value={searchGroup}/>
-                    <div className={styles.searchGroupList}>
-                        {searchGroupResult.length > 0 ? (
-                            searchGroupResult.map((group) => (
-                                <div className={styles.group} key={group.id}>
-                                    <p>{group.name}</p>
-                                    <button className={styles.requestBtn} onClick={(e) => {handleRequestGroup(e, group.id, group.created_by);}}>参加リクエスト</button>
-                                </div>
-                            ))
-                        ) : (
-                            <div className={styles.group}>
-                                <p>グループが見つかりません</p>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </div>
+            <SearchGroups
+                toggleModalSearchGroup={toggleModalSearchGroup}
+                handleSearchGroup={handleSearchGroup}
+                searchGroup={searchGroup}
+                searchGroupResult={searchGroupResult}
+                handleRequestGroup={handleRequestGroup}
+            />
         ) : null}
 
         {/* MARK: === HEADER === */}

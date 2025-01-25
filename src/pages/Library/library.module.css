@@ -248,7 +248,7 @@
     z-index: 100;
     position: absolute;
     bottom: 10px;
-    right: 70px;
+    right: 10px;
     display: flex;
     gap: 2px;
     animation: slideLeft 0.3s ease-in-out forwards;
@@ -495,68 +495,6 @@
 .reload:active svg{
     transform: rotate(180deg);
     transition: all 0.3s;
-}
-
-/* MARK:検索グループ */
-.searchGroupWindow{
-    z-index: 150;
-    width: 600px;
-    height: 80vh;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
-    position: fixed;
-    inset: 0;
-    margin: auto;
-    padding: 10px;
-    background-color: #fff;
-    border-radius: 10px;
-    border: solid 1px #ddd;
-    overflow: hidden;
-    animation: slideIn 0.3s ease-in-out forwards;
-    box-shadow:  20px 20px 60px #bebebe,
-                 -20px -20px 60px #ffffff;
-}
-.searchGroupClose{
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: transparent;
-    border: none;
-}
-.searchGroupContent{
-    width: 500px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    justify-content: center;
-}
-.searchGroupInput{
-    width: 100%;
-    border: solid 1px #ddd;
-    border-radius: 10px;
-    padding: 10px;
-}
-.searchGroupList{
-    flex: 1;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    overflow-y: scroll;
-    /* background-color: #eee; */
-}
-.requestBtn{
-    padding: 10px;
-    background-color: #fff;
-    border: solid 1px #429;
-    border-radius: 10px;
-    transition: all 0.3s;
-}
-.requestBtn:hover{
-    background-color: #429;
-    color: #fff;
 }
 
 /* MARK:通知 */
