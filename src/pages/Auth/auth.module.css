@@ -127,8 +127,11 @@
     padding: 10px;
     font-weight: bold;
     color: #fff;
-    background-color: #429;
-    border: solid 1px #ddd;
+    background-color: #44f;
+    border: solid 1px #44f;
     border-radius: 10px;
     transition: all 0.3s;
+}
+.loginForm button:hover, .registerForm button:hover{
+    scale: 1.02;
 }
