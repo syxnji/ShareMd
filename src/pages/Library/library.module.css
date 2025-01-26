@@ -1,5 +1,7 @@
 .main{
     display: flex;
+    height: 100vh;
+    overflow: hidden;
 }
 @keyframes slideLeft {
     from{
@@ -188,18 +190,15 @@
 
 /* MARK:CONTENTS FOOTER */
 .contentsFooter{
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    /* width: 100%;
+    height: 50px; */
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
     display: flex;
     gap: 10px;
     justify-content: flex-start;
     align-items: center;
-    background-color: #fff;
-    border-top: solid 1px #ddd;
-    padding: 10px;
 }
 .groupSearch{
     display: flex;
@@ -309,10 +308,11 @@
     flex-direction: column;
     margin-top: 50px;
     width: 100%;
-    min-height: 100vh;
+    height: calc(100vh - 50px);
     padding: 10px;
-
     background-color: #e6edff;
+    overflow-y: scroll;
+    scrollbar-width: none;
 }
 .contentsBody{
     flex: 1;
@@ -326,11 +326,10 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    min-height: 100px;
 }
 .notSelectGroupBtn{
     width: calc((100% - 30px) / 4);
-    height: 20vh;
+    height: 100px;
     display: flex;
     gap: 10px;
     align-items: center;
@@ -583,7 +582,7 @@
 }
 
 .empty{
-    height: 30vh;
+    height: 170px;
     display: flex;
     flex-direction: column;
     justify-content: center;

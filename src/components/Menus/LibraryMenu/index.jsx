@@ -43,14 +43,6 @@ export function LibraryMenu({
                         </div>
                     ))}
                 </div>
-
-                {/* グループがない場合 */}
-                {allGroups.length === 1 && (
-                    <div className={styles.empty} onClick={toggleModalCreateGroup}>
-                        <p className={styles.emptyMain}>グループを<br/>構築してみましょう</p>
-                    </div>
-                )}
-
             </div>
 
         </Menu>

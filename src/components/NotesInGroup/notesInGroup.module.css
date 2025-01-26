@@ -23,7 +23,7 @@
 }
 .empty{
     width: calc((100% - 20px) / 3);
-    height: 25vh;
+    height: 170px;
     display: flex;
     flex-direction: column;
     justify-content: center;
