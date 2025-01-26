@@ -1,0 +1,17 @@
+.helpModal{
+    height: calc(100vh - 70px);
+    z-index: 100;
+    position: fixed;
+    top: 60px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ddd;
+    border: solid 2px #555;
+    border-radius: 10px;
+    color: #fff;
+    padding: 20px;
+    transition: all 0.3s ease;
+}

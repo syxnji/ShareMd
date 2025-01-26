@@ -1,0 +1,50 @@
+.helpTitle{
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+}
+.helpContent{
+    flex: 1;
+    text-align: left;
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: #aaa #ddd;
+}
+.helpCode{
+    font-weight: bold;
+    color: #44f;
+}
+.helpExample{
+    color: #fff;
+}
+.helpSection{
+    margin-bottom: 10px;
+}
+.helpSection h4{
+    font-size: 0.7rem;
+    color: #333;
+}
+.helpSection ul{
+    color: #333;
+    list-style: none;
+}
+.helpSection li{
+    background-color: #444;
+    margin-bottom: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.helpSection li:hover{
+    background-color: #555;
+}
+/* 例外 */
+.helpTable{
+    display: flex;
+    flex-direction: column;
+}
+.helpCodeBlock{
+    display: flex;
+    flex-direction: column;
+}
