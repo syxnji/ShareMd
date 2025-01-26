@@ -216,7 +216,7 @@ export default function MarkdownEditor({ id }) {
                             <label htmlFor='title' className={styles.label}>
                                 Title
                             </label>
-                        <input 
+                            <input 
                             name='title'
                             className={styles.titleInput} 
                             value={noteTitle}

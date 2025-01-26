@@ -28,7 +28,7 @@
     align-items: center;
     justify-content: flex-start;
     font-size: 1.2rem;
-    font-weight: bold;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     color: #44f;
     overflow: hidden;
     text-overflow: ellipsis;

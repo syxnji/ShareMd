@@ -13,11 +13,13 @@
     justify-content: center;
     align-items: center;
 }
+
 /* MARK: HEAD */
 .head{
     position: fixed;
     top: 0px;
     left: 0px;
+    right: 0px;
     height: 50px;
     width: 100%;
     background-color: #fff;
@@ -26,7 +28,32 @@
     justify-content: space-between;
     align-items: center;
     border-bottom: solid 1px #ddd;
-    padding: 0 10px;
+}
+@media (min-width: 768px) {
+    .head{
+        gap: 20px;
+        padding: 0 10px;
+    }
+    .btns{
+        gap: 10px;
+    }
+    .date{
+        width: 100%;
+        font-size: 0.8rem;
+    }
+}
+@media (max-width: 768px) {
+    .head{
+        gap: 0px;
+        padding: 0 ;
+    }
+    .btns{
+        gap: 0px;
+    }
+    .date{
+        width: 50px;
+        font-size: 0.5rem;
+    }
 }
 .editorMenu{
     display: flex;
@@ -63,31 +90,29 @@
 }
 .title{
     flex: 1;
+    width: 200px;
     display: flex;
     flex-direction: column;
 }
 .titleInput{
     height: 32px;
+    width: 100%;
     font-family: inherit;
-    text-align: left;
     font-size: 1rem;
     font-weight: bold;
     color: #333;
     border: none;
     outline: none;
-    overflow: hidden;
 }
 .date{
     display: flex;
     justify-content: center;
     align-items: center;
     height: 32px;
-    font-size: 0.7rem;
     color: #333;
 }
 .btns{
     display: flex;
-    gap: 10px;
 }
 .btns button{
     width: 32px;

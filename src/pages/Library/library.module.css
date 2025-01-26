@@ -50,9 +50,9 @@
     outline: none;
 }
 .headerServiceName{
-    font-family: DIN, sans-serif;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     font-size: 1.5rem;
-    font-weight: bold;
+    /* font-weight: bold; */
     color: #44f;
 }
 .headerSearch{
