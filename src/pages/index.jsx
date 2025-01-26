@@ -37,7 +37,7 @@ export default function MarkdownEditor() {
             </div>
             <input type="text" placeholder="Enter note title..." className={styles.contentInput} value={noteTitle} onChange={(e) => setNoteTitle(e.target.value)} />
             {/* <Link href={`/Editor/0?title=${noteTitle}`} className={styles.submitButton}><TfiWrite />Create New Note</Link> */}
-            <Link href={`/Try?title=${noteTitle}`} className={styles.submitButton}><PiFileMdBold />Create New Note</Link>
+            <Link href={`/Try?title=${noteTitle}`} className={styles.submitButton}><PiFileMdBold />Create</Link>
           </div>
         </div>
       </main>
