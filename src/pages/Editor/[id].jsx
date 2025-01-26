@@ -17,6 +17,7 @@ import { MdArrowBack, MdArrowBackIos, MdClose, MdHelpOutline, MdMenu } from "rea
 import { CiTextAlignLeft } from "react-icons/ci";
 import { HiDownload } from "react-icons/hi";
 import { EditorMenu } from '@/components/Menus/EditorMenu';
+import { MarkdownHelp } from '@/components/Modals/MarkdownHelp';
 
 export const getServerSideProps = async ({ params: { id } }) => ({
     props: { id },
@@ -148,17 +149,7 @@ export default function MarkdownEditor({ id }) {
         setView(!view)
     }
 
-    // MARK: ノートの表示形式
-    const [screen, setScreen] = useState(false)
-    const toggleScreen = (e) => {
-        e.preventDefault();
-        setScreen(!screen)
-    }
-
-    // const menuContents = (
-    //     <SidebarInNotes selectNoteId={id} />
-    // )
-
+    // MARK: ショートカットキー
     useEffect(() => {
         const handleKeyDown = (e) => {
             if ((e.ctrlKey || e.metaKey) && e.key === 's') {
@@ -181,130 +172,112 @@ export default function MarkdownEditor({ id }) {
         setMenuState(!menuState);
     }
 
+    // MARK:ヘルプモーダル
+    const [help, setHelp] = useState(false);
+    const toggleHelp = (e) => {
+        e.preventDefault();
+        setHelp(!help);
+    }
+
     // MARK: MAIN ━━━━━━━━━
     return (
-        <>
-        {/* MARK: フルスクリーン */}
-        {screen ? (
-            <main className={styles.full}>
-                <ToastContainer />
-                <div className={styles.fullContent}>
-                    <Markdown content={noteContent} change={handleChange} view={view}/>
-                </div>
-                <div className={styles.menu}>
-                    <div className={styles.saveBtn}>
-                        <ImgBtn img={<IoSaveOutline/>} click={handleSave} color="main"/>
-                    </div>
-                    <div className={styles.exportBtn}>
-                        <ImgBtn img={<HiDownload/>} click={handleExport} color="main"/>
-                    </div>
-                    <div className={styles.screenBtn}>
-                        <ImgBtn img={screen ? <BsFullscreenExit /> : <BsFullscreen />} click={toggleScreen}/>
-                    </div>
-                    <div className={view ? styles.md : styles.edit}>
-                        <ImgBtn img={view ? <IoLogoMarkdown /> : <CiTextAlignLeft />} click={toggleViewer}/>
-                    </div>
-                </div>
-            </main>
-        ) : (
-            <main className={styles.main}>
-                {/* MARK: Toast */}
-                <ToastContainer />
+        <main className={styles.main}>
+            {/* MARK: Toast */}
+            <ToastContainer />
 
-                {/* MARK: Menu */}
-                {/* <Menu menuContents={menuContents}/> */}
-                <EditorMenu menuState={menuState} menuContentGroup={menuContentGroup} menuContentNote={menuContentNote}/>
+            {/* MARK: Menu */}
+            <EditorMenu menuState={menuState} menuContentGroup={menuContentGroup} menuContentNote={menuContentNote}/>
 
-                {/* MARK: Content */}
-                <div className={styles.content}> 
-                    <form>
-                        <div className={styles.head}>
-                            {/* <button className={styles.backBtn} onClick={handleBack}>
-                                <MdArrowBackIos />
-                            </button>
-                            <input 
-                                name='title'
-                                className={styles.title} 
-                                value={noteTitle}
-                                onChange={handleChangeTitle}
-                                placeholder='Click to edit title...'
-                            />
-                            <div className={styles.btns}>
-                                <div className={styles.screenBtn}>
-                                    <ImgBtn img={screen ? <BsFullscreenExit /> : <BsFullscreen />} click={toggleScreen}/>
-                                </div>
-                                <div className={view ? styles.md : styles.edit}>
-                                    <ImgBtn img={view ? <IoLogoMarkdown /> : <CiTextAlignLeft />} click={toggleViewer}/>
-                                </div>
-                                <div className={styles.exportBtn}>
-                                    <ImgBtn img={<HiDownload/>} click={handleExport} color="main"/>
-                                </div>
-                                <div className={styles.saveBtn}>
-                                    <ImgBtn img={<IoSaveOutline/>} click={handleSave} color="main"/>
-                                </div>
-                            </div> */}
-                            {/* メニューの表示/非表示 */}   
+            {/* MARK: Content */}
+            <div className={styles.content}> 
+                <form>
+                    <div className={styles.head}>
+                        {/* メニューの表示/非表示 */}
+                        <div className={styles.btnContents}>
+                            <label htmlFor='editorMenuBtn' className={styles.label}>
+                                {menuState ? 'Close' : 'Menu'}
+                            </label>
                             <button className={styles.editorMenuBtn} onClick={(e) => toggleMenuState(e)}>
                                 {menuState ? <MdClose/> : <MdMenu/>} 
                             </button>
+                        </div>
 
-                            {/* ノートの戻る */}
+                        {/* ノートの戻る */}
+                        <div className={styles.btnContents}>
+                            <label htmlFor='backBtn' className={styles.label}>
+                                Back
+                            </label>
                             <button className={styles.backBtn} onClick={handleBack}>
                                 <MdArrowBack />
                             </button>
+                        </div>
 
-                            {/* ノートのタイトル */}
-                            <div className={styles.title}>
-                                <label htmlFor='title' className={styles.titleLabel}>
-                                    Title
+                        {/* ノートのタイトル */}
+                        <div className={styles.title}>
+                            <label htmlFor='title' className={styles.label}>
+                                Title
+                            </label>
+                        <input 
+                            name='title'
+                            className={styles.titleInput} 
+                            value={noteTitle}
+                            onChange={handleChangeTitle}
+                            placeholder='Click to edit title...'
+                            />
+                        </div>
+
+                        {/* ボタン */}
+                        <div className={styles.btns}>
+                            <div className={styles.btnContents}>
+                                <label htmlFor='update' className={styles.label}>
+                                    Last update
                                 </label>
-                            <input 
-                                name='title'
-                                className={styles.titleInput} 
-                                value={noteTitle}
-                                onChange={handleChangeTitle}
-                                placeholder='Click to edit title...'
-                                />
+                                <p className={styles.date}>
+                                    {noteUpdatedAt ? new Date(noteUpdatedAt).toLocaleString() : 'N/A'}
+                                </p>
                             </div>
-
-                            {/* ボタン */}
-                            <div className={styles.btns}>
-                                <div className={styles.update}>
-                                    <p className={styles.updateTitle}>
-                                        Last update:
-                                    </p>
-                                    <p className={styles.date}>
-                                        {noteUpdatedAt ? new Date(noteUpdatedAt).toLocaleString() : 'N/A'}
-                                    </p>
-                                </div>
-                                <button className={styles.viewBtn}>
+                            <div className={styles.btnContents}>    
+                                <label htmlFor='viewBtn' className={styles.label}>
+                                    View
+                                </label>
+                                <button className={view ? styles.md : styles.edit} onClick={toggleViewer}>
                                     {view ? <IoLogoMarkdown /> : <CiTextAlignLeft />}
                                 </button>
-                                <button className={styles.exportBtn}>
+                            </div>
+                            <div className={styles.btnContents}>
+                                <label htmlFor='exportBtn' className={styles.label}>
+                                    Export
+                                </label>
+                                <button className={styles.exportBtn} onClick={handleExport}>
                                     <HiDownload/>
                                 </button>
-                                <button className={styles.saveBtn}>
+                            </div>
+                            <div className={styles.btnContents}>
+                                <label htmlFor='saveBtn' className={styles.label}>
+                                    Save
+                                </label>
+                                <button className={styles.saveBtn} onClick={handleSave}>
                                     <IoSaveOutline/>
-                                </button>
-                                <button className={styles.helpBtn}>
+                                    </button>
+                            </div>
+                            <div className={styles.btnContents}>
+                                <label htmlFor='helpBtn' className={styles.label}>
+                                    Help
+                                </label>
+                                <button className={styles.helpBtn} onClick={toggleHelp}>
                                     <MdHelpOutline />
                                 </button>
                             </div>
                         </div>
-
-                        {/* <Markdown id={id} content={noteContent} change={handleChange} view={view} permission={permission}/>
-                        <div className={styles.update}>
-                            <p className={styles.last}>
-                                Last update:
-                            </p>
-                            <p className={styles.date}>
-                                {noteUpdatedAt ? new Date(noteUpdatedAt).toLocaleString() : 'N/A'}
-                            </p>
-                        </div> */}
-                    </form>
-                </div>
-            </main>
-        )}
-        </>
+                    </div>
+                    <div className={styles.body}>
+                    {help && (
+                        <MarkdownHelp/>
+                    )}
+                        <Markdown id={id} content={noteContent} change={handleChange} view={view} permission={permission}/>
+                    </div>
+                </form>
+            </div>
+        </main>
     )
 }

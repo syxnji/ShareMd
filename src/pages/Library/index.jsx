@@ -811,6 +811,9 @@ export default function Library() {
 
                 {/* 通知 */}
                 <button className={styles.headerBtn}>
+                    {notifications.length > 0 ? (
+                        <div className={styles.dot}></div>
+                    ) : null}
                     <RiNotification2Line />
                 </button>
 

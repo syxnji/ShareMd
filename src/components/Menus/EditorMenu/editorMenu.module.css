@@ -46,6 +46,12 @@
     display: flex;
     align-items: center;
     gap: 5px;
+    border-radius: 5px;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+.group:hover{
+    background-color: #eee;
 }
 .groupIcon{
     width: 32px;
@@ -65,6 +71,13 @@
     display: flex;
     align-items: center;
     gap: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+.note:hover{
+    background-color: #eee;
 }
 .noteIcon{
     display: flex;
@@ -75,5 +88,7 @@
 .noteTitle{
     font-size: 0.8rem;
     color: #333;
+    overflow: hidden;
+    white-space: nowrap;
 }
 

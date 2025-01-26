@@ -12,11 +12,6 @@
     border-top: none;
     border-radius: 5px;
 }
-@media (min-width: 1500px) {
-    .noteInput{
-        padding: 0 35px;
-    }
-}
 .noteInput textarea{
     display: block;
     font-family: inherit;
@@ -29,7 +24,7 @@
     /* border: solid 1px #eee; */
     border-radius: 5px;
     padding: 10px;
-    font-size: 1rem;
+    font-size: 0.9rem;
     background-color: #f5f5f5;
     scrollbar-width: none;
 }
@@ -37,97 +32,13 @@
     color: #999;
 }
 .noteViewer{
-    height: 100%;
+    height: calc(100vh - 50px);
     padding: 10px;
     background-color: #f5f5f5;
     border-radius: 5px;
     /* border: solid 2px #dfd; */
     border-top: none;
-}
-.helpBtn{
-    width: 48px;
-    height: 48px;
-    position: fixed;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    bottom: 10px;
-    right: 10px;
-    background-color: #333;
-    opacity: 0.7;
-    color: #fff;
-    padding: 10px;
-    border-radius: 100%;
-    transition: all 0.3s ease;
-}
-.helpBtn:hover{
-    opacity: 1;
-}
-.helpModal{
-    height: 80vh;
-    z-index: 100;
-    position: fixed;
-    bottom: 10px;
-    right: 70px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: #333;
-    border: solid 2px #555;
-    border-radius: 10px;
-    color: #fff;
-    padding: 20px;
-    transition: all 0.3s ease;
-}
-.helpTitle{
-    font-size: 1.2rem;
-    font-weight: bold;
-}
-.helpContent{
-    flex: 1;
-    text-align: left;
     overflow-y: scroll;
-    scrollbar-width: thin;
-    scrollbar-color: #222 #333;
 }
-.helpCode{
-    font-weight: bold;
-    color: #44f;
-}
-.helpExample{
-    color: #fff;
-}
-.helpSection{
-    margin-bottom: 10px;
-}
-.helpSection h4{
-    color: #fff;
-}
-.helpSection ul{
-    color: #fff;
-    list-style: none;
-}
-.helpSection li{
-    background-color: #444;
-    margin-bottom: 5px;
-    padding: 5px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-.helpSection li:hover{
-    background-color: #555;
-}
-/* 例外 */
-.helpTable{
-    display: flex;
-    flex-direction: column;
-}
-.helpCodeBlock{
-    display: flex;
-    flex-direction: column;
-}
-
 
 

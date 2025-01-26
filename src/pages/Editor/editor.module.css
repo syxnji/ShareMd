@@ -1,48 +1,20 @@
-
+/* MARK: COMMON */
 .main{
     display: flex;
 }
-.full{
-    display: flex;
+.label{
+    font-size: 0.5rem;
+    font-weight: bold;
+    color: #aaa;
 }
-.menu{
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background-color: #ddd;
-    padding: 10px;
-    border-radius: 10px;
-}
-
-.content{
-    width: 100%;
-    padding: 10px;
-}
-
-.content form{
-    width: 100%;
-    height: 100%;
+.btnContents{
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
-.fullContent{
-    width: 100%;
-    height: 100vh;
-}
-
 /* MARK: HEAD */
 .head{
-    /* position: sticky;
-    top: 0px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-bottom: solid 2px #aaa;
-    padding-bottom: 10px;
-    background-color: #fff; */
     position: fixed;
     top: 0px;
     left: 0px;
@@ -69,7 +41,11 @@
     align-items: center;
     background-color: transparent;
     border: none;
-    border-radius: 10px;
+    border-radius: 100px;
+    transition: all 0.3s;
+}
+.editorMenuBtn:hover{
+    background-color: #eee;
 }
 .backBtn{
     width: 32px;
@@ -79,40 +55,35 @@
     align-items: center;
     background-color: transparent;
     border: none;
-    border-radius: 10px;
+    border-radius: 100px;
+    transition: all 0.3s;
+}
+.backBtn:hover{
+    background-color: #eee;
 }
 .title{
     flex: 1;
     display: flex;
     flex-direction: column;
 }
-.titleLabel{
-    font-size: 0.5rem;
-    font-weight: bold;
-    color: #aaa;
-}
 .titleInput{
+    height: 32px;
     font-family: inherit;
     text-align: left;
     font-size: 1rem;
     font-weight: bold;
     color: #333;
     border: none;
-    /* border-bottom: solid 2px #aaa; */
     outline: none;
     overflow: hidden;
 }
-.update{
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: #aaa;
-}
-.updateTitle{
-    font-size: 0.7rem;
-}
 .date{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 32px;
     font-size: 0.7rem;
+    color: #333;
 }
 .btns{
     display: flex;
@@ -131,153 +102,21 @@
     transition: all 0.3s;
 }
 .btns button:hover{
-    scale: 1.2;
-}
-
-/* .md button{
-    background-color: #333;
-    color: #fff;
-} */
-
-/* common */
-/* .mdHeads{
-    width: 100%;
-    display: flex;
-    gap: 10px;
-}
-.mdTitle{
-    color: #fff;
-    font-weight: bold;
-}
-.areas{
-    display: flex;
-    gap: 10px;
-}
-.screen{
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-}
-.bottom{
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 10px;
-} */
-
-/* editor */
-.showEditorButton{
-    width: 50%;
-    display: flex;
-    justify-content: space-between;
-    color: #fff;
-    font-weight: bold;
-    background-color: #333;
-    padding: 10px;
-    border: none;
-    border: solid 1px #777;
-    border-bottom: none;
-    border-radius: 10px 10px 0 0;
-    transition: all 0.3s;
-}
-.showEditorButton:hover{
-    background-color: #fff;
-    color: #333;
-}
-.hideEditorButton{
-    width: 50%;
-    display: flex;
-    justify-content: space-between;
-    color: #333;
-    font-weight: bold;
     background-color: #eee;
-    padding: 10px;
-    border: solid 1px #777;
-    border-bottom: none;
-    border-radius: 10px 10px 0 0;
-    transition: all 0.3s;
-}
-.showEditorArea{
-    position: relative;
-    width: 100%;
-    height: 80vh;
-    overflow: scroll;
-    scrollbar-width: none;
-}
-.showInputArea{
-    position: absolute;
-    inset: 0;
-    height: 80vh;
-    padding: 10px 0;
-    border: solid 1px #333;
-    border-radius: 0 0 10px 10px;
-    resize: none;
-}
-.hideEditorArea{
-    display: none;
 }
 
-/* viewer */
-.showViewerButton{
-    width: 50%;
-    display: flex;
-    justify-content: space-between;
-    color: #fff;
-    font-weight: bold;
-    background-color: #333;
-    padding: 10px;
-    border: solid 1px #777;
-    border-radius: 10px 10px 0 0;
-}
-.showViewerButton:hover{
-    background-color: #fff;
-    color: #333;
-}
-.hideViewerButton{
-    width: 50%;
-    display: flex;
-    justify-content: space-between;
-    color: #333;
-    font-weight: bold;
-    background-color: #eee;
-    padding: 10px;
-    border: solid 1px #777;
-    border-bottom: none;
-    border-radius: 10px 10px 0 0;
-    transition: all 0.3s;
-}
-.showViewerArea{
-    position: relative;
+/* MARK: BODY */
+.body{
     width: 100%;
-    height: 80vh;
-    overflow: scroll;
-    scrollbar-width: none;
+    height: 100%;
 }
-.showPreviewArea{
-    height: 80vh;
-    border: solid 1px #333;
-    border-radius: 0 0 10px 10px;
-    overflow: scroll;
-    scrollbar-width: none;
-}
-.hideViewerArea{
-    display: none;
-}
-
-/* update */
-/* .update{
-    position: fixed;
-    bottom: 10px;
-    right: 70px;
+.content{
     width: 100%;
+    margin-top: 50px;
+}
+.content form{
+    width: 100%;
+    height: 100%;
     display: flex;
-    justify-content: flex-end;
-    gap: 10px;
+    flex-direction: column;
 }
-.last{
-    color: #aaa;
-    font-weight: bold;
-}
-.date{
-    color: #aaa;
-} */
