@@ -1,5 +1,6 @@
 import { BsX } from "react-icons/bs";
 import styles from "./memberManagement.module.css";
+import { RiAdminLine, RiUser3Line } from "react-icons/ri";
 export const MemberManagement = ({
    searchUser,
    handleSearchUser,
@@ -37,6 +38,9 @@ export const MemberManagement = ({
            <div className={styles.memberList}>
                {groupInMember?.map((member) => (
                    <div className={styles.member} key={member.id}>
+                        <div className={styles.userIcon}>
+                            {member.role_id === 1 ? <RiAdminLine/> : <RiUser3Line/>}
+                        </div>
                        <p>{member.username}</p>
                        <select
                            className={styles.roleSelect}
