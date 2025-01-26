@@ -6,19 +6,21 @@
     min-height: 0;
 }
 .addRole{
-    flex: flex-end;
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     gap: 10px;
     border-bottom: solid 1px #333;
     padding: 10px;
 }   
 .addBtn{
-    flex: 1;
     border: none;
     background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
 }
 .roleList{
     flex: 1;
@@ -44,24 +46,30 @@
 .role:hover{
     background-color: #eee;
 }
+.roleIcon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #44f;
+}
 .roleName{
-    flex: 7;
+    flex: 1;
     padding: 10px;
     border: solid 1px #ddd;
     border-radius: 10px;
+    font-size: 0.7rem;
 }
 .roleSelect{
-    flex: 2;
     padding: 10px;
     border: solid 1px #ddd;
     border-radius: 10px;
 }
 .deleteBtn{
-    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     border: none;
+    padding: 10px;
     background-color: transparent;
 }
 

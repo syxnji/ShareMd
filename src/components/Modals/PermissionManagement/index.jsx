@@ -1,5 +1,6 @@
 import { BsPlus, BsX } from "react-icons/bs";
 import styles from "./permissionManagement.module.css";
+import { MdOutlineShield, MdShield } from "react-icons/md";
 export const PermissionManagement = ({
    newRoleName,
    handleChangeNewRoleName,
@@ -42,6 +43,9 @@ export const PermissionManagement = ({
                {roleToPermit.length > 0 ? (
                    roleToPermit.map((role) => (
                        <div className={styles.role} key={role.id}>
+                            <div className={styles.roleIcon}>
+                                {role.id === 1 || role.id === 2 ? <MdShield/> : <MdOutlineShield />}
+                            </div>
                            <input 
                                type="text" 
                                placeholder="役職名" 
