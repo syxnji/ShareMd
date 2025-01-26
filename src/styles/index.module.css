@@ -3,6 +3,7 @@
 }
 
 .head{
+    height: 50px;
     position: fixed;
     top: 0;
     left: 0;
@@ -15,33 +16,41 @@
     background-color: #fff;
 }
 .headIcon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #44f;
     font-size: 1.2rem;
 }
 .headTitle{
     flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
     font-size: 1.2rem;
     font-weight: bold;
-    color: #555;
+    color: #44f;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 .headButton{
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 5px;
     color: #333;
     text-decoration: none;
-    padding: 10px;
-    border: solid 1px #333;
+    border: solid 1px #44f;
     border-radius: 10px;
+    padding: 10px;
+    color: #44f;
+    font-size: 0.8rem;
     transition: all 0.3s ease;
 }
 .headButton:hover{
-    background-color: #333;
-    color: #fff;
+    scale: 1.05;
 }
 .content{
     height: 100%;
@@ -120,6 +129,7 @@
     border: none;
     border-radius: 10px;
     transition: all 0.3s ease;
+    text-decoration: none;
 }
 .submitButton:hover{
     background-color: #22d;

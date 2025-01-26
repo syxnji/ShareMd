@@ -4,6 +4,7 @@ import { Menu } from '@/components/UI/Menu';
 import { BsFileEarmark, BsFolder, BsPlus } from 'react-icons/bs';
 import styles from './editorMenu.module.css';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md';
+import React from 'react';
 
 export function EditorMenu({menuState, menuContentGroup, menuContentNote}){
     const [openGroups, setOpenGroups] = useState({});
@@ -21,7 +22,8 @@ export function EditorMenu({menuState, menuContentGroup, menuContentNote}){
 
     return (
         <Menu menuState={menuState}>
-            <div className={styles.menuContents}>
+            {menuContentGroup !== null ? (
+                <div className={styles.menuContents}>
 
                 {/* メニューのヘッダー */}
                 <div className={styles.menuHeader}>
@@ -37,22 +39,22 @@ export function EditorMenu({menuState, menuContentGroup, menuContentNote}){
                     {/* グループ */}
                     <div className={styles.groups}>
                         {Array.isArray(menuContentGroup) && menuContentGroup.map((group) => (
-                        <>
-                        <div className={styles.group} key={group.id} onClick={() => toggleGroup(group.id)}>
-                            <div className={styles.groupIcon}>
-                                <BsFolder/>
+                        <React.Fragment key={group.id}>
+                            <div className={styles.group} onClick={() => toggleGroup(group.id)}>
+                                <div className={styles.groupIcon}>
+                                    <BsFolder/>
+                                </div>
+
+                                <p className={styles.groupTitle}>{group.name}</p>
+
+                                {openGroups[group.id] ? (
+                                    <MdKeyboardArrowUp />
+                                ) : (
+                                    <MdKeyboardArrowDown />
+                                )}
                             </div>
 
-                            <p className={styles.groupTitle}>{group.name}</p>
-
                             {openGroups[group.id] ? (
-                                <MdKeyboardArrowUp />
-                            ) : (
-                                <MdKeyboardArrowDown />
-                            )}
-                        </div>
-
-                        {openGroups[group.id] ? (
                             menuContentNote
                                 .filter(note => note.group_id === group.id)
                                 .map((note) => (
@@ -63,14 +65,22 @@ export function EditorMenu({menuState, menuContentGroup, menuContentNote}){
                                         <p className={styles.noteTitle}>{note.title}</p>
                                     </div>
                                 ))
-                        ) : null}
+                            ) : null}
 
-                        </>
+                        </React.Fragment>
                         ))}
+                    </div>
 
+                </div>
+
+                </div>
+            ) : (
+                <div className={styles.menuContents}>
+                    <div className={styles.try}>
+                        <p className={styles.tryText}>ログインしてグループへ参加またはグループを作成してください</p>
                     </div>
                 </div>
-            </div>
+            )}
         </Menu>
     )
 }

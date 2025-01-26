@@ -92,3 +92,15 @@
     white-space: nowrap;
 }
 
+/* MARK: TRY */
+.try{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+.tryText{
+    font-size: 0.8rem;
+    color: #44f;
+    transform: rotate(-90deg);
+}

@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 
 
 export function Markdown({ content, change, view, permission }) {
+    const placeholder = "マークダウン記法で記述できます。\n例:\n# 見出し1\n## 見出し2\n**太字**\n*斜体*\n詳しくはHelpをご覧ください。";
 
     // MARK:コピー
     const copy = (text) => {
@@ -186,7 +187,7 @@ export function Markdown({ content, change, view, permission }) {
                 <div className={styles.noteInput}>
                     <textarea
                     name='content'
-                    placeholder="Types here..."
+                    placeholder={placeholder}
                     value={content}
                     onChange={change}
                     disabled={permission === 3}

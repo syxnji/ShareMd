@@ -12,8 +12,7 @@ import styles from "./editor.module.css"
 import 'react-toastify/dist/ReactToastify.css';
 // icon
 import { IoLogoMarkdown, IoSaveOutline } from "react-icons/io5";
-import { BsFullscreen, BsFullscreenExit } from "react-icons/bs";
-import { MdArrowBack, MdArrowBackIos, MdClose, MdHelpOutline, MdMenu } from "react-icons/md";
+import { MdArrowBack, MdClose, MdHelpOutline, MdMenu } from "react-icons/md";
 import { CiTextAlignLeft } from "react-icons/ci";
 import { HiDownload } from "react-icons/hi";
 import { EditorMenu } from '@/components/Menus/EditorMenu';
@@ -222,7 +221,7 @@ export default function MarkdownEditor({ id }) {
                             className={styles.titleInput} 
                             value={noteTitle}
                             onChange={handleChangeTitle}
-                            placeholder='Click to edit title...'
+                            placeholder='タイトルを入力してください'
                             />
                         </div>
 

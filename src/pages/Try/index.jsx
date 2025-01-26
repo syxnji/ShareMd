@@ -1,18 +1,20 @@
 "use client"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import Cookies from "js-cookie";
 // components
 import { Markdown } from "@/components/Markdown";
-import { ImgBtn } from '@/components/UI/ImgBtn/index.jsx';
 import { ToastContainer, toast } from 'react-toastify';
 // style
 import styles from "./try.module.css";
 // icon
 import { IoLogoMarkdown, IoSaveOutline } from "react-icons/io5";
-import { BsFullscreen, BsFullscreenExit } from "react-icons/bs";
+import { MdArrowBack, MdClose, MdHelpOutline, MdMenu } from "react-icons/md";
 import { CiTextAlignLeft } from "react-icons/ci";
+import { HiDownload } from "react-icons/hi";
+import { EditorMenu } from '@/components/Menus/EditorMenu';
+import { MarkdownHelp } from '@/components/Modals/MarkdownHelp';
 
 export default function TryCreateNote() {
     // MARK: ノートのタイトルを取得
@@ -21,12 +23,6 @@ export default function TryCreateNote() {
 
     // MARK: ルーティング
     const router = useRouter();
-
-    // MARK: 全画面表示
-    const [screen, setScreen] = useState(false);
-    const toggleScreen = () => {
-        setScreen(!screen);
-    }
     
     // MARK: ビューアー表示
     const [view, setView] = useState(false);
@@ -55,11 +51,9 @@ export default function TryCreateNote() {
         if (Cookies.get('id')) {
             // ユーザーIDを取得
             const currentUserId = parseInt(Cookies.get('id'));
-            console.log('ログイン済:',currentUserId)
             // プライベートグループを取得
             const response = await fetch(`/api/db?table=privateGroup&userId=${currentUserId}`);
             const privateGroup = await response.json();
-            console.log('res:',privateGroup)
             const privateGroupId = privateGroup.results[0].id;
             // ノートの内容をエンコード
             const encodedContent = encodeURIComponent(noteContent);
@@ -85,58 +79,177 @@ export default function TryCreateNote() {
         }
     }
 
+    // MARK: メニューの表示
+    const [menuState, setMenuState] = useState(true);
+    const toggleMenuState = (e) => {
+        e.preventDefault();
+        setMenuState(!menuState);
+    }
+
+    // MARK: ノートの戻る
+    const handleBack = (e) => {
+        e.preventDefault();
+        window.location.assign('/Library');
+    }
+
+    // MARK: ノートのエクスポート
+    const handleExport = (e) => {
+        e.preventDefault();
+        const blob = new Blob([noteContent], { type: 'text/markdown' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${noteTitle || 'untitled'}.md`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        toast.success('エクスポートしました');
+    }
+
+    // MARK: ショートカットキー
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                handleSave();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [handleSave]);
+
+    // MARK:ヘルプモーダル
+    const [help, setHelp] = useState(false);
+    const toggleHelp = (e) => {
+        e.preventDefault();
+        setHelp(!help);
+    }
+
+    // MARK: トライ - データ
+    const id = 0;
+
+    const permission = 1;
+
+    const menuContentGroup = [
+        {
+            id: 1,
+            name: 'グループ',
+        }
+    ]
+    const menuContentNote = [
+        {
+            id: 0,
+            title: 'ノート',
+            group_id: 1,
+        }
+    ]
+
+    const noteUpdatedAt = null;
+
 
     return (
-        <>
-        {screen ? (
-            <main className={styles.full}>
-                <ToastContainer />
-                <div className={styles.content}>
-                    <Markdown content={noteContent} change={handleChange} view={view}/>
-                </div>
-                <div className={styles.menu}>
-                    <div className={styles.saveBtn}>
-                        <ImgBtn img={<IoSaveOutline/>} click={handleSave} color="main"/>
-                    </div>
-                    <div className={styles.screenBtn}>
-                        <ImgBtn img={screen ? <BsFullscreenExit /> : <BsFullscreen />} click={toggleScreen}/>
-                    </div>
-                    <div className={styles.viewBtn}>
-                        <ImgBtn img={view ? <IoLogoMarkdown /> : <CiTextAlignLeft />} click={toggleViewer}/>
-                    </div>
-                </div>
-            </main>
-        ) : (
-            <main className={styles.main}>
-                <ToastContainer />
+        <main className={styles.main}>
+            {/* MARK: Toast */}
+            <ToastContainer />
 
-                <div className={styles.content}> 
-                    <form>
-                        <div className={styles.head}>
-                            <input 
-                                name='title'
-                                className={styles.title} 
-                                value={noteTitle}
-                                onChange={handleChangeTitle}
-                                placeholder='Click to edit title...'
+            {/* MARK: Menu */}
+            <EditorMenu menuState={menuState} menuContentGroup={menuContentGroup} menuContentNote={menuContentNote}/>
+
+            {/* MARK: Content */}
+            <div className={styles.content}> 
+                <form>
+                    <div className={styles.head}>
+                        {/* メニューの表示/非表示 */}
+                        <div className={styles.btnContents}>
+                            <label htmlFor='editorMenuBtn' className={styles.label}>
+                                {menuState ? 'Close' : 'Menu'}
+                            </label>
+                            <button className={styles.editorMenuBtn} onClick={(e) => toggleMenuState(e)}>
+                                {menuState ? <MdClose/> : <MdMenu/>} 
+                            </button>
+                        </div>
+
+                        {/* ノートの戻る */}
+                        <div className={styles.btnContents}>
+                            <label htmlFor='backBtn' className={styles.label}>
+                                Back
+                            </label>
+                            <button className={styles.backBtn} onClick={handleBack}>
+                                <MdArrowBack />
+                            </button>
+                        </div>
+
+                        {/* ノートのタイトル */}
+                        <div className={styles.title}>
+                            <label htmlFor='title' className={styles.label}>
+                                Title
+                            </label>
+                        <input 
+                            name='title'
+                            className={styles.titleInput} 
+                            value={noteTitle}
+                            onChange={handleChangeTitle}
+                            placeholder='タイトルを入力してください'
                             />
-                            <div className={styles.btns}>
-                                <div className={styles.screenBtn}>
-                                    <ImgBtn img={screen ? <BsFullscreenExit /> : <BsFullscreen />} click={toggleScreen}/>
-                                </div>
-                                <div className={styles.viewBtn}>
-                                    <ImgBtn img={view ? <IoLogoMarkdown /> : <CiTextAlignLeft />} click={toggleViewer}/>
-                                </div>
-                                <div className={styles.saveBtn}>
-                                    <ImgBtn img={<IoSaveOutline/>} click={handleSave} color="main"/>
-                                </div>
+                        </div>
+
+                        {/* ボタン */}
+                        <div className={styles.btns}>
+                            <div className={styles.btnContents}>
+                                <label htmlFor='update' className={styles.label}>
+                                    Last update
+                                </label>
+                                <p className={styles.date}>
+                                    {noteUpdatedAt ? new Date(noteUpdatedAt).toLocaleString() : '最終更新日時を表示します'}
+                                </p>
+                            </div>
+                            <div className={styles.btnContents}>    
+                                <label htmlFor='viewBtn' className={styles.label}>
+                                    View
+                                </label>
+                                <button className={view ? styles.md : styles.edit} onClick={toggleViewer}>
+                                    {view ? <IoLogoMarkdown /> : <CiTextAlignLeft />}
+                                </button>
+                            </div>
+                            <div className={styles.btnContents}>
+                                <label htmlFor='exportBtn' className={styles.label}>
+                                    Export
+                                </label>
+                                <button className={styles.exportBtn} onClick={handleExport}>
+                                    <HiDownload/>
+                                </button>
+                            </div>
+                            <div className={styles.btnContents}>
+                                <label htmlFor='saveBtn' className={styles.label}>
+                                    Save
+                                </label>
+                                <button className={styles.saveBtn} onClick={handleSave}>
+                                    <IoSaveOutline/>
+                                    </button>
+                            </div>
+                            <div className={styles.btnContents}>
+                                <label htmlFor='helpBtn' className={styles.label}>
+                                    Help
+                                </label>
+                                <button className={styles.helpBtn} onClick={toggleHelp}>
+                                    <MdHelpOutline />
+                                </button>
                             </div>
                         </div>
-                        <Markdown content={noteContent} change={handleChange} view={view}/>
-                    </form>
-                </div>
-            </main>
-        )}
-        </>
+                    </div>
+                    <div className={styles.body}>
+                    {help && (
+                        <MarkdownHelp/>
+                    )}
+                        <Markdown id={id} content={noteContent} change={handleChange} view={view} permission={permission}/>
+                    </div>
+                </form>
+            </div>
+        </main>
     )
 }
