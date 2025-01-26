@@ -1,5 +1,6 @@
 import { BsX } from "react-icons/bs";
 import styles from "./projectManagement.module.css";
+import { MdOutlineInsertDriveFile } from "react-icons/md";
 export const ProjectManagement = ({
    selectedGroupNotes,
    handleDeleteProject
@@ -8,6 +9,9 @@ export const ProjectManagement = ({
        <div className={styles.projectContent}>
            {selectedGroupNotes.map((project) => (
                <div className={styles.project} key={project.id}>
+                   <div className={styles.projectIcon}>
+                        <MdOutlineInsertDriveFile />
+                   </div>
                    <p>{project.title}</p>
                    <button 
                        className={styles.deleteBtn} 
