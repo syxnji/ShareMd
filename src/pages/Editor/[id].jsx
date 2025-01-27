@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect} from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Cookies from 'js-cookie';
 // component
 import { SidebarInNotes } from "@/components/SidebarInNotes";
@@ -53,12 +53,12 @@ export default function MarkdownEditor({ id }) {
             }
         };
         fetchCheck();
-    }, [groupId]);
+    }, [groupId, userId]);
     
     // MARK: メニュー
     const [menuContentGroup, setMenuContentGroup] = useState(null);
     const [menuContentNote, setMenuContentNote] = useState(null);
-    const fetchMenuContent = async () => {
+    const fetchMenuContent = useCallback(async () => {
         const resMenuGroup = await fetch(`/api/db?table=editorMenuGroup&userId=${userId}`);
         const retMenuGroup = await resMenuGroup.json();
         setMenuContentGroup(retMenuGroup.results);
@@ -66,10 +66,10 @@ export default function MarkdownEditor({ id }) {
         const resMenuNote = await fetch(`/api/db?table=editorMenuNote&userId=${userId}`);
         const retMenuNote = await resMenuNote.json();
         setMenuContentNote(retMenuNote.results);
-    }
+    }, [userId]);
     useEffect(() => {
         fetchMenuContent();
-    }, [userId]);
+    }, [fetchMenuContent]);
 
     // MARK: ノート情報
     const [noteTitle, setNoteTitle] = useState('');
@@ -102,7 +102,7 @@ export default function MarkdownEditor({ id }) {
     }
     
     // MARK: ノートの保存
-    const handleSave = async (e) => {
+    const handleSave = useCallback(async (e) => {
         if (e) e.preventDefault();
         
         const fetchNoteUpd = async () => {
@@ -119,7 +119,7 @@ export default function MarkdownEditor({ id }) {
             }
         };
         fetchNoteUpd();
-    }
+    }, [noteContent, noteTitle, id]);
 
     // MARK: ノートのエクスポート
     const handleExport = (e) => {
