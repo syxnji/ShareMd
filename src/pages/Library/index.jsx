@@ -40,7 +40,7 @@ export default function Library() {
                 window.location.assign('/Auth');
             }
             setUserId(id);
-            fetchNotifications();
+            refresh();
         };
         getUserId();
     }, [userId]);
@@ -75,6 +75,10 @@ export default function Library() {
         fetchNotifications();
         fetchGroup();
         fetchNotes();
+        fetchCheckPermission();
+        fetchGroupInMember();
+        fetchGroupRole();
+        fetchRoleToPermit();
     }
 
     // MARK: userId → allNotes
@@ -696,8 +700,7 @@ export default function Library() {
             ) : null}
         </div>
     );
-
-    // MARK: main
+    
     return(
         <main className={styles.main}>
             
