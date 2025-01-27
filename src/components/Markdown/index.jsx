@@ -3,8 +3,7 @@ import { useState } from 'react';
 import styles from "./markdown.module.css"
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm';
-import { MdOutlineHelpOutline } from "react-icons/md";
-import { toast } from 'react-toastify';
+import Image from 'next/image'
 
 
 export function Markdown({ content, change, view, permission }) {
@@ -93,19 +92,14 @@ export function Markdown({ content, change, view, permission }) {
                 </code>
             );
         },
-        img: ({ src, alt }) => (
-            <img
-                src={src}
-                alt={alt}
-                style={{
-                    maxWidth: '100%',
-                    height: 'auto',
-                    borderRadius: '8px',
-                    margin: '1.5em 0',
-                    border: '1px solid #ddd',
-                }}
-            />
-        ),
+        // img: ({ src, alt }) => (
+        //     <Image 
+        //         src={src}
+        //         alt={alt}
+        //         width={500}
+        //         height={300}
+        //     />
+        // ),
         table: ({ children }) => (
             <table
                 style={{
