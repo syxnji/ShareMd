@@ -1,0 +1,64 @@
+.toast{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 50px;
+    font-size: 0.7rem;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+}
+.status{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.messageContent{
+    flex: 1;
+    font-size: 0.8rem;
+    text-wrap: wrap;
+}
+.noticeUserName{
+    font-weight: bold;
+    color: #555;
+}
+.noticeGroupName{
+    font-weight: bold;
+    color: #555;
+}
+.noticeTypeRequest{
+    font-weight: bold;
+    color: #0080ee;
+}
+.noticeTypeInvite{
+    font-weight: bold;
+    color: #00ee80;
+}
+.subMessage{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 0.6rem;
+    font-weight: bold;
+    color: #f74;
+}
+.acceptBtn{
+    background-color: transparent;
+    border: none;
+    transition: all 0.3s;
+}  
+.acceptBtn:hover{
+    color: #4f4;
+}
+.rejectBtn{
+    background-color: transparent;
+    border: none;
+    transition: all 0.3s;
+}
+.rejectBtn:hover{
+    color: #f44;
+}

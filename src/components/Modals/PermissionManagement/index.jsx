@@ -1,6 +1,7 @@
 import { BsPlus, BsX } from "react-icons/bs";
 import styles from "./permissionManagement.module.css";
 import { MdOutlineShield, MdShield } from "react-icons/md";
+import { ModalWindow } from "@/components/UI/ModalWindow";
 export const PermissionManagement = ({
    newRoleName,
    handleChangeNewRoleName,
@@ -21,11 +22,11 @@ export const PermissionManagement = ({
                    className={styles.roleName} 
                    onChange={(e) => handleChangeNewRoleName(e)} 
                    value={newRoleName}
-               />
+                   />
                <select 
                    className={styles.roleSelect} 
                    onChange={(e) => handleChangeNewPermit(e)}
-               >
+                   >
                    {permission.map((permit) => (
                        <option key={permit.id} value={permit.id}>
                            {permit.name}
@@ -35,7 +36,7 @@ export const PermissionManagement = ({
                <button 
                    className={styles.addBtn} 
                    onClick={(e) => handleAddRole(e)}
-               >
+                   >
                    <BsPlus/>
                </button>
            </div>
@@ -53,13 +54,13 @@ export const PermissionManagement = ({
                                defaultValue={role.name} 
                                onChange={(e) => handleChangeRoleName(e, role.id)}
                                disabled={role.id === 1 || role.id === 2}
-                           />
+                               />
                            <select 
                                className={styles.roleSelect} 
                                onChange={(e) => handleChangePermit(e, role.id)} 
                                value={role.permission_id}
                                disabled={role.id === 1 || role.id === 2}
-                           >
+                               >
                                {permission.map((permit) => (
                                    <option key={permit.id} value={permit.id}>
                                        {permit.name}
@@ -70,14 +71,14 @@ export const PermissionManagement = ({
                                className={styles.deleteBtn} 
                                onClick={(e) => handleDeleteRole(e, role.id)}
                                disabled={role.id === 1 || role.id === 2}
-                           >
+                               >
                                <BsX/>
                            </button>
                        </div>
                    ))
-               ) : (
+                ) : (
                    <p>役職がありません</p>
-               )}
+                )}
            </div>
         </div>
    );

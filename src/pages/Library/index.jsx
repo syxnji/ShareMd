@@ -12,21 +12,20 @@ import { NewGroup } from '@/components/Modals/NewGroup';
 import { SearchGroups } from '@/components/Modals/SearchGroups';
 // menu
 import { LibraryMenu } from '@/components/Menus/LibraryMenu';
-// ui
-import { ImgBtn } from '@/components/UI/ImgBtn';
-import { Menu } from '@/components/UI/Menu';
-import { GroupHeadline } from "@/components/GroupHeadline";
 // component
 import { NotesInGroup } from '@/components/NotesInGroup';
+import { ModalWindow } from '@/components/UI/ModalWindow';
 // icon
-import { BsList, BsFileEarmarkPlus, BsGrid3X3, BsX, BsBuildings, BsArrowRepeat, BsFolder} from "react-icons/bs";
+import { BsFileEarmarkPlus, BsGrid3X3, BsX, BsBuildings, BsArrowRepeat, BsFolder} from "react-icons/bs";
 import { FaRegUser } from 'react-icons/fa6';
+import { MdClose, MdFormatListBulleted, MdLogout, MdMenu, MdOutlineWifiFind } from 'react-icons/md';
+import { IoSearch } from 'react-icons/io5';
+import { RiNotification2Line } from 'react-icons/ri';
 // style
 import styles from "./library.module.css";
-import { MdClose, MdFormatListBulleted, MdLogout, MdMenu, MdOutlineWifiFind } from 'react-icons/md';
 import 'react-toastify/dist/ReactToastify.css';
-import { IoNotificationsOutline, IoSearch } from 'react-icons/io5';
-import { RiNotification2Line } from 'react-icons/ri';
+import { PiEmpty } from 'react-icons/pi';
+import { Toast } from '@/components/Toast';
 
 export default function Library() {
 
@@ -54,13 +53,20 @@ export default function Library() {
         setNotifications(noticeResult.results);
     }, [userId]);
 
+    // MARK: modalNotification
+    const [modalNotification, setModalNotification] = useState(false);
+    const toggleModalNotification = () => {
+        setModalNotification(!modalNotification);
+    }
+
     // MARK: Toast Settings
     const customToastOptions = {
-        position: "bottom-right",
+        position: "static",
         autoClose: false,
         closeOnClick: false,
         draggable: false,   
         closeButton: false,
+        className: styles.customToast,
     }
     const defaultToastOptions = {
         position: "top-right",
@@ -80,9 +86,6 @@ export default function Library() {
         fetchGroupRole();
         fetchRoleToPermit();
     }
-
-    // MARK: userId → allNotes
-    const [allNotes, setAllNotes] = useState([]);
     
     // MARK:selectedGroup
     const [selectedGroup, setSelectedGroup] = useState({id: null, name: null});
@@ -587,43 +590,6 @@ export default function Library() {
         toast.success('グループを作成しました', defaultToastOptions);
         refresh();
     }
-
-    // MARK:headLine
-    const headLeft = (
-        <>
-        {/* 検索 */}
-        <div className={styles.search}>
-            <form>
-                <input 
-                 placeholder="Note name ..." 
-                 type="search"
-                 onChange={handleSearch}
-                 />
-            </form>
-        </div>
-        </>
-    )
-    const headRight = (
-        <>
-            {/* リロード */}
-            <div className={styles.reload}>
-                <ImgBtn img={<BsArrowRepeat/>} click={refresh}/>
-            </div>
-            {/* 検索グループ */}
-            <div className={styles.searchGroup}>
-                <ImgBtn img={<MdOutlineWifiFind />} click={toggleModalSearchGroup}/>
-            </div>
-            {/* レイアウト */}
-            <div className={styles.layouts}>
-                <ImgBtn img={isGridView ? <BsList/> : <BsGrid3X3/>} click={toggleView}/>
-            </div>
-            {/* 新規ノート */}
-            <div className={styles.addNote}>
-                {/* <MainBtn img={<BsFileEarmarkPlus/>} click={handleNewNote} text="New Note"/> */}
-                <ImgBtn img={<BsFileEarmarkPlus/>} click={toggleModalNewNote} color="main"/>
-            </div>
-        </>
-    )
     
     // MARK: menuState
     const [menuState, setMenuState] = useState(true);
@@ -633,7 +599,8 @@ export default function Library() {
         
     // MARK: settingWindow
     const modalSettingWindow = (
-        <div className={styles.modalSettingWindow}>
+        <ModalWindow>
+            <div className={styles.modalSettingWindow}>
             {/* 閉じる */}
             <div className={styles.modalSettingClose} onClick={toggleModalSetting}>
                 <BsX/>
@@ -686,232 +653,260 @@ export default function Library() {
                />
             ) : null}
             {modalPermit ? (
-               <PermissionManagement 
-                   newRoleName={newRoleName}
-                   handleChangeNewRoleName={handleChangeNewRoleName}
-                   permission={permission}
-                   handleChangeNewPermit={handleChangeNewPermit}
-                   handleAddRole={handleAddRole}
-                   roleToPermit={roleToPermit}
-                   handleChangeRoleName={handleChangeRoleName}
-                   handleChangePermit={handleChangePermit}
-                   handleDeleteRole={handleDeleteRole}
-               />
+                <PermissionManagement 
+                    newRoleName={newRoleName}
+                    handleChangeNewRoleName={handleChangeNewRoleName}
+                    permission={permission}
+                    handleChangeNewPermit={handleChangeNewPermit}
+                    handleAddRole={handleAddRole}
+                    roleToPermit={roleToPermit}
+                    handleChangeRoleName={handleChangeRoleName}
+                    handleChangePermit={handleChangePermit}
+                    handleDeleteRole={handleDeleteRole}
+                />
             ) : null}
         </div>
+        </ModalWindow>
     );
     
     return(
         <main className={styles.main}>
             
-        {/* MARK: Toast */}
-        <ToastContainer />
-
-        {/* MARK === MODALS === */}
-
-        {/* modalNewNote*/}
-        {modalNewNote ? (
-            <NewNoteModal 
-                allGroups={allGroups}
-                toggleModalNewNote={toggleModalNewNote}
-                handleCreateNote={handleCreateNote}
-                handleChangeNewNoteGroup={handleChangeNewNoteGroup}
-                handleChangeNewNoteTitle={handleChangeNewNoteTitle}
-                newNoteTitle={newNoteTitle}
-                handleImport={handleImport}
-                setNoteContent={setNewNoteContent}
-            />
-        ) : null}
-
-        {/* modalSetting */}
-        {modalSetting ? modalSettingWindow : null}
-
-        {/* accountView */}
-        {accountView ? (
-            <div className={styles.accountWindow}>
-                <div className={styles.accountContent}>
-                    <FaRegUser/>
-                    <div className={styles.accountInfo}>
-                        <p className={styles.accountName}>{userInfo.username}</p>
-                        <p className={styles.accountEmail}>{userInfo.email}</p>
+            {/* MARK: Toast */}
+            {modalNotification ? (
+                <div className={styles.toastContainer}>
+                    <div className={styles.toastHeader}>
+                        <p className={styles.toastHeaderTitle}>通知</p>
+                    </div>
+                    <div className={styles.toastBody}>
+                        {notifications.length > 0 ? (
+                            notifications.map((notification) => (
+                                <Toast
+                                    key={notification.id}
+                                    notification={notification}
+                                    userId={userId}
+                                />
+                            ))
+                        ) : (
+                            <p className={styles.toastBodyEmpty}>
+                                <PiEmpty />通知はありません
+                            </p>
+                        )}
                     </div>
                 </div>
-                <div className={styles.groupBtnContainer}>
-                    {/* グループモーダル切替 */}
-                    <button className={styles.groupsBtn} onClick={toggleModalJoinedGroups}><BsBuildings/></button>
+            ) : null}
+
+            {/* MARK === MODALS === */}
+
+            {/* modalNewNote*/}
+            {modalNewNote ? (
+                <NewNoteModal 
+                    allGroups={allGroups}
+                    toggleModalNewNote={toggleModalNewNote}
+                    handleCreateNote={handleCreateNote}
+                    handleChangeNewNoteGroup={handleChangeNewNoteGroup}
+                    handleChangeNewNoteTitle={handleChangeNewNoteTitle}
+                    newNoteTitle={newNoteTitle}
+                    handleImport={handleImport}
+                    setNoteContent={setNewNoteContent}
+                />
+            ) : null}
+
+            {/* modalSetting */}
+            {modalSetting ? modalSettingWindow : null}
+
+            {/* accountView */}
+            {accountView ? (
+                <div className={styles.accountWindow}>
+                    <div className={styles.accountContent}>
+                        <FaRegUser/>
+                        <div className={styles.accountInfo}>
+                            {/* ユーザー名 */}
+                            <p className={styles.accountName}>{userInfo.username}</p>
+                            {/* メールアドレス */}
+                            <p className={styles.accountEmail}>{userInfo.email}</p>
+                        </div>
+                    </div>
+                    <div className={styles.groupBtnContainer}>
+                        {/* グループモーダル切替 */}
+                        <button className={styles.groupsBtn} onClick={toggleModalJoinedGroups}><BsBuildings/></button>
+                    </div>
+                    <div className={styles.logoutBtnContainer}>
+                        {/* ログアウト */}
+                        <button className={styles.logoutBtn} onClick={handleLogout}><MdLogout /></button>
+                    </div>
                 </div>
-                <div className={styles.logoutBtnContainer}>
-                    {/* ログアウト */}
-                    <button className={styles.logoutBtn} onClick={handleLogout}><MdLogout /></button>
-                </div>
-            </div>
-        ) : null}
+            ) : null}
 
-        {/* modalJoinedGroups */}
-        {modalJoinedGroups ? (
-            <JoinedGroupsModal
-                allGroups={allGroups}
-                toggleModalJoinedGroups={toggleModalJoinedGroups}
-                checkPermission={checkPermission}
-                handleLeaveGroup={handleLeaveGroup}
-                toggleModalSetting={toggleModalSetting}
-                setSelectedGroup={setSelectedGroup}
-                setModalJoinedGroups={setModalJoinedGroups}
-            />
-        ) : null}
+            {/* modalJoinedGroups */}
+            {modalJoinedGroups ? (
+                <JoinedGroupsModal
+                    allGroups={allGroups}
+                    toggleModalJoinedGroups={toggleModalJoinedGroups}
+                    checkPermission={checkPermission}
+                    handleLeaveGroup={handleLeaveGroup}
+                    toggleModalSetting={toggleModalSetting}
+                    setSelectedGroup={setSelectedGroup}
+                    setModalJoinedGroups={setModalJoinedGroups}
+                />
+            ) : null}
 
-        {/* modalSearchGroup */}
-        {modalSearchGroup ? (
-            <SearchGroups
-                toggleModalSearchGroup={toggleModalSearchGroup}
-                handleSearchGroup={handleSearchGroup}
-                searchGroup={searchGroup}
-                searchGroupResult={searchGroupResult}
-                handleRequestGroup={handleRequestGroup}
-            />
-        ) : null}
-
-        {/* MARK: === HEADER === */}
-        <header className={styles.header}>
-            {/* メニューボタン */}
-            <div className={styles.headerMenu}>
-                <button className={styles.menuBtn} onClick={toggleMenuState}>
-                    {menuState ? <MdClose/> : <MdMenu/>}
-                </button>
-            </div>
-
-            {/* サービス名 */}
-            <p className={styles.headerServiceName}>ShareMd</p>
-
-            {/* 検索 */}
-            <div className={styles.headerSearch}>
-                <div className={styles.searchIcon}>
-                    <IoSearch />
-                </div>
-                <form className={styles.searchForm}>
-                    <input 
-                        placeholder="Search Notes" 
-                        type="text"
-                        onChange={handleSearch}
-                    />
-                </form>
-            </div>
-
-            {/* ヘッダーボタン */}
-            <div className={styles.headerButtons}>
-
-                {/* 通知 */}
-                <button className={styles.headerBtn}>
-                    {notifications.length > 0 ? (
-                        <div className={styles.dot}></div>
-                    ) : null}
-                    <RiNotification2Line />
-                </button>
-
-                {/* アカウント */}
-                <button className={styles.headerBtn} onClick={toggleAccountView}>
-                    {accountView ?  <BsX/> : <FaRegUser/>}
-                </button>
-            </div>
-        </header>
-
-        {/* MARK: === MENU === */}
-        {modalCreateGroup ? (
-            <NewGroup
-                toggleModalCreateGroup={toggleModalCreateGroup}
-                createName={createName}
-                handleChangeCreateName={handleChangeCreateName}
-                createGroupMemberSuggest={createGroupMemberSuggest}
-                handleSearchCreateGroupMember={handleSearchCreateGroupMember}
-                handleAddCreateGroupMember={handleAddCreateGroupMember}
-                handleDeleteCreateGroupMember={handleDeleteCreateGroupMember}
-                handleCreateGroup={handleCreateGroup}
-                searchCreateGroupMember={searchCreateGroupMember}
-                createGroupMemberList={createGroupMemberList}
-            />
-        ) : null}
-
-        <LibraryMenu
-            toggleModalCreateGroup={toggleModalCreateGroup}
-            allGroups={allGroups}
-            setSelectedGroup={setSelectedGroup}
-            checkPermission={checkPermission}
-            toggleModalSetting={toggleModalSetting}
-            menuState={menuState}
-        />
-
-        {/* MARK: === CONTENTS === */}
-        <div className={styles.contents}>
+            {/* modalSearchGroup */}
+            {modalSearchGroup ? (
+                <SearchGroups
+                    toggleModalSearchGroup={toggleModalSearchGroup}
+                    handleSearchGroup={handleSearchGroup}
+                    searchGroup={searchGroup}
+                    searchGroupResult={searchGroupResult}
+                    handleRequestGroup={handleRequestGroup}
+                />
+            ) : null}
 
             {/* MARK: === HEADER === */}
-            <div className={styles.contentsHeader}>
-                {/* グループ名 */}
-                <p className={styles.selectGroupName}>
-                    {selectedGroup.id ? selectedGroup.name : 'グループ'}
-                </p>
-
-                {/* ボタン */}
-                <div className={styles.contentsHeaderBtns}>
-
-                    {/* レイアウト */}
-                    <div className={styles.layouts}>
-                        <div className={isGridView ? styles.inactive : styles.active} onClick={toggleView}>
-                            <MdFormatListBulleted />
-                        </div>
-                        <div className={isGridView ? styles.active : styles.inactive} onClick={toggleView}>
-                            <BsGrid3X3/>
-                        </div>
-                    </div>
-
-                    {/* 新規ノート */}
-                    <div className={styles.newNoteBtn} onClick={toggleModalNewNote}>
-                        <BsFileEarmarkPlus/>
-                        <p className={styles.newNote}>新規ノート</p>
-                    </div>
+            <header className={styles.header}>
+                <div className={styles.headerMenu}>
+                    {/* メニューボタン */}
+                    <button className={styles.menuBtn} onClick={toggleMenuState}>
+                        {menuState ? <MdClose/> : <MdMenu/>}
+                    </button>
                 </div>
-            </div>
 
-            {/* MARK: === BODY === */}
-            {selectedGroup.id ? (
-                <>
-                {/* selectedGroup → selectedGroupNotes */}
-                <div className={styles.contentsBody}>
-                <NotesInGroup 
-                    selectedGroup={selectedGroup}
-                    notes={filteredNotes || []}
-                    isNotesClass={isNotesClass}
-                    toggleModalNewNote={toggleModalNewNote}
-                    />
+                <p className={styles.headerServiceName}>ShareMd</p>
+
+                <div className={styles.headerSearch}>
+                    <div className={styles.searchIcon}>
+                        <IoSearch />
+                    </div>
+                    {/* 検索フォーム */}
+                    <form className={styles.searchForm}>
+                        <input 
+                            placeholder="Search Notes" 
+                            type="text"
+                            onChange={handleSearch}
+                        />
+                    </form>
                 </div>
-                </>
-            ) : (
-                <div className={styles.notSelectGroupContents}>
-                    {allGroups.map((group) => (
-                        <button className={styles.notSelectGroupBtn} key={group.id} onClick={() => {setSelectedGroup(group);}}>
-                            <div className={styles.notSelectGroupBtnIcon}>
-                                <BsFolder/>
+
+                {/* ヘッダーボタン */}
+                <div className={styles.headerButtons}>
+
+                    {/* 通知 */}
+                    <button className={styles.headerBtn} onClick={toggleModalNotification}>
+                        {modalNotification ? <MdClose/> : (
+                            <>
+                            {/* 通知 有無 */}
+                            {notifications.length > 0 ? (
+                                <div className={styles.dot}></div>
+                            ) : null}
+                            <RiNotification2Line/>
+                            </>
+                        )}
+                    </button>
+
+                    {/* アカウント */}
+                    <button className={styles.headerBtn} onClick={toggleAccountView}>
+                        {accountView ?  <BsX/> : <FaRegUser/>}
+                    </button>
+                </div>
+            </header>
+
+            {/* MARK: === MENU === */}
+            {modalCreateGroup ? (
+                <NewGroup
+                    toggleModalCreateGroup={toggleModalCreateGroup}
+                    createName={createName}
+                    handleChangeCreateName={handleChangeCreateName}
+                    createGroupMemberSuggest={createGroupMemberSuggest}
+                    handleSearchCreateGroupMember={handleSearchCreateGroupMember}
+                    handleAddCreateGroupMember={handleAddCreateGroupMember}
+                    handleDeleteCreateGroupMember={handleDeleteCreateGroupMember}
+                    handleCreateGroup={handleCreateGroup}
+                    searchCreateGroupMember={searchCreateGroupMember}
+                    createGroupMemberList={createGroupMemberList}
+                />
+            ) : null}
+
+            <LibraryMenu
+                toggleModalCreateGroup={toggleModalCreateGroup}
+                allGroups={allGroups}
+                setSelectedGroup={setSelectedGroup}
+                checkPermission={checkPermission}
+                toggleModalSetting={toggleModalSetting}
+                menuState={menuState}
+            />
+
+            {/* MARK: === CONTENTS === */}
+            <div className={styles.contents}>
+
+                {/* MARK: === HEADER === */}
+                <div className={styles.contentsHeader}>
+                    {/* グループ名 */}
+                    <p className={styles.selectGroupName}>
+                        {selectedGroup.id ? selectedGroup.name : 'グループ'}
+                    </p>
+
+                    {/* ボタン */}
+                    <div className={styles.contentsHeaderBtns}>
+
+                        {/* レイアウト */}
+                        <div className={styles.layouts}>
+                            <div className={isGridView ? styles.inactive : styles.active} onClick={toggleView}>
+                                <MdFormatListBulleted />
                             </div>
-                            <p className={styles.notSelectGroupName}>{group.name}</p>
-                        </button>
-                    ))}
-                </div>
-            ) }
+                            <div className={isGridView ? styles.active : styles.inactive} onClick={toggleView}>
+                                <BsGrid3X3/>
+                            </div>
+                        </div>
 
-            {/* MARK: === FOOTER === */}
-            <div className={styles.contentsFooter}>
-                <div className={styles.groupSearch}>
-                    <button className={styles.groupSearchBtn} onClick={toggleModalSearchGroup}>
-                        <MdOutlineWifiFind/>
-                        <p>グループ検索</p>
-                    </button>
+                        {/* 新規ノート */}
+                        <div className={styles.newNoteBtn} onClick={toggleModalNewNote}>
+                            <BsFileEarmarkPlus/>
+                            <p className={styles.newNote}>新規ノート</p>
+                        </div>
+                    </div>
                 </div>
-                <div className={styles.reload}>
-                    <button className={styles.reloadBtn} onClick={refresh}>
-                        <BsArrowRepeat/>
-                    </button>
+
+                {/* MARK: === BODY === */}
+                {selectedGroup.id ? (
+                    <>
+                    {/* selectedGroup → selectedGroupNotes */}
+                    <div className={styles.contentsBody}>
+                    <NotesInGroup 
+                        selectedGroup={selectedGroup}
+                        notes={filteredNotes || []}
+                        isNotesClass={isNotesClass}
+                        toggleModalNewNote={toggleModalNewNote}
+                        />
+                    </div>
+                    </>
+                ) : (
+                    <div className={styles.notSelectGroupContents}>
+                        {allGroups.map((group) => (
+                            <button className={styles.notSelectGroupBtn} key={group.id} onClick={() => {setSelectedGroup(group);}}>
+                                <div className={styles.notSelectGroupBtnIcon}>
+                                    <BsFolder/>
+                                </div>
+                                <p className={styles.notSelectGroupName}>{group.name}</p>
+                            </button>
+                        ))}
+                    </div>
+                ) }
+
+                {/* MARK: === FOOTER === */}
+                <div className={styles.contentsFooter}>
+                    <div className={styles.groupSearch}>
+                        <button className={styles.groupSearchBtn} onClick={toggleModalSearchGroup}>
+                            <MdOutlineWifiFind/>
+                            <p>グループ検索</p>
+                        </button>
+                    </div>
+                    <div className={styles.reload}>
+                        <button className={styles.reloadBtn} onClick={refresh}>
+                            <BsArrowRepeat/>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
 
         </main>
     )

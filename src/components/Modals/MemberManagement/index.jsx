@@ -12,9 +12,9 @@ export const MemberManagement = ({
    handleDeleteMember
 }) => {
    return (
-       <div className={styles.memberContent}>
-           <div className={styles.addMember}>
-               <input 
+            <div className={styles.memberContent}>
+                <div className={styles.addMember}>
+                    <input 
                    type="text"
                    placeholder="ユーザー名を入力"
                    className={styles.searchMember}

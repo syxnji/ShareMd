@@ -39,6 +39,7 @@
     padding: 0 20px;
     align-items: center;
 }
+/* MARK: メニューボタン */
 .menuBtn{
     display: flex;
     justify-content: center;
@@ -49,12 +50,13 @@
     border: none;
     outline: none;
 }
+/* MARK: サービス名 */
 .headerServiceName{
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     font-size: 1.5rem;
-    /* font-weight: bold; */
     color: #44f;
 }
+/* MARK: 検索フォーム */
 .headerSearch{
     width: 500px;
     display: flex;
@@ -82,6 +84,7 @@
     width: 100%;
     background-color: transparent;
 }
+/* MARK: ヘッダーボタン */
 .headerButtons{
     display: flex;
     gap: 10px;
@@ -118,6 +121,7 @@
     justify-content: space-between;
     align-items: center;
 }
+/* MARK: グループ名 */
 .selectGroupName{
     width: 100%;
     flex: 1;
@@ -133,6 +137,7 @@
     justify-content: center;
     align-items: center;
 }
+/* MARK: レイアウトボタン */
 .layouts{
     display: flex;
     gap: 5px;
@@ -168,6 +173,7 @@
 .inactive:hover{
     scale: 1.05;
 }
+/* MARK: 新規ノートボタン */
 .newNoteBtn{
     height: 32px;
     display: flex;
@@ -190,8 +196,6 @@
 
 /* MARK:CONTENTS FOOTER */
 .contentsFooter{
-    /* width: 100%;
-    height: 50px; */
     position: fixed;
     bottom: 10px;
     right: 10px;
@@ -200,6 +204,7 @@
     justify-content: flex-start;
     align-items: center;
 }
+/* MARK: グループ検索 */
 .groupSearch{
     display: flex;
     justify-content: center;
@@ -221,6 +226,7 @@
 .groupSearchBtn:hover{
     scale: 1.02;
 }
+/* MARK: リロードボタン */
 .reload{
     display: flex;
     justify-content: center;
@@ -273,6 +279,7 @@
 .accountEmail{
     font-size: 0.5rem;
 }
+/* MARK: グループボタン */
 .groupsBtn{
     width: 100%;
     height: 32px;
@@ -285,6 +292,7 @@
 .groupsBtn:hover{
     scale: 1.09;
 }
+/* MARK: ログアウトボタン */
 .logoutBtn{
     display: flex;
     justify-content: center;
@@ -321,6 +329,7 @@
 .content{
     width: 100%;
 }
+/* MARK: グループ表示 */
 .notSelectGroupContents{
     width: 100%;
     display: flex;
@@ -345,23 +354,13 @@
     font-size: 0.8rem;
     font-weight: bold;
     color: #777;
+    overflow: hidden;
+    text-wrap: nowrap;
 }
 .notSelectGroupBtn:hover{
     scale: 1.02;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 }
-
-/* @media (max-width: 1320px) {
-    .content{
-        width: 100%;
-    }
-}
-@media (min-width: 1320px) {
-    .content{
-        width: 85%;
-        margin: 0 auto;
-    }
-} */
 
 /* グループ名 */
 .groupName{
@@ -373,48 +372,7 @@
     margin-right: 10px;
 }
 
-/* MARK: SEARCH */
-/* .search{
-    width: 100%;
-} */
-/* デスクトップ */
-@media (min-width: 1024px) {
-    .search{
-        width: 500px;
-    }
-}
-/* タブレット */
-@media (min-width: 768px) and (max-width: 1023px) {
-    .search{
-        width: 300px;
-    }
-}
-/* スマホ */
-@media (max-width: 767px) and (min-width: 481px) {
-    .search{
-        width: 300px;
-    }
-}
-/* スマホ */
-@media (max-width: 480px) {
-    .search{
-        width: 100px;
-    }
-}
-.search form{
-    display: flex;
-}
-.search input{
-    /* max-width: 500px; */
-    max-width: 100%;
-    height: 48px;
-    padding: 10px;
-    margin-right: 10px;
-    border: solid 1px #ddd;
-    border-radius: 10px;
-}
-
-/* MARK: NOTE */
+/* MARK: LAYOUT */
 .grid{
     display: flex;
     flex-wrap: wrap;
@@ -427,34 +385,13 @@
 }
 
 /* MARK: SETTING */
-.modalSettingWindow{
-    z-index: 150;
-    width: 600px;
-    height: 80vh;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
-    position: fixed;
-    inset: 0;
-    margin: auto;
-    padding: 10px;
-    background-color: #fff;
-    border-radius: 10px;
-    border: solid 1px #ddd;
-    overflow: hidden;
-    animation: slideIn 0.3s ease-in-out forwards;
-    box-shadow:  20px 20px 60px #bebebe,
-                 -20px -20px 60px #ffffff;
-}
-/* モーダルウィンドウの閉じるボタン */
 .modalSettingClose{
     position: absolute;
     top: 10px;
     right: 10px;
 }
 
-/* 切り替えボタン */
+/* MARK: 切り替えボタン */
 .toggleSettingContent{
     width: 500px;
     display: flex;
@@ -480,30 +417,59 @@
     background-color: #fff;
     transition: all 0.3s;
 }
-.notesTitles{
-    width: 100%;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    padding: 5px;
-    margin-bottom: 10px;
-    border-bottom: solid 1px #aaa;
-}
-.notesTitles button{
-    background-color: transparent;
-    border: none;
-}
-.notesTitle{
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #333;
-}
+
+/* MARK: RELOAD */
 .reload:active svg{
     transform: rotate(180deg);
     transition: all 0.3s;
 }
 
 /* MARK: NOTIFICATION */
+.toastContainer {
+    z-index: 100;
+    width: 400px;
+    max-height: calc(100vh - 70px);
+    position: fixed;
+    top: 60px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #fff;
+    border: solid 1px #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+.toastHeader{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.toastHeaderTitle{
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+}
+.toastBody{
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.toastBodyEmpty{
+    width: 100%;
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #555;
+}
 .notifications{
     position: absolute;
     width: 300px;
@@ -552,6 +518,7 @@
     font-weight: bold;
     color: #00ee80;
 }
+/* MARK: 回答ボタン */
 .buttons{
     width: 100%;
     display: flex;
@@ -581,6 +548,7 @@
     color: #f44;
 }
 
+/* MARK: EMPTY */
 .empty{
     height: 170px;
     display: flex;

@@ -63,8 +63,10 @@ export default async function handler(req, res) {
                     FROM notifications 
                     JOIN users ON notifications.sender_id = users.id 
                     JOIN \`groups\` ON notifications.group_id = \`groups\`.id 
-                    WHERE notifications.user_id = ? AND notifications.response = 0;
-                    `, [userId]
+                    WHERE (notifications.user_id = ?
+                    OR notifications.sender_id = ?)
+                    AND notifications.response = 0;
+                    `, [userId, userId]
                 );
                 res.status(200).json({ results });
             }
