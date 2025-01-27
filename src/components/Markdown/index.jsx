@@ -10,12 +10,6 @@ import { toast } from 'react-toastify';
 export function Markdown({ content, change, view, permission }) {
     const placeholder = "マークダウン記法で記述できます。\n例:\n# 見出し1\n## 見出し2\n**太字**\n*斜体*\n詳しくはHelpをご覧ください。";
 
-    // MARK:コピー
-    const copy = (text) => {
-        navigator.clipboard.writeText(text);
-        toast.success('コピーしました');
-    }
-
     // MARK:マークダウンコンポーネント
     const MarkdownComponents = {
         h1: ({ children }) => (

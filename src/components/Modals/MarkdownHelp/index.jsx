@@ -1,7 +1,13 @@
 import { HelpModal } from '../HelpModal';
 import styles from './markdownHelp.module.css';
+import { toast } from 'react-toastify';
 
 export function MarkdownHelp(){
+    // MARK:コピー
+    const copy = (text) => {
+        navigator.clipboard.writeText(text);
+        toast.success('コピーしました');
+    }
     return(
         <HelpModal>
             <p className={styles.helpTitle}>マークダウン記述方法</p>

@@ -33,6 +33,7 @@ export default function MarkdownEditor({ id }) {
         };
         getUserId();
     }, []);
+
     // MARK: グループに所属しているか確認
     const [permission, setPermission] = useState(null);
     useEffect(() => {
@@ -54,6 +55,7 @@ export default function MarkdownEditor({ id }) {
         fetchCheck();
     }, [groupId]);
     
+    // MARK: メニュー
     const [menuContentGroup, setMenuContentGroup] = useState(null);
     const [menuContentNote, setMenuContentNote] = useState(null);
     const fetchMenuContent = async () => {

@@ -594,6 +594,7 @@ export default function Library() {
         setCreateName("");
         setCreateGroupMemberList([]);
         toast.success('グループを作成しました', defaultToastOptions);
+        refresh();
     }
 
     // MARK:headLine
