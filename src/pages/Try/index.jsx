@@ -125,7 +125,7 @@ export default function TryCreateNote() {
     const [menuState, setMenuState] = useState(false);
 
     useEffect(() => {
-        // 既存のコード
+        setMenuState(!menuState);
     }, [menuState]);
 
     return (
