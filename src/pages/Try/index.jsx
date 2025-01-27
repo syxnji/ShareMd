@@ -122,6 +122,11 @@ export default function TryCreateNote() {
 
     const noteUpdatedAt = null;
 
+    const [menuState, setMenuState] = useState(false);
+
+    useEffect(() => {
+        // 既存のコード
+    }, [menuState]);
 
     return (
         <main className={styles.main}>
