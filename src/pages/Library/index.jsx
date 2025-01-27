@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Cookies from 'js-cookie';
 import { ToastContainer, toast } from 'react-toastify';
 // modals
@@ -47,17 +47,12 @@ export default function Library() {
 
     // MARK: userId → notifications
     const [notifications, setNotifications] = useState([]);
-    useEffect(() => {
-        if (userId) {
-            fetchNotifications();
-        }
-    }, [userId]);
-    const fetchNotifications = async () => {
+    const fetchNotifications = useCallback(async () => {
         const notice = await fetch(`/api/db?table=notifications&userId=${userId}`);
         const noticeResult = await notice.json();
         toast.dismiss();
         setNotifications(noticeResult.results);
-    };
+    }, [userId]);
 
     // MARK: Toast Settings
     const customToastOptions = {
@@ -172,12 +167,7 @@ export default function Library() {
     
     // MARK: userId → allGroups
     const [allGroups, setAllGroups] = useState([]);
-    useEffect(() => {
-        if (userId) {
-            fetchGroup();
-        }
-    }, [userId]);
-    const fetchGroup = async () => {
+    const fetchGroup = useCallback(async () => {
         try {
             const response = await fetch(`/api/db?table=joinedGroups&userId=${userId}`);
             const data = await response.json();
@@ -185,7 +175,7 @@ export default function Library() {
         } catch (error) {
             setAllGroups([]);
         }
-    };
+    }, [userId]);
 
     // MARK: leaveGroup
     const handleLeaveGroup = async (groupId) => {
@@ -196,14 +186,11 @@ export default function Library() {
 
     // MARK: checkPermission
     const [checkPermission, setCheckPermission] = useState([]);
-    useEffect(() => {
-        fetchCheckPermission();
-    }, [allGroups]);
-    const fetchCheckPermission = async () => {
+    const fetchCheckPermission = useCallback(async () => {
         const response = await fetch(`/api/db?table=checkPermission&userId=${userId}`);
         const permissions = await response.json();
         setCheckPermission(permissions.results);
-    };
+    }, [userId]);
 
     // MARK: modalNewNote
     const [modalNewNote, setModalNewNote] = useState(false);

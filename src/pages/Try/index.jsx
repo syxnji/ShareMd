@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import Cookies from "js-cookie";
@@ -44,7 +44,7 @@ export default function TryCreateNote() {
     }
 
     // MARK: ノートの保存
-    const handleSave = async (e) => {
+    const handleSave = useCallback(async (e) => {
         e.preventDefault();
 
         // ログインしているか確認
@@ -77,37 +77,8 @@ export default function TryCreateNote() {
             toast.error('ログインしてからこのタブへ戻ってください');
             window.open('/Auth', '_blank');
         }
-    }
+    }, [noteContent, noteTitle, router]);
 
-    // MARK: メニューの表示
-    const [menuState, setMenuState] = useState(true);
-    const toggleMenuState = (e) => {
-        e.preventDefault();
-        setMenuState(!menuState);
-    }
-
-    // MARK: ノートの戻る
-    const handleBack = (e) => {
-        e.preventDefault();
-        window.location.assign('/Library');
-    }
-
-    // MARK: ノートのエクスポート
-    const handleExport = (e) => {
-        e.preventDefault();
-        const blob = new Blob([noteContent], { type: 'text/markdown' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${noteTitle || 'untitled'}.md`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        toast.success('エクスポートしました');
-    }
-
-    // MARK: ショートカットキー
     useEffect(() => {
         const handleKeyDown = (e) => {
             if ((e.ctrlKey || e.metaKey) && e.key === 's') {
