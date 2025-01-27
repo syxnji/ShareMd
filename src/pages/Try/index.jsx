@@ -45,7 +45,9 @@ export default function TryCreateNote() {
 
     // MARK: ノートの保存
     const handleSave = useCallback(async (e) => {
-        e.preventDefault();
+        if (e) {  // イベントオブジェクトが存在する場合のみpreventDefault
+            e.preventDefault();
+        }
 
         // ログインしているか確認
         if (Cookies.get('id')) {
@@ -59,9 +61,7 @@ export default function TryCreateNote() {
             const encodedContent = encodeURIComponent(noteContent);
             const encodedTitle = encodeURIComponent(noteTitle);
             // ノートの作成
-            const insertResponse = await fetch(`
-                /api/db?table=insertNote&title=${encodedTitle}&content=${encodedContent}&groupId=${privateGroupId}&userId=${currentUserId}
-            `);
+            const insertResponse = await fetch(`/api/db?table=insertNote&title=${encodedTitle}&content=${encodedContent}&groupId=${privateGroupId}&userId=${currentUserId}`);
             const insertResult = await insertResponse.json();
             // ノートの作成が成功したか確認
             if (insertResult.results) {
@@ -71,7 +71,6 @@ export default function TryCreateNote() {
                 toast.error('保存に失敗しました');
                 return;
             }
-
         } else {
             // ログインしていない場合
             toast.error('ログインしてからこのタブへ戻ってください');
@@ -124,9 +123,26 @@ export default function TryCreateNote() {
 
     const [menuState, setMenuState] = useState(false);
 
-    useEffect(() => {
+    const toggleMenuState = (e) => {
+        e.preventDefault();
         setMenuState(!menuState);
-    }, [menuState]);
+    };
+
+    const handleBack = (e) => {
+        e.preventDefault();
+        router.back();
+    };
+
+    const handleExport = (e) => {
+        e.preventDefault();
+        const blob = new Blob([noteContent], { type: 'text/markdown' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${noteTitle || 'untitled'}.md`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    };
 
     return (
         <main className={styles.main}>
@@ -145,7 +161,7 @@ export default function TryCreateNote() {
                             <label htmlFor='editorMenuBtn' className={styles.label}>
                                 {menuState ? 'Close' : 'Menu'}
                             </label>
-                            <button className={styles.editorMenuBtn} onClick={(e) => toggleMenuState(e)}>
+                            <button className={styles.editorMenuBtn} onClick={toggleMenuState}>
                                 {menuState ? <MdClose/> : <MdMenu/>} 
                             </button>
                         </div>
