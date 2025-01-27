@@ -55,9 +55,9 @@ export function SidebarInNotes({selectNoteId}){
             </div>
             <div className={styles.notes}>
                 {Array.isArray(notes) && notes.length > 0 ? (
-                    notes.map(note => (
-                        <div className={styles.note}>
-                            <Link href={`/Editor/${note.id}`} key={note.id} >
+                    notes.map((note) => (
+                        <div key={note.id} className={styles.note}>
+                            <Link href={`/Editor/${note.id}`} >
                                 <p className={selectNoteId === String(note.id) ? styles.active : ''}>
                                     {note.title}
                                 </p>
