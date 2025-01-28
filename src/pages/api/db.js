@@ -374,7 +374,8 @@ export default async function handler(req, res) {
                 const groupId = req.query.groupId;
                 const inviteUserId = req.query.inviteUserId;
                 const results = await handleQuery(
-                    `INSERT INTO user_group_memberships (user_id, group_id, role_id) VALUES (?, ?, 2) ON DUPLICATE KEY UPDATE \`delete\` = 0;`,
+                    `INSERT INTO user_group_memberships (user_id, group_id, role_id) 
+                    VALUES (?, ?, 2) ON DUPLICATE KEY UPDATE \`delete\` = 0;`,
                     [inviteUserId, groupId]
                 );
                 res.status(200).json({ results });

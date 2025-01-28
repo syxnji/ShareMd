@@ -15,17 +15,17 @@ import { LibraryMenu } from '@/components/Menus/LibraryMenu';
 // component
 import { NotesInGroup } from '@/components/NotesInGroup';
 import { ModalWindow } from '@/components/UI/ModalWindow';
+import { RequestToast } from '@/components/RequestToast';
 // icon
 import { BsFileEarmarkPlus, BsGrid3X3, BsX, BsBuildings, BsArrowRepeat, BsFolder} from "react-icons/bs";
 import { FaRegUser } from 'react-icons/fa6';
 import { MdClose, MdFormatListBulleted, MdLogout, MdMenu, MdOutlineWifiFind } from 'react-icons/md';
 import { IoSearch } from 'react-icons/io5';
 import { RiNotification2Line } from 'react-icons/ri';
+import { PiEmpty } from 'react-icons/pi';
 // style
 import styles from "./library.module.css";
 import 'react-toastify/dist/ReactToastify.css';
-import { PiEmpty } from 'react-icons/pi';
-import { Toast } from '@/components/Toast';
 
 export default function Library() {
 
@@ -105,7 +105,8 @@ export default function Library() {
     const handleSearch = (e) => {
         setSearchValue(e.target.value);
     }
-    
+
+    // MARK: fetchNotes
     const fetchNotes = async () => {
         if (selectedGroup.id) {
             const response = await fetch(`/api/db?table=selectedGroupNotes&groupId=${selectedGroup.id}`);
@@ -479,37 +480,37 @@ export default function Library() {
     };
 
     // MARK: Reqest Toast
-    useEffect(() => {
-        if (notifications && notifications.length > 0) {
-            notifications.forEach((notification) => {
-                toast(
-                    ({ closeToast }) => (
-                        <div className={styles.message}>
-                            {notification.type_id === 1 ? (
-                                <>
-                                    <div className={styles.messageContent}>
-                                        <p><span className={styles.noticeUserName}>{notification.username}さん</span>から<span className={styles.noticeGroupName}>「{notification.name}」</span>への<span className={styles.noticeTypeRequest}>参加リクエスト</span>があります</p>
-                                        <button className={styles.acceptBtn} onClick={() => {handleAccept(notification.id, notification.group_id, notification.sender_id, notification.type_id); closeToast();}}>承認</button>
-                                    </div>
-                                    <button className={styles.rejectBtn} onClick={() => {handleReject(notification.id); closeToast();}}><BsX size={30}/></button>
-                                </>
-                            ) : null}
-                            {notification.type_id === 2 ? (
-                                <>
-                                    <div className={styles.messageContent}>
-                                        <p><span className={styles.noticeUserName}>{notification.username}さん</span>から<span className={styles.noticeGroupName}>「{notification.name}」</span>への<span className={styles.noticeTypeInvite}>招待</span>があります</p>
-                                        <button className={styles.acceptBtn} onClick={() => {handleAccept(notification.id, notification.group_id, notification.user_id, notification.type_id); closeToast();}}>承認</button>
-                                    </div>
-                                    <button className={styles.rejectBtn} onClick={() => {handleReject(notification.id); closeToast();}}><BsX size={30}/></button>
-                                </>
-                            ) : null}
-                        </div>
-                    ),
-                    customToastOptions
-                );
-            });
-        }
-    }, [notifications]);
+    // useEffect(() => {
+    //     if (notifications && notifications.length > 0) {
+    //         notifications.forEach((notification) => {
+    //             toast(
+    //                 ({ closeToast }) => (
+    //                     <div className={styles.message}>
+    //                         {notification.type_id === 1 ? (
+    //                             <>
+    //                                 <div className={styles.messageContent}>
+    //                                     <p><span className={styles.noticeUserName}>{notification.username}さん</span>から<span className={styles.noticeGroupName}>「{notification.name}」</span>への<span className={styles.noticeTypeRequest}>参加リクエスト</span>があります</p>
+    //                                     <button className={styles.acceptBtn} onClick={() => {handleAccept(notification.id, notification.group_id, notification.sender_id, notification.type_id); closeToast();}}>承認</button>
+    //                                 </div>
+    //                                 <button className={styles.rejectBtn} onClick={() => {handleReject(notification.id); closeToast();}}><BsX size={30}/></button>
+    //                             </>
+    //                         ) : null}
+    //                         {notification.type_id === 2 ? (
+    //                             <>
+    //                                 <div className={styles.messageContent}>
+    //                                     <p><span className={styles.noticeUserName}>{notification.username}さん</span>から<span className={styles.noticeGroupName}>「{notification.name}」</span>への<span className={styles.noticeTypeInvite}>招待</span>があります</p>
+    //                                     <button className={styles.acceptBtn} onClick={() => {handleAccept(notification.id, notification.group_id, notification.user_id, notification.type_id); closeToast();}}>承認</button>
+    //                                 </div>
+    //                                 <button className={styles.rejectBtn} onClick={() => {handleReject(notification.id); closeToast();}}><BsX size={30}/></button>
+    //                             </>
+    //                         ) : null}
+    //                     </div>
+    //                 ),
+    //                 customToastOptions
+    //             );
+    //         });
+    //     }
+    // }, [notifications]);
 
     // MARK: modal CreateGroup
     const [modalCreateGroup, setModalCreateGroup] = useState(false);
@@ -671,6 +672,8 @@ export default function Library() {
     
     return(
         <main className={styles.main}>
+
+            <ToastContainer />
             
             {/* MARK: Toast */}
             {modalNotification ? (
@@ -681,7 +684,7 @@ export default function Library() {
                     <div className={styles.toastBody}>
                         {notifications.length > 0 ? (
                             notifications.map((notification) => (
-                                <Toast
+                                <RequestToast
                                     key={notification.id}
                                     notification={notification}
                                     userId={userId}

@@ -1,22 +1,39 @@
-import styles from "./toast.module.css";
+import styles from "./requestToast.module.css";
 import { MdCheck, MdClose, MdOutlinePause } from "react-icons/md";
 import { GrStatusGoodSmall } from "react-icons/gr";
+import { toast } from "react-toastify";
 
-export function Toast({notification, userId}) {
+export function RequestToast({notification, userId}) {
     
     // userIdを整数に変換
     const userIdInt = parseInt(userId);
 
-    // 通知を承認する
-    const handleAccept = (id) => {
-        console.log(id);
+
+    // MARK: 通知を承認する
+    const handleAccept = async (notificationId, groupId, inviteUserId, typeId) => {
+        // 承認
+        await fetch(`/api/db?table=acceptRequest&notificationId=${notificationId}`);
+
+        // 参加リクエストの場合
+        if (typeId === 1) {
+            await fetch(`/api/db?table=inviteGroup&groupId=${groupId}&inviteUserId=${inviteUserId}&userId=${userId}`);
+            toast.success('リクエストを承認しました');
+
+        // 招待の場合
+        } else if (typeId === 2) {
+            await fetch(`/api/db?table=joinGroup&groupId=${groupId}&inviteUserId=${inviteUserId}`);
+            toast.success('グループに参加しました');
+        }
     }
 
-    // 通知を拒否する
-    const handleReject = (id) => {
-        console.log(id);
-    }
+    // MARK: 通知を拒否する
+    const handleReject = async (notificationId) => {
+        // 拒否
+        await fetch(`/api/db?table=rejectRequest&notificationId=${notificationId}`);
+        toast.success('拒否しました');
+    };
 
+    // MARK: 通知の内容を表示する
     const messageContent = (notification) => {
         // MARK: 自分が通知を送信した場合
         if (notification.sender_id === userIdInt) {
@@ -134,13 +151,16 @@ export function Toast({notification, userId}) {
                     </p>
                     <button 
                         className={styles.acceptBtn} 
-                        onClick={() => {handleAccept(notification.id, notification.group_id, notification.sender_id, notification.type_id); closeToast();}}
+                        onClick={() => {handleAccept(
+                            notification.id, notification.group_id, 
+                            notification.sender_id, notification.type_id
+                        );}}
                     >
                         <MdCheck size={20}/>
                     </button>
                     <button 
                         className={styles.rejectBtn} 
-                        onClick={() => {handleReject(notification.id); closeToast();}}
+                        onClick={() => {handleReject(notification.id); }}
                     >
                         <MdClose size={20}/>
                     </button>
@@ -157,13 +177,16 @@ export function Toast({notification, userId}) {
                     </p>
                     <button 
                         className={styles.acceptBtn} 
-                        onClick={() => {handleAccept(notification.id, notification.group_id, notification.sender_id, notification.type_id); closeToast();}}
+                        onClick={() => {handleAccept(
+                            notification.id, notification.group_id, 
+                            notification.user_id, notification.type_id
+                        );}}
                     >
                         <MdCheck size={20}/>
                     </button>
                     <button 
                         className={styles.rejectBtn} 
-                        onClick={() => {handleReject(notification.id); closeToast();}}
+                        onClick={() => {handleReject(notification.id);}}
                     >
                         <MdClose size={20}/>
                     </button>
