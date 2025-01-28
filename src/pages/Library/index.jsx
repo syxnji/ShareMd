@@ -185,7 +185,17 @@ export default function Library() {
 
     // MARK: leaveGroup ← groupId, userId❓
     const handleLeaveGroup = async (groupId) => {
-        await fetch(`/api/db?table=leaveGroup&groupId=${groupId}&userId=${userId}`);
+        await fetch(`/api/patch`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                table: 'leaveGroup',
+                groupId: groupId,
+                userId: userId
+            })
+        });
         fetchGroup();
         toast.success('グループを退会しました', customToastOptions);
         refresh();
