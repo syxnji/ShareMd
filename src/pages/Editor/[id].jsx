@@ -2,11 +2,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import Cookies from 'js-cookie';
 // component
-import { SidebarInNotes } from "@/components/SidebarInNotes";
 import { Markdown } from "@/components/Markdown";
-import { ImgBtn } from '@/components/UI/ImgBtn/index.jsx';
 import { ToastContainer, toast } from 'react-toastify';
-import { Menu } from '@/components/UI/Menu';
 // style
 import styles from "./editor.module.css"
 import 'react-toastify/dist/ReactToastify.css';
@@ -22,6 +19,14 @@ export const getServerSideProps = async ({ params: { id } }) => ({
     props: { id },
 });
 export default function MarkdownEditor({ id }) {
+
+    // MARK: Toast Settings
+    const customToastOptions = {
+        position: "top-right",
+        autoClose: 2000,
+        closeOnClick: true,
+        draggable: true,
+    }
     
     // MARK: ユーザー情報
     const [groupId, setGroupId] = useState('');
@@ -110,12 +115,12 @@ export default function MarkdownEditor({ id }) {
                 const encodedContent = encodeURIComponent(noteContent);
                 const encodedTitle = encodeURIComponent(noteTitle);
                 const updResponse = await fetch(`/api/db?table=updateNote&id=${id}&title=${encodedTitle}&content=${encodedContent}`);
-                toast.success('保存しました');
+                toast.success('保存しました', customToastOptions);
                 if (!updResponse.ok) {
                     throw new Error('Network response was not ok');
                 }
             } catch (error) {
-                toast.error('保存に失敗しました');
+                toast.error('保存に失敗しました', customToastOptions);
             }
         };
         fetchNoteUpd();
@@ -133,7 +138,7 @@ export default function MarkdownEditor({ id }) {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        toast.success('エクスポートしました');
+        toast.success('エクスポートしました', customToastOptions);
     }
 
     // MARK: ノートの戻る
