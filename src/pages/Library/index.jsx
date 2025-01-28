@@ -176,8 +176,8 @@ export default function Library() {
     const fetchGroup = useCallback(async () => {
         try {
             const response = await fetch(`/api/db?table=joinedGroups&userId=${userId}`);
-            const data = await response.json();
-            setAllGroups(data.results || []);
+            const result = await response.json();
+            setAllGroups(result.results || []);
         } catch (error) {
             setAllGroups([]);
         }
@@ -196,7 +196,6 @@ export default function Library() {
                 userId: userId
             })
         });
-        fetchGroup();
         toast.success('グループを退会しました', customToastOptions);
         refresh();
     }
@@ -255,27 +254,29 @@ export default function Library() {
     const handleCreateNote = async (e) => {
         e.preventDefault();
         try {
-            const noteData = {
-                groupId: newNoteGroup,
-                title: newNoteTitle,
-                content: newNoteContent,
-                userId
-            };
-            const { data, success, message } = await fetch('/api/post', {
+            const response = await fetch(`/api/post`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(noteData)
-            }).then(res => res.json());
-
-            if (success) {
-                window.location.assign(`/Editor/${data.id}`);
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    table: 'createNote',
+                    groupId: newNoteGroup,
+                    title: newNoteTitle,
+                    content: newNoteContent,
+                    userId: userId
+                })
+            });
+            const result = await response.json();
+            if (result.success) {
+                window.location.assign(`/Editor/${result.noteId}`);
                 toast.success('ノートを作成しました');
                 setNewNoteTitle('');
                 setNewNoteContent('');
                 fetchNotifications();
                 return;
             }
-            toast.error(message);
+            toast.error(result.message);
         } catch {
             toast.error('ノートの作成に失敗しました');
         }
@@ -755,7 +756,7 @@ export default function Library() {
 
                     {/* アカウント */}
                     <button className={styles.headerBtn} onClick={toggleAccountView}>
-                        {accountView ?  <BsX/> : <FaRegUser/>}
+                        {accountView ?  <MdClose/> : <FaRegUser/>}
                     </button>
                 </div>
             </header>

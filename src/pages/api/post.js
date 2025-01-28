@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise'
+import mysql from 'mysql2/promise';
 
 // データベース接続設定
 const dbConfig = {
@@ -9,40 +9,42 @@ const dbConfig = {
 }
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' })
-  }
+    if (req.method !== 'POST') {
+        return res.status(405).json({ message: 'Method not allowed' });
+    }
 
-  try {
-    // データベース接続
-    const connection = await mysql.createConnection(dbConfig)
-    
-    const { title, content, groupId, userId } = req.body
+    try {
+        const connection = await mysql.createConnection(dbConfig);
+        const { table, ...params } = req.body;
 
-    // SQLインジェクション対策のためプレースホルダーを使用
-    const [result] = await connection.execute(
-      'INSERT INTO notes (group_id, title, content, created_by) VALUES (?, ?, ?, ?)',
-      [groupId, title, content, userId]
-    )
+        switch (table) {
+            case 'createNote':
+                const { groupId, title, content, userId } = params;
+                const [result] = await connection.execute(
+                    'INSERT INTO notes (group_id, title, content, created_by) VALUES (?, ?, ?, ?)',
+                    [groupId, title, content, userId]
+                );
+                await connection.end();
+                return res.status(200).json({ success: true, noteId: result.insertId });
 
-    await connection.end()
+            // case 'updateUserProfile':
+            //     const { userId: profileUserId, name, bio } = params;
+            //     await connection.execute(
+            //         'UPDATE users SET name = ?, bio = ? WHERE id = ?',
+            //         [name, bio, profileUserId]
+            //     );
+            //     break;
 
-    return res.status(200).json({ 
-      success: true,
-      message: 'データが正常に保存されました',
-      data: {
-        id: result.insertId,
-        title,
-        content
-      }
-    })
+            default:
+                await connection.end();
+                return res.status(400).json({ message: '無効なテーブル名です' });
+        }
 
-  } catch (error) {
-    console.error('エラー:', error)
-    return res.status(500).json({ 
-      success: false,
-      message: 'データベースエラーが発生しました',
-      error: error.message 
-    })
-  }
+        await connection.end();
+        return res.status(200).json({ success: true });
+
+    } catch (error) {
+        console.error('PATCH Error:', error);
+        return res.status(500).json({ message: 'サーバーエラーが発生しました' });
+    }
 }

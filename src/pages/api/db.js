@@ -141,15 +141,15 @@ export default async function handler(req, res) {
                 res.status(200).json({ results });
             }
             // MARK: leaveGroup
-            else if (req.query.table === 'leaveGroup') {
-                const groupId = req.query.groupId;
-                const userId = req.query.userId;
-                const results = await handleQuery(
-                    'UPDATE user_group_memberships SET \`delete\` = 1 WHERE group_id = ? AND user_id = ?',
-                    [groupId, userId]
-                );
-                res.status(200).json({ results });
-            }
+            // else if (req.query.table === 'leaveGroup') {
+            //     const groupId = req.query.groupId;
+            //     const userId = req.query.userId;
+            //     const results = await handleQuery(
+            //         'UPDATE user_group_memberships SET \`delete\` = 1 WHERE group_id = ? AND user_id = ?',
+            //         [groupId, userId]
+            //     );
+            //     res.status(200).json({ results });
+            // }
             // MARK: allNotes
             else if (req.query.table === 'allNotes') {
                 const userId = req.query.userId;

@@ -21,7 +21,7 @@ export default async function handler(req, res) {
             case 'leaveGroup':
                 const { groupId, userId } = params;
                 await connection.execute(
-                    'DELETE FROM group_members WHERE group_id = ? AND user_id = ?',
+                    'UPDATE user_group_memberships SET \`delete\` = 1 WHERE group_id = ? AND user_id = ?',
                     [groupId, userId]
                 );
                 break;
