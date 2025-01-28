@@ -29,6 +29,26 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function Library() {
 
+    // MARK: Toast Settings
+    const customToastOptions = {
+        position: "top-right",
+        autoClose: 2000,
+        closeOnClick: true,
+        draggable: true,
+    }
+
+    // MARK: refresh
+    const refresh = async () => {
+        toast.loading('更新中...', customToastOptions);
+        fetchNotifications();
+        fetchGroup();
+        fetchNotes();
+        fetchCheckPermission();
+        fetchGroupInMember();
+        fetchGroupRole();
+        fetchRoleToPermit();
+        toast.dismiss();
+    }
     
     // MARK:Cookies.id → userId
     const [userId, setUserId] = useState(null);
@@ -39,7 +59,6 @@ export default function Library() {
                 window.location.assign('/Auth');
             }
             setUserId(id);
-            refresh();
         };
         getUserId();
     }, [userId]);
@@ -49,7 +68,6 @@ export default function Library() {
     const fetchNotifications = useCallback(async () => {
         const notice = await fetch(`/api/db?table=notifications&userId=${userId}`);
         const noticeResult = await notice.json();
-        toast.dismiss();
         setNotifications(noticeResult.results);
     }, [userId]);
 
@@ -58,37 +76,17 @@ export default function Library() {
     const toggleModalNotification = () => {
         setModalNotification(!modalNotification);
     }
-
-    // MARK: Toast Settings
-    const customToastOptions = {
-        position: "static",
-        autoClose: false,
-        closeOnClick: false,
-        draggable: false,   
-        closeButton: false,
-        className: styles.customToast,
-    }
-    const defaultToastOptions = {
-        position: "top-right",
-        autoClose: 2000,
-        closeOnClick: true,
-        draggable: true,
-    }
-
-    // MARK: refresh
-    const refresh = () => {
-        toast.dismiss();
-        fetchNotifications();
-        fetchGroup();
-        fetchNotes();
-        fetchCheckPermission();
-        fetchGroupInMember();
-        fetchGroupRole();
-        fetchRoleToPermit();
-    }
     
     // MARK:selectedGroup
     const [selectedGroup, setSelectedGroup] = useState({id: null, name: null});
+
+    // MARK: selectedGroup → useEffect
+    useEffect(() => {
+        fetchNotes();
+        fetchGroupInMember();
+        fetchGroupRole();
+        fetchRoleToPermit();
+    }, [selectedGroup]);
     
     // MARK:selectedGroup → selectedGroupNotes
     const [selectedGroupNotes, setSelectedGroupNotes] = useState([]);
@@ -128,7 +126,7 @@ export default function Library() {
         setModalSetting(false);
     }
     
-    // MARK: userId → userInfo
+    // MARK: userInfo ← userId
     const [userInfo, setUserInfo] = useState({});
     useEffect(() => {
         const fetchUser = async () => {
@@ -173,7 +171,7 @@ export default function Library() {
         setModalProject(false);
     }
     
-    // MARK: userId → allGroups
+    // MARK: allGroups ← userId❓
     const [allGroups, setAllGroups] = useState([]);
     const fetchGroup = useCallback(async () => {
         try {
@@ -185,14 +183,15 @@ export default function Library() {
         }
     }, [userId]);
 
-    // MARK: leaveGroup
+    // MARK: leaveGroup ← groupId, userId❓
     const handleLeaveGroup = async (groupId) => {
         await fetch(`/api/db?table=leaveGroup&groupId=${groupId}&userId=${userId}`);
         fetchGroup();
-        toast.success('グループを退会しました', defaultToastOptions);
+        toast.success('グループを退会しました', customToastOptions);
+        refresh();
     }
 
-    // MARK: checkPermission
+    // MARK: checkPermission ← userId❓
     const [checkPermission, setCheckPermission] = useState([]);
     const fetchCheckPermission = useCallback(async () => {
         const response = await fetch(`/api/db?table=checkPermission&userId=${userId}`);
@@ -206,22 +205,22 @@ export default function Library() {
         setModalNewNote(!modalNewNote);
     }
 
-    // MARK: newNoteGroup
+    // MARK: newNoteGroup ← groupId❓
     const [newNoteGroup, setNewNoteGroup] = useState('');
     const handleChangeNewNoteGroup = (e) => {
         setNewNoteGroup(e.target.value);
     }
 
-    // MARK: newNoteTitle
+    // MARK: newNoteTitle ← file❓
     const [newNoteTitle, setNewNoteTitle] = useState('');
     const handleChangeNewNoteTitle = (e) => {
         setNewNoteTitle(e.target.value);
     }
 
-    // MARK: newNoteContent
+    // MARK: newNoteContent ← file❓
     const [newNoteContent, setNewNoteContent] = useState('');
 
-    // MARK: importNote
+    // MARK: importNote ← file❓
     const handleImport = (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -242,7 +241,7 @@ export default function Library() {
         reader.readAsText(file);
     }
 
-    // MARK: newNoteCreate
+    // MARK: newNoteCreate ← newNoteGroup, newNoteTitle, newNoteContent❓
     const handleCreateNote = async (e) => {
         e.preventDefault();
         try {
@@ -272,7 +271,7 @@ export default function Library() {
         }
     }
 
-    // MARK:selectedGroup → groupInMember
+    // MARK:selectedGroup → groupInMember❓
     const [groupInMember, setGroupInMember] = useState([]);
     const fetchGroupInMember = async () => {
         if (selectedGroup.id) {
@@ -282,7 +281,7 @@ export default function Library() {
         }
     };
 
-    // MARK:selectedGroup → groupRole
+    // MARK:selectedGroup → groupRole❓
     const [groupRole, setGroupRole] = useState([]);
     const fetchGroupRole = async () => {
         const response = await fetch(`/api/db?table=groupRole&groupId=${selectedGroup.id}`);
@@ -290,7 +289,7 @@ export default function Library() {
         setGroupRole(roles.results);
     };
 
-    // MARK:selectedGroup → roleToPermit
+    // MARK:selectedGroup → roleToPermit❓
     const [roleToPermit, setRoleToPermit] = useState([]);
     const fetchRoleToPermit = async () => {
         const response = await fetch(`/api/db?table=roleToPermit&groupId=${selectedGroup.id}`);
@@ -298,38 +297,29 @@ export default function Library() {
         setRoleToPermit(roles.results);
     };
 
-    // MARK: selectedGroup useEffect
-    useEffect(() => {
-        fetchNotes();
-        fetchGroupInMember();
-        fetchGroupRole();
-        fetchRoleToPermit();
-    }, [selectedGroup]);
-
-    // MARK: handleChangeRole
+    // MARK: handleChangeRole ← userId, newRoleId❓
     const handleChangeRole = async (e, userId) => {
         const newRoleId = parseInt(e.target.value, 10);
         await fetch(`/api/db?table=changeRole&groupId=${selectedGroup.id}&userId=${userId}&roleId=${newRoleId}`);
-        // メンバーリストを再取得
-        await fetchGroupInMember();
-        await fetchGroupRole();
-        toast.success('役職を更新しました', defaultToastOptions);
+        toast.success('役職を更新しました', customToastOptions);
+        refresh();
     }
 
-    // MARK: deleteMember
+    // MARK: deleteMember ← userId❓
     const handleDeleteMember = async (e, userId) => {
         e.preventDefault();
         await fetch(`/api/db?table=deleteMember&groupId=${selectedGroup.id}&userId=${userId}`);
-        // メンバーリストを再取得
-        await fetchGroupInMember();
-        toast.success('メンバーを削除しました', defaultToastOptions);
+        toast.success('メンバーを削除しました', customToastOptions);
+        refresh();
     }
     
-    // MARK: searchUser
+    // MARK: searchUser❓
     const [searchUser, setSearchUser] = useState('');
     const handleSearchUser = (e) => {
         setSearchUser(e.target.value);
     }
+
+    // MARK: searchUser → memberSuggest❓
     const [memberSuggest, setMemberSuggest] = useState([]);
     useEffect(() => {
         const fetchMemberSuggest = async () => {
@@ -344,27 +334,23 @@ export default function Library() {
         fetchMemberSuggest();
     }, [searchUser]);
 
-    // MARK: addMember
+    // MARK: addMember ← user❓
     const handleAddMember = async (e, user) => {
         e.preventDefault();
         const newMemberId = user.id;
-        // await fetch(`/api/db?table=addMember&groupId=${selectedGroupId}&userId=${newMemberId}`);
         await fetch(`/api/db?table=inviteGroup&groupId=${selectedGroup.id}&inviteUserId=${newMemberId}&userId=${userId}`);
         setSearchUser('');
-        // メンバーリストを再取得
-        await fetchGroupInMember();
-        toast.success('メンバーを招待しました', defaultToastOptions);
+        toast.success('メンバーを招待しました', customToastOptions);
     }
 
-    // MARK: deleteProject
+    // MARK: deleteProject ← projectId❓
     const handleDeleteProject = async (projectId) => {
         await fetch(`/api/db?table=deleteNote&id=${projectId}`);
-        // メンバーリストを再取得
-        await fetchNotes();
-        toast.success('ノートを削除しました', defaultToastOptions);
+        refresh();
+        toast.success('ノートを削除しました', customToastOptions);
     }
 
-    // MARK: permission
+    // MARK: permission❓
     const [permission, setPermission] = useState([]);
     useEffect(() => {
         const fetchPermission = async () => {
@@ -375,47 +361,48 @@ export default function Library() {
         fetchPermission();
     }, []);
 
-    // MARK: changeRoleName
+    // MARK: changeRoleName ← roleId❓
     const handleChangeRoleName = async (e, roleId) => {
         await fetch(`/api/db?table=updateRoleName&roleId=${roleId}&roleName=${e.target.value}`);
+        toast.success('役職名を更新しました', customToastOptions);
+        refresh();
     }
 
-    // MARK: changePermit
+    // MARK: changePermit ← newPermitId❓
     const handleChangePermit = async (e, roleId) => {
         const newPermitId = parseInt(e.target.value, 10);
         await fetch(`/api/db?table=updateRoleToPermit&roleId=${roleId}&permitId=${newPermitId}`);
-        await fetchRoleToPermit();
-        toast.success('権限を更新しました', defaultToastOptions);
+        toast.success('権限を更新しました', customToastOptions);
+        refresh();
     }
 
-    // MARK: deleteRole
+    // MARK: deleteRole❓
     const handleDeleteRole = async (e, roleId) => {
         e.preventDefault();
         await fetch(`/api/db?table=deleteRole&roleId=${roleId}`);
-        // 役職権限を再取得
-        await fetchRoleToPermit();
-        toast.success('役職を削除しました', defaultToastOptions);
+        toast.success('役職を削除しました', customToastOptions);
+        refresh();
     }
 
-    // MARK: addRole
+    // MARK: addRole ← newRoleName, newPermitId❓
     const handleAddRole = async (e) => {
         if (newRoleName.length > 0) {
             e.preventDefault();
             await fetch(`/api/db?table=insertRole&roleName=${newRoleName}&groupId=${selectedGroup.id}&permissionId=${newPermitId}`);
-            fetchRoleToPermit();
             setNewRoleName('');
             setNewPermitId(1);
-            toast.success('役職を追加しました', defaultToastOptions);
+            toast.success('役職を追加しました', customToastOptions);
+            refresh();
         }
     }
 
-    // MARK: newRoleName
+    // MARK: newRoleName❓
     const [newRoleName, setNewRoleName] = useState('');
     const handleChangeNewRoleName = async (e) => {
         setNewRoleName(e.target.value);
     }
 
-    // MARK: newPermitId
+    // MARK: newPermitId❓
     const [newPermitId, setNewPermitId] = useState(1);
     const handleChangeNewPermit = async (e) => {
         setNewPermitId(e.target.value);
@@ -435,13 +422,13 @@ export default function Library() {
         setModalSearchGroup(!modalSearchGroup);
     }
 
-    // MARK: searchGroup
+    // MARK: searchGroup❓
     const [searchGroup, setSearchGroup] = useState('');
     const handleSearchGroup = (e) => {
         setSearchGroup(e.target.value);
     }
 
-    // MARK: searchGroupResult
+    // MARK: searchGroupResult❓
     const [searchGroupResult, setSearchGroupResult] = useState([]);
     useEffect(() => {
         fetchSearchGroup();
@@ -452,79 +439,26 @@ export default function Library() {
         setSearchGroupResult(groups.results);
     }
 
-    // MARK: requestGroup
+    // MARK: requestGroup ← groupId, createdBy❓
     const handleRequestGroup = async (e, groupId, createdBy) => {
         e.preventDefault();
         await fetch(`/api/db?table=requestGroup&groupId=${groupId}&fromUserId=${userId}&toUserId=${createdBy}`);
-        toast.success('グループ参加リクエストを送信しました', defaultToastOptions);
+        toast.success('グループ参加リクエストを送信しました', customToastOptions);
     }
 
-    // MARK: acceptRequest
-    const handleAccept = async (notificationId, groupId, inviteUserId, typeId) => {
-        await fetch(`/api/db?table=acceptRequest&notificationId=${notificationId}`);
-        if (typeId === 1) {
-            await fetch(`/api/db?table=inviteGroup&groupId=${groupId}&inviteUserId=${inviteUserId}&userId=${userId}`);
-            toast.success('リクエストを承認しました', defaultToastOptions);
-        } else if (typeId === 2) {
-            await fetch(`/api/db?table=joinGroup&groupId=${groupId}&inviteUserId=${inviteUserId}`);
-            toast.success('グループに参加しました', defaultToastOptions);
-        }
-        fetchNotifications();
-    };
-
-    // MARK: rejectRequest
-    const handleReject = async (notificationId) => {
-        await fetch(`/api/db?table=rejectRequest&notificationId=${notificationId}`);
-        fetchNotifications();
-        toast.success('拒否しました', defaultToastOptions);
-    };
-
-    // MARK: Reqest Toast
-    // useEffect(() => {
-    //     if (notifications && notifications.length > 0) {
-    //         notifications.forEach((notification) => {
-    //             toast(
-    //                 ({ closeToast }) => (
-    //                     <div className={styles.message}>
-    //                         {notification.type_id === 1 ? (
-    //                             <>
-    //                                 <div className={styles.messageContent}>
-    //                                     <p><span className={styles.noticeUserName}>{notification.username}さん</span>から<span className={styles.noticeGroupName}>「{notification.name}」</span>への<span className={styles.noticeTypeRequest}>参加リクエスト</span>があります</p>
-    //                                     <button className={styles.acceptBtn} onClick={() => {handleAccept(notification.id, notification.group_id, notification.sender_id, notification.type_id); closeToast();}}>承認</button>
-    //                                 </div>
-    //                                 <button className={styles.rejectBtn} onClick={() => {handleReject(notification.id); closeToast();}}><BsX size={30}/></button>
-    //                             </>
-    //                         ) : null}
-    //                         {notification.type_id === 2 ? (
-    //                             <>
-    //                                 <div className={styles.messageContent}>
-    //                                     <p><span className={styles.noticeUserName}>{notification.username}さん</span>から<span className={styles.noticeGroupName}>「{notification.name}」</span>への<span className={styles.noticeTypeInvite}>招待</span>があります</p>
-    //                                     <button className={styles.acceptBtn} onClick={() => {handleAccept(notification.id, notification.group_id, notification.user_id, notification.type_id); closeToast();}}>承認</button>
-    //                                 </div>
-    //                                 <button className={styles.rejectBtn} onClick={() => {handleReject(notification.id); closeToast();}}><BsX size={30}/></button>
-    //                             </>
-    //                         ) : null}
-    //                     </div>
-    //                 ),
-    //                 customToastOptions
-    //             );
-    //         });
-    //     }
-    // }, [notifications]);
-
-    // MARK: modal CreateGroup
+    // MARK: modalCreateGroup
     const [modalCreateGroup, setModalCreateGroup] = useState(false);
     const toggleModalCreateGroup = () => {
         setModalCreateGroup(!modalCreateGroup);
     }
 
-    // MARK: createName
+    // MARK: createName❓
     const [createName, setCreateName] = useState('');
     const handleChangeCreateName = (e) => {
         setCreateName(e.target.value);
     }
 
-    // MARK: searchCreateMember
+    // MARK: searchCreateMember❓
     const [searchCreateGroupMember, setSearchCreateGroupMember] = useState('');
     const handleSearchCreateGroupMember = (e) => {
         setSearchCreateGroupMember(e.target.value);
@@ -533,7 +467,7 @@ export default function Library() {
         fetchCreateGroupMember();
     }, [searchCreateGroupMember]);
 
-    // MARK: createGroup MemberSuggest
+    // MARK: MemberSuggest ← searchCreateGroupMember❓
     const [createGroupMemberSuggest, setCreateGroupMemberSuggest] = useState([]);
     const fetchCreateGroupMember = async () => {
         if (searchCreateGroupMember.length > 0) {  
@@ -544,12 +478,12 @@ export default function Library() {
             setCreateGroupMemberSuggest([]);
         }
     }
-    // MARK: createGroup MemberList
+    // MARK: MemberList❓
     const [createGroupMemberList, setCreateGroupMemberList] = useState([]);
     if (userInfo && createGroupMemberList.length === 0) {
         setCreateGroupMemberList([{id: userInfo.id, username: userInfo.username}]);
     }
-    // MARK: addCreateGroupMember
+    // MARK: addCreateGroupMember❓
     const handleAddCreateGroupMember = (e, user) => {
         e.preventDefault();
         const newMember = {
@@ -557,7 +491,7 @@ export default function Library() {
             username: user.username
         };
         if (createGroupMemberList.some(member => member.id === newMember.id)) {
-            toast.error('既に追加されています');
+            toast.error('既に追加されています',customToastOptions);
             setSearchCreateGroupMember("");
             return;
         }
@@ -565,30 +499,30 @@ export default function Library() {
         setSearchCreateGroupMember("");
     }
 
-    // MARK: deleteCreateGroupMember
+    // MARK: deleteCreateGroupMember❓
     const handleDeleteCreateGroupMember = (e, memberToDelete) => {
         e.preventDefault();
         if (memberToDelete.id === userInfo.id) {
-            toast.error('自分は削除できません');
+            toast.error('自分は削除できません',customToastOptions);
         } else {
             setCreateGroupMemberList(createGroupMemberList.filter((m) => m.id !== memberToDelete.id));
         }
     }
 
-    // MARK: memberIds
+    // MARK: memberIds❓
     const [memberIds, setMemberIds] = useState([]);
     useEffect(() => {
         setMemberIds(createGroupMemberList.map((member) => member.id));
     }, [createGroupMemberList]);
 
-    // MARK: createGroup
+    // MARK: createGroup❓
     const handleCreateGroup = async (e) => {
         e.preventDefault();
         await fetch(`/api/db?table=createGroup&name=${createName}&userId=${userId}&memberIds=${memberIds}`);
         toggleModalCreateGroup();
         setCreateName("");
         setCreateGroupMemberList([]);
-        toast.success('グループを作成しました', defaultToastOptions);
+        toast.success('グループを作成しました', customToastOptions);
         refresh();
     }
     
@@ -670,24 +604,27 @@ export default function Library() {
         </ModalWindow>
     );
     
+    // MARK: MAIN 
     return(
         <main className={styles.main}>
 
             <ToastContainer />
             
-            {/* MARK: Toast */}
+            {/* MARK: NOTIFICATIONS */}
             {modalNotification ? (
                 <div className={styles.toastContainer}>
                     <div className={styles.toastHeader}>
                         <p className={styles.toastHeaderTitle}>通知</p>
                     </div>
                     <div className={styles.toastBody}>
+                        {/* 通知一覧 */}
                         {notifications.length > 0 ? (
                             notifications.map((notification) => (
                                 <RequestToast
                                     key={notification.id}
                                     notification={notification}
                                     userId={userId}
+                                    refresh={refresh}
                                 />
                             ))
                         ) : (
@@ -699,7 +636,7 @@ export default function Library() {
                 </div>
             ) : null}
 
-            {/* MARK === MODALS === */}
+            {/* MARK: === MODALS === */}
 
             {/* modalNewNote*/}
             {modalNewNote ? (
@@ -872,7 +809,7 @@ export default function Library() {
                 {/* MARK: === BODY === */}
                 {selectedGroup.id ? (
                     <>
-                    {/* selectedGroup → selectedGroupNotes */}
+                    {/* 全ノート ← selectGroup */}
                     <div className={styles.contentsBody}>
                     <NotesInGroup 
                         selectedGroup={selectedGroup}
@@ -884,6 +821,7 @@ export default function Library() {
                     </>
                 ) : (
                     <div className={styles.notSelectGroupContents}>
+                        {/* 所属グループ */}
                         {allGroups.map((group) => (
                             <button className={styles.notSelectGroupBtn} key={group.id} onClick={() => {setSelectedGroup(group);}}>
                                 <div className={styles.notSelectGroupBtnIcon}>
@@ -898,12 +836,14 @@ export default function Library() {
                 {/* MARK: === FOOTER === */}
                 <div className={styles.contentsFooter}>
                     <div className={styles.groupSearch}>
+                        {/* グループ検索 */}
                         <button className={styles.groupSearchBtn} onClick={toggleModalSearchGroup}>
                             <MdOutlineWifiFind/>
                             <p>グループ検索</p>
                         </button>
                     </div>
                     <div className={styles.reload}>
+                        {/* 更新 */}
                         <button className={styles.reloadBtn} onClick={refresh}>
                             <BsArrowRepeat/>
                         </button>

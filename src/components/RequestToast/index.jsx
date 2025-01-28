@@ -3,8 +3,15 @@ import { MdCheck, MdClose, MdOutlinePause } from "react-icons/md";
 import { GrStatusGoodSmall } from "react-icons/gr";
 import { toast } from "react-toastify";
 
-export function RequestToast({notification, userId}) {
-    
+export function RequestToast({notification, userId, refresh}) {
+
+    const customToastOptions = {
+        position: "top-right",
+        autoClose: 2000,
+        closeOnClick: true,
+        draggable: true,
+    }
+
     // userIdを整数に変換
     const userIdInt = parseInt(userId);
 
@@ -17,20 +24,30 @@ export function RequestToast({notification, userId}) {
         // 参加リクエストの場合
         if (typeId === 1) {
             await fetch(`/api/db?table=inviteGroup&groupId=${groupId}&inviteUserId=${inviteUserId}&userId=${userId}`);
-            toast.success('リクエストを承認しました');
+            toast.success('リクエストを承認しました', customToastOptions);
 
         // 招待の場合
         } else if (typeId === 2) {
             await fetch(`/api/db?table=joinGroup&groupId=${groupId}&inviteUserId=${inviteUserId}`);
-            toast.success('グループに参加しました');
+            toast.success('グループに参加しました', customToastOptions);
         }
+
+        // 通知を更新
+        setTimeout(() => {
+            refresh();
+        }, 2500);
     }
 
     // MARK: 通知を拒否する
     const handleReject = async (notificationId) => {
         // 拒否
         await fetch(`/api/db?table=rejectRequest&notificationId=${notificationId}`);
-        toast.success('拒否しました');
+        toast.success('拒否しました', customToastOptions);
+
+        // 通知を更新
+        setTimeout(() => {
+            refresh();
+        }, 2500);
     };
 
     // MARK: 通知の内容を表示する
