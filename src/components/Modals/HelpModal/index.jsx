@@ -1,9 +1,5 @@
-import styles from './helpModal.module.css';
+import styles from "./helpModal.module.css";
 
-export function HelpModal({ children }){
-    return(
-        <div className={styles.helpModal}>
-            {children}
-        </div>
-    )
+export function HelpModal({ children }) {
+  return <div className={styles.helpModal}>{children}</div>;
 }

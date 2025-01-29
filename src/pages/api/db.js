@@ -71,23 +71,23 @@ export default async function handler(req, res) {
                 res.status(200).json({ results });
             }
             // MARK: acceptRequest
-            else if (req.query.table === 'acceptRequest') {
-                const notificationId = req.query.notificationId;
-                const results = await handleQuery(
-                    'UPDATE notifications SET response = 1 WHERE id = ?',
-                    [notificationId]
-                );
-                res.status(200).json({ results });
-            }
+            // else if (req.query.table === 'acceptRequest') {
+            //     const notificationId = req.query.notificationId;
+            //     const results = await handleQuery(
+            //         'UPDATE notifications SET response = 1 WHERE id = ?',
+            //         [notificationId]
+            //     );
+            //     res.status(200).json({ results });
+            // }
             // MARK: rejectRequest
-            else if (req.query.table === 'rejectRequest') {
-                const notificationId = req.query.notificationId;
-                const results = await handleQuery(
-                    'UPDATE notifications SET response = 2 WHERE id = ?',
-                    [notificationId]
-                );
-                res.status(200).json({ results });
-            }
+            // else if (req.query.table === 'rejectRequest') {
+            //     const notificationId = req.query.notificationId;
+            //     const results = await handleQuery(
+            //         'UPDATE notifications SET response = 2 WHERE id = ?',
+            //         [notificationId]
+            //     );
+            //     res.status(200).json({ results });
+            // }
             // MARK: defaultGroup
             else if (req.query.table === 'defaultGroup') {
                 const userId = req.query.userId;
@@ -225,11 +225,11 @@ export default async function handler(req, res) {
                 res.status(200).json({ results });
             }
             // MARK: deleteNote
-            else if (req.query.table === 'deleteNote') {
-                const id = req.query.id;
-                const results = await handleQuery(`UPDATE notes SET \`delete\` = 1 WHERE id = ?`, [id]);
-                res.status(200).json({ results });
-            }
+            // else if (req.query.table === 'deleteNote') {
+            //     const id = req.query.id;
+            //     const results = await handleQuery(`UPDATE notes SET \`delete\` = 1 WHERE id = ?`, [id]);
+            //     res.status(200).json({ results });
+            // }
             // MARK: roleToPermission
             else if (req.query.table === 'roleToPermission') {
                 const roleId = req.query.roleId;
@@ -348,75 +348,75 @@ export default async function handler(req, res) {
                 res.status(200).json({ results });
             }
             // MARK: requestGroup
-            else if (req.query.table === 'requestGroup') {
-                const fromUserId = req.query.fromUserId;
-                const toUserId = req.query.toUserId;
-                const groupId = req.query.groupId;
-                const results = await handleQuery(
-                    `INSERT INTO notifications (user_id, sender_id, group_id, type_id) VALUES (?, ?, ?, 1);`,
-                    [toUserId, fromUserId, groupId]
-                );
-                res.status(200).json({ results });
-            }
+            // else if (req.query.table === 'requestGroup') {
+            //     const fromUserId = req.query.fromUserId;
+            //     const toUserId = req.query.toUserId;
+            //     const groupId = req.query.groupId;
+            //     const results = await handleQuery(
+            //         `INSERT INTO notifications (user_id, sender_id, group_id, type_id) VALUES (?, ?, ?, 1);`,
+            //         [toUserId, fromUserId, groupId]
+            //     );
+            //     res.status(200).json({ results });
+            // }
             // MARK: inviteGroup
-            else if (req.query.table === 'inviteGroup') {
-                const groupId = req.query.groupId;
-                const inviteUserId = req.query.inviteUserId;
-                const userId = req.query.userId;
-                const results = await handleQuery(
-                    `INSERT INTO notifications (user_id, sender_id, group_id, type_id) VALUES (?, ?, ?, 2);`,
-                    [inviteUserId, userId, groupId]
-                );
-                res.status(200).json({ results });
-            }
+            // else if (req.query.table === 'inviteGroup') {
+            //     const groupId = req.query.groupId;
+            //     const inviteUserId = req.query.inviteUserId;
+            //     const userId = req.query.userId;
+            //     const results = await handleQuery(
+            //         `INSERT INTO notifications (user_id, sender_id, group_id, type_id) VALUES (?, ?, ?, 2);`,
+            //         [inviteUserId, userId, groupId]
+            //     );
+            //     res.status(200).json({ results });
+            // }
             // MARK: joinGroup
-            else if (req.query.table === 'joinGroup') {
-                const groupId = req.query.groupId;
-                const inviteUserId = req.query.inviteUserId;
-                const results = await handleQuery(
-                    `INSERT INTO user_group_memberships (user_id, group_id, role_id) 
-                    VALUES (?, ?, 2) ON DUPLICATE KEY UPDATE \`delete\` = 0;`,
-                    [inviteUserId, groupId]
-                );
-                res.status(200).json({ results });
-            }
+            // else if (req.query.table === 'joinGroup') {
+            //     const groupId = req.query.groupId;
+            //     const inviteUserId = req.query.inviteUserId;
+            //     const results = await handleQuery(
+            //         `INSERT INTO user_group_memberships (user_id, group_id, role_id) 
+            //         VALUES (?, ?, 2) ON DUPLICATE KEY UPDATE \`delete\` = 0;`,
+            //         [inviteUserId, groupId]
+            //     );
+            //     res.status(200).json({ results });
+            // }
             // MARK: createGroup
-            else if (req.query.table === 'createGroup') {
-                const name = req.query.name;
-                const userId = req.query.userId;
-                const memberIds = req.query.memberIds.split(',');
-                const results = await handleQuery(
-                    `INSERT INTO \`groups\` (name, created_by) VALUES (?, ?);`,
-                    [name, userId]
-                );
-                res.status(200).json({ results });
-                const groupId = results.insertId;
-                Promise.all(memberIds.map(memberId => {
-                    if (memberId !== userId) {
-                        new Promise((resolve, reject) => {
-                            pool.query(
-                                `INSERT INTO notifications (user_id, sender_id, group_id, type_id) VALUES (?, ?, ?, 2);`,
-                                [memberId, userId, groupId]
-                            );
-                        })
-                    } else {
-                        pool.query(
-                            `INSERT INTO user_group_memberships (user_id, group_id, role_id) VALUES (?, ?, 1);`,
-                            [memberId, groupId]
-                        );
-                        pool.query(
-                            `INSERT INTO group_roles (group_id, role_id) VALUES (?, 1), (?, 2);`,
-                            [groupId, groupId]
-                        );
-                    }
-                }))
-                .then(() => {
-                    res.status(200).json({ success: true, groupId });
-                })
-                .catch(error => {
-                    res.status(500).json({ error: error.message });
-                });
-            }
+            // else if (req.query.table === 'createGroup') {
+            //     const name = req.query.name;
+            //     const userId = req.query.userId;
+            //     const memberIds = req.query.memberIds.split(',');
+            //     const results = await handleQuery(
+            //         `INSERT INTO \`groups\` (name, created_by) VALUES (?, ?);`,
+            //         [name, userId]
+            //     );
+            //     res.status(200).json({ results });
+            //     const groupId = results.insertId;
+            //     Promise.all(memberIds.map(memberId => {
+            //         if (memberId !== userId) {
+            //             new Promise((resolve, reject) => {
+            //                 pool.query(
+            //                     `INSERT INTO notifications (user_id, sender_id, group_id, type_id) VALUES (?, ?, ?, 2);`,
+            //                     [memberId, userId, groupId]
+            //                 );
+            //             })
+            //         } else {
+            //             pool.query(
+            //                 `INSERT INTO user_group_memberships (user_id, group_id, role_id) VALUES (?, ?, 1);`,
+            //                 [memberId, groupId]
+            //             );
+            //             pool.query(
+            //                 `INSERT INTO group_roles (group_id, role_id) VALUES (?, 1), (?, 2);`,
+            //                 [groupId, groupId]
+            //             );
+            //         }
+            //     }))
+            //     .then(() => {
+            //         res.status(200).json({ success: true, groupId });
+            //     })
+            //     .catch(error => {
+            //         res.status(500).json({ error: error.message });
+            //     });
+            // }
             // MARK: groupInMember
             else if (req.query.table === 'groupInMember') {
                 const groupId = req.query.groupId;
@@ -432,40 +432,40 @@ export default async function handler(req, res) {
                 res.status(200).json({ results });
             }
             // MARK: changeRole
-            else if (req.query.table === 'changeRole') {
-                const groupId = req.query.groupId;
-                const userId = req.query.userId;
-                const roleId = req.query.roleId;
-                const results = await handleQuery(
-                    `UPDATE user_group_memberships
-                     SET role_id = ?
-                     WHERE user_id = ? 
-                     AND group_id = ?;`,
-                    [roleId, userId, groupId]
-                );
-                res.status(200).json({ results });
-            }
+            // else if (req.query.table === 'changeRole') {
+            //     const groupId = req.query.groupId;
+            //     const userId = req.query.userId;
+            //     const roleId = req.query.roleId;
+            //     const results = await handleQuery(
+            //         `UPDATE user_group_memberships
+            //          SET role_id = ?
+            //          WHERE user_id = ? 
+            //          AND group_id = ?;`,
+            //         [roleId, userId, groupId]
+            //     );
+            //     res.status(200).json({ results });
+            // }
             // MARK: deleteMember
-            else if (req.query.table === 'deleteMember') {
-                const groupId = req.query.groupId;
-                const userId = req.query.userId;
-                const results = await handleQuery(
-                    `UPDATE user_group_memberships SET \`delete\` = 1 WHERE user_id = ? AND group_id = ?`,
-                    [userId, groupId]
-                );
-                res.status(200).json({ results });
-            }
+            // else if (req.query.table === 'deleteMember') {
+            //     const groupId = req.query.groupId;
+            //     const userId = req.query.userId;
+            //     const results = await handleQuery(
+            //         `UPDATE user_group_memberships SET \`delete\` = 1 WHERE user_id = ? AND group_id = ?`,
+            //         [userId, groupId]
+            //     );
+            //     res.status(200).json({ results });
+            // }
             // MARK: addMember
-            else if (req.query.table === 'addMember') {
-                const groupId = req.query.groupId;
-                const userId = req.query.userId;
-                const results = await handleQuery(
-                    `INSERT INTO user_group_memberships (user_id, group_id, role_id) VALUES (?, ?, 1)
-                     ON DUPLICATE KEY UPDATE \`delete\` = 0;`,
-                    [userId, groupId]
-                );
-                res.status(200).json({ results });
-            }
+            // else if (req.query.table === 'addMember') {
+            //     const groupId = req.query.groupId;
+            //     const userId = req.query.userId;
+            //     const results = await handleQuery(
+            //         `INSERT INTO user_group_memberships (user_id, group_id, role_id) VALUES (?, ?, 1)
+            //          ON DUPLICATE KEY UPDATE \`delete\` = 0;`,
+            //         [userId, groupId]
+            //     );
+            //     res.status(200).json({ results });
+            // }
             // MARK: deleteGroup
             // else if (req.query.table === 'deleteGroup') {
             //     const projectId = req.query.projectId;
@@ -506,15 +506,15 @@ export default async function handler(req, res) {
                 res.status(200).json({ results });
             }
             // MARK: updateRoleToPermit
-            else if (req.query.table === 'updateRoleToPermit') {
-                const roleId = req.query.roleId;
-                const permitId = req.query.permitId;
-                const results = await handleQuery(
-                    `UPDATE role_permissions SET permission_id = ? WHERE role_id = ?`,
-                    [permitId, roleId]
-                );
-                res.status(200).json({ results });
-            }
+            // else if (req.query.table === 'updateRoleToPermit') {
+            //     const roleId = req.query.roleId;
+            //     const permitId = req.query.permitId;
+            //     const results = await handleQuery(
+            //         `UPDATE role_permissions SET permission_id = ? WHERE role_id = ?`,
+            //         [permitId, roleId]
+            //     );
+            //     res.status(200).json({ results });
+            // }
             // MARK: permission
             else if (req.query.table === 'permission') {
                 const results = await handleQuery(
@@ -523,44 +523,44 @@ export default async function handler(req, res) {
                 res.status(200).json({ results });
             }
             // MARK: updateRoleName
-            else if (req.query.table === 'updateRoleName') {
-                const roleId = req.query.roleId;
-                const roleName = req.query.roleName;
-                const results = await handleQuery(
-                    `UPDATE roles SET name = ? WHERE id = ?`,
-                    [roleName, roleId]
-                );
-                res.status(200).json({ results });
-            }
+            // else if (req.query.table === 'updateRoleName') {
+            //     const roleId = req.query.roleId;
+            //     const roleName = req.query.roleName;
+            //     const results = await handleQuery(
+            //         `UPDATE roles SET name = ? WHERE id = ?`,
+            //         [roleName, roleId]
+            //     );
+            //     res.status(200).json({ results });
+            // }
             // MARK: deleteRole
-            else if (req.query.table === 'deleteRole') {
-                const roleId = req.query.roleId;
-                const results = await handleQuery(
-                    `UPDATE roles SET \`delete\` = 1 WHERE id = ?`,
-                    [roleId]
-                );
-                res.status(200).json({ results });
-            }
+            // else if (req.query.table === 'deleteRole') {
+            //     const roleId = req.query.roleId;
+            //     const results = await handleQuery(
+            //         `UPDATE roles SET \`delete\` = 1 WHERE id = ?`,
+            //         [roleId]
+            //     );
+            //     res.status(200).json({ results });
+            // }
             // MARK: insertRole
-            else if (req.query.table === 'insertRole') {
-                const roleName = req.query.roleName;
-                const results = await handleQuery(
-                    `INSERT INTO roles (name) VALUES (?)`,
-                    [roleName]
-                );
-                res.status(200).json({ results });
-                const roleId = results.insertId;
-                const groupId = req.query.groupId;
-                await handleQuery(
-                    `INSERT INTO group_roles (group_id, role_id) VALUES (?, ?)`,
-                    [groupId, roleId]
-                );
-                const permissionId = req.query.permissionId;
-                await handleQuery(
-                    `INSERT INTO role_permissions (role_id, permission_id) VALUES (?, ?)`,
-                    [roleId, permissionId]
-                );
-            }
+            // else if (req.query.table === 'insertRole') {
+            //     const roleName = req.query.roleName;
+            //     const results = await handleQuery(
+            //         `INSERT INTO roles (name) VALUES (?)`,
+            //         [roleName]
+            //     );
+            //     res.status(200).json({ results });
+            //     const roleId = results.insertId;
+            //     const groupId = req.query.groupId;
+            //     await handleQuery(
+            //         `INSERT INTO group_roles (group_id, role_id) VALUES (?, ?)`,
+            //         [groupId, roleId]
+            //     );
+            //     const permissionId = req.query.permissionId;
+            //     await handleQuery(
+            //         `INSERT INTO role_permissions (role_id, permission_id) VALUES (?, ?)`,
+            //         [roleId, permissionId]
+            //     );
+            // }
             // MARK: dashboard
             else if (req.query.table === 'dashboard') {
                 const results = await handleQuery(`
