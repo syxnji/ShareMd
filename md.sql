@@ -59,24 +59,26 @@ CREATE TABLE `groups` (
     name VARCHAR(100) NOT NULL,
     description TEXT,
     created_by INT,
+    category ENUM('personal', 'shared') DEFAULT 'shared',
+    level enum('private', 'public') DEFAULT 'private',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `delete` BOOLEAN DEFAULT 0
 ) ENGINE=InnoDB;
 
 -- MARK: INS グループ
-INSERT INTO `groups` (name, description, created_by) VALUES
-('Marketing Team', 'マーケティング関連の文書用グループ', 1),
-('Development Team', '開発関連の文書用グループ', 2),
-('HR Department', '人事関連の文書用グループ', 3),
-('財務部門', '財務関連の文書用グループ', 4),
-('営業チーム', '営業関連の文書用グループ', 5),
-('カスタマーサポート', 'カスタマーサポート関連の文書用グループ', 6),
-('研究チーム', '研究関連の文書用グループ', 7),
-('法務部門', '法務関連の文書用グループ', 8),
-('経営層チーム', '経営層向けの文書用グループ', 9),
-('IT部門', 'IT関連の文書用グループ', 10),
-('サポート', 'サポート関連の文書用グループ', 11);
+INSERT INTO `groups` (name, description, created_by, category, level) VALUES
+('Marketing Team', 'マーケティング関連の文書用グループ', 1, 'shared', 'public'),
+('Development Team', '開発関連の文書用グループ', 2, 'shared', 'public'),
+('HR Department', '人事関連の文書用グループ', 3, 'shared', 'public'),
+('財務部門', '財務関連の文書用グループ', 4, 'shared', 'public'),
+('営業チーム', '営業関連の文書用グループ', 5, 'shared', 'public'),
+('カスタマーサポート', 'カスタマーサポート関連の文書用グループ', 6, 'shared', 'public'),
+('研究チーム', '研究関連の文書用グループ', 7, 'shared', 'public'),
+('法務部門', '法務関連の文書用グループ', 8, 'shared', 'public'),
+('経営層チーム', '経営層向けの文書用グループ', 9, 'shared', 'public'),
+('IT部門', 'IT関連の文書用グループ', 10, 'shared', 'public'),
+('サポート', 'サポート関連の文書用グループ', 11, 'shared', 'public');
 
 -- MARK: 役職
 CREATE TABLE roles (
