@@ -9,6 +9,15 @@ import Cookies from "js-cookie";
 import styles from "./auth.module.css";
 
 export default function Auth() {
+
+  // MARK: Toast Settings
+  const customToastOptions = {
+    position: "top-right",
+    autoClose: 2000,
+    closeOnClick: true,
+    draggable: true,
+  };
+
   const router = useRouter();
   const [toggle, setToggle] = useState("login");
 
@@ -16,52 +25,80 @@ export default function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // MARK: Login
   const handleLogin = async (e) => {
     e.preventDefault();
+
     const response = await fetch(`/api/db?table=login&email=${email}`);
     const result = await response.json();
+
+    
+    // メールアドレスチェック
     if (!result.results || result.results.length === 0) {
-      toast.error("メールアドレスまたはパスワードが間違っています");
+      toast.error("メールアドレスまたはパスワードが間違っています", customToastOptions);
       return;
     }
+
+    // パスワードチェック
     const checkPassword = await bcrypt.compareSync(
       password,
       result.results[0].password_hash,
     );
+
+    // パスワードチェック結果
     if (checkPassword) {
-      toast.success("ログインに成功しました");
+      toast.success("ログインに成功しました", customToastOptions);
       Cookies.set("id", result.results[0].id, {
         expires: 3,
         path: "/",
         secure: true,
       });
       router.push("/Library");
+      return;
+
     } else {
-      toast.error("メールアドレスまたはパスワードが間違っています");
+      toast.error("メールアドレスまたはパスワードが間違っています", customToastOptions);
+      return;
+
     }
   };
 
+  // MARK: Register
   const handleRegister = async (e) => {
     e.preventDefault();
+
+    // ハッシュ化
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // データベースに登録
     const response = await fetch(
-      `/api/db?table=register&username=${username}&email=${email}&password=${hashedPassword}`,
+      `/api/post`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          table: "register",
+          username: username,
+          email: email,
+          password: hashedPassword,
+        }),
+      },
     );
-    const registerData = await response.json();
-    if (registerData.error) {
-      toast.error("登録に失敗しました");
-    } else {
-      const insertedId = await registerData.results.insertId;
-      const response = await fetch(
-        `/api/db?table=defaultGroup&userId=${insertedId}`,
-      );
-      const defaultGroupData = await response.json();
-      toast.success("登録に成功しました");
+    const result = await response.json();
+
+    // 登録結果
+    if (result.success) {
       setToggle("login");
       setPassword("");
+      toast.success("登録に成功しました", customToastOptions);
+    } else {
+      toast.error("登録に失敗しました", customToastOptions);
     }
   };
 
+  // MARK: MAIN
   return (
     <main>
       <div className={styles.auth}>

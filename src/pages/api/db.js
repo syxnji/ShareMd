@@ -37,6 +37,7 @@ export default async function handler(req, res) {
                 );
                 res.status(200).json({ results });
             }
+
             // MARK: login
             else if (req.query.table === 'login') {
                 const email = req.query.email;
@@ -46,6 +47,7 @@ export default async function handler(req, res) {
                 );
                 res.status(200).json({ results });
             }
+
             // MARK: userInfo
             else if (req.query.table === 'userInfo') {
                 const userId = req.query.userId;
@@ -55,6 +57,7 @@ export default async function handler(req, res) {
                 );
                 res.status(200).json({ results });
             }
+
             // MARK: notifications
             else if (req.query.table === 'notifications') {
                 const userId = req.query.userId;
@@ -89,25 +92,25 @@ export default async function handler(req, res) {
             //     res.status(200).json({ results });
             // }
             // MARK: defaultGroup
-            else if (req.query.table === 'defaultGroup') {
-                const userId = req.query.userId;
-                const insertPrivateGroup = await handleQuery(
-                    'INSERT INTO \`groups\` (name, created_by) VALUES (\'プライベート\', ?)',
-                    [userId]
-                );
-                res.status(200).json({ insertPrivateGroup });
-                const groupId = insertPrivateGroup.insertId;
-                const insertUserGroupMembership = await handleQuery(
-                    'INSERT INTO user_group_memberships (user_id, group_id, role_id) VALUES (?, ?, 1)',
-                    [userId, groupId]
-                );
-                res.status(200).json({ insertUserGroupMembership });
-                const results = await handleQuery(
-                    'INSERT INTO group_roles (group_id, role_id) VALUES (?, 1), (?, 2)',
-                    [groupId, groupId]
-                );
-                res.status(200).json({ results });
-            }
+            // else if (req.query.table === 'defaultGroup') {
+            //     const userId = req.query.userId;
+            //     const insertPrivateGroup = await handleQuery(
+            //         'INSERT INTO \`groups\` (name, created_by) VALUES (\'プライベート\', ?)',
+            //         [userId]
+            //     );
+            //     res.status(200).json({ insertPrivateGroup });
+            //     const groupId = insertPrivateGroup.insertId;
+            //     const insertUserGroupMembership = await handleQuery(
+            //         'INSERT INTO user_group_memberships (user_id, group_id, role_id) VALUES (?, ?, 1)',
+            //         [userId, groupId]
+            //     );
+            //     res.status(200).json({ insertUserGroupMembership });
+            //     const results = await handleQuery(
+            //         'INSERT INTO group_roles (group_id, role_id) VALUES (?, 1), (?, 2)',
+            //         [groupId, groupId]
+            //     );
+            //     res.status(200).json({ results });
+            // }
             // MARK: joinedGroups
             else if (req.query.table === 'joinedGroups') {
                 const userId = req.query.userId;
@@ -255,6 +258,7 @@ export default async function handler(req, res) {
                 );
                 res.status(200).json({ results });
             }
+
             // MARK: editorMenuNote
             else if (req.query.table === 'editorMenuNote') {
                 const userId = req.query.userId;
@@ -270,6 +274,7 @@ export default async function handler(req, res) {
                 );
                 res.status(200).json({ results });
             }
+
             // MARK: updateNote
             else if (req.query.table === 'updateNote') {
                 const id = req.query.id;
@@ -286,6 +291,7 @@ export default async function handler(req, res) {
                 );
                 res.status(200).json({ results });
             }
+
             // MARK: checkUser
             else if (req.query.table === 'checkUser') {
                 const userId = req.query.userId;
@@ -308,13 +314,14 @@ export default async function handler(req, res) {
             //     );
             //     res.status(200).json({ results });
             // }
+
             // MARK: privateGroup
             else if (req.query.table === 'privateGroup') {
                 const userId = req.query.userId;
                 const results = await handleQuery(
                     `SELECT * FROM \`groups\` 
-                     WHERE created_by = ? AND name = 'プライベート';
-                     `,[userId]
+                     WHERE created_by = ? AND category = 'personal';
+                     `, [userId]
                 );
                 res.status(200).json({ results });
             }
@@ -342,7 +349,12 @@ export default async function handler(req, res) {
             else if (req.query.table === 'searchGroup') {
                 const name = req.query.name;
                 const results = await handleQuery(
-                    `SELECT id, name, created_by FROM \`groups\` WHERE name LIKE ? AND \`delete\` = 0;`,
+                    `SELECT id, name, created_by 
+                     FROM \`groups\` 
+                     WHERE name LIKE ? 
+                     AND category = 'shared'
+                     AND level = 'public'
+                     AND \`delete\` = 0;`,
                     [`%${name}%`]
                 );
                 res.status(200).json({ results });
@@ -427,6 +439,7 @@ export default async function handler(req, res) {
                      ON users.id = user_group_memberships.user_id
                      WHERE user_group_memberships.group_id = ? 
                      AND user_group_memberships.delete = 0
+                     AND users.delete = 0
                     `, [groupId]
                 );
                 res.status(200).json({ results });
@@ -485,7 +498,9 @@ export default async function handler(req, res) {
                      ON roles.id = group_roles.role_id
                      JOIN role_permissions
                      ON roles.id = role_permissions.role_id
-                     WHERE group_roles.group_id = ? AND roles.delete = 0`,
+                     WHERE group_roles.group_id = ? 
+                     AND roles.delete = 0
+                     AND group_roles.delete = 0`,
                     [groupId]
                 );
                 res.status(200).json({ results });
@@ -500,7 +515,9 @@ export default async function handler(req, res) {
                      ON roles.id = group_roles.role_id
                      JOIN role_permissions
                      ON roles.id = role_permissions.role_id
-                     WHERE group_roles.group_id = ? AND roles.delete = 0`,
+                     WHERE group_roles.group_id = ? 
+                     AND roles.delete = 0
+                     AND group_roles.delete = 0`,
                     [groupId]
                 );
                 res.status(200).json({ results });

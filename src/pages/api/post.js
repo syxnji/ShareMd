@@ -95,8 +95,29 @@ export default async function handler(req, res) {
             // MARK: joinGroup
             case 'joinGroup':
                 await connection.execute(
-                    `INSERT INTO user_group_memberships (user_id, group_id, role_id) VALUES (?, ?, 2) ON DUPLICATE KEY UPDATE \`delete\` = 0;`,
+                    `INSERT INTO user_group_memberships (user_id, group_id, role_id)
+                     VALUES (?, ?, 2) ON DUPLICATE KEY UPDATE \`delete\` = 0;`,
                     [params.inviteUserId, params.groupId]
+                );
+                await connection.end();
+                return res.status(200).json({ success: true });
+
+            // MARK: register
+            case 'register':
+                // ユーザー登録
+                const [registerResults] = await connection.execute(
+                    `INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?);`,
+                    [params.username, params.email, params.password]
+                );
+                // デフォルトグループ作成
+                const [personalGroupResults] = await connection.execute(
+                    `INSERT INTO \`groups\` (name, created_by, category, level) VALUES ('PERSONAL', ?, 'personal', 'private');`,
+                    [registerResults.insertId]
+                );
+                // デフォルトグループにユーザーを追加
+                await connection.execute(
+                    `INSERT INTO user_group_memberships (user_id, group_id, role_id) VALUES (?, ?, 1);`,
+                    [registerResults.insertId, personalGroupResults.insertId]
                 );
                 await connection.end();
                 return res.status(200).json({ success: true });
