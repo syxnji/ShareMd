@@ -1,18 +1,82 @@
+import { useState } from "react";
 import { ModalWindow } from "@/components/UI/ModalWindow";
 import { BsX } from "react-icons/bs";
 import styles from "./newNote.module.css";
+import { toast } from "react-toastify";
 
 export function NewNoteModal({
+  userId,
   allGroups,
   toggleModalNewNote,
-  handleCreateNote,
-  handleChangeNewNoteGroup,
-  handleChangeNewNoteTitle,
-  newNoteTitle,
-  setNewNoteTitle,
-  setNoteContent,
-  handleImport,
+  customToastOptions,
+  refresh,
 }) {
+
+  // MARK: newNoteGroup
+  const [newNoteGroup, setNewNoteGroup] = useState("");
+  const handleChangeNewNoteGroup = (e) => {
+    setNewNoteGroup(e.target.value);
+  };
+
+  // MARK: newNoteTitle ← file
+  const [newNoteTitle, setNewNoteTitle] = useState("");
+  const handleChangeNewNoteTitle = (e) => {
+    setNewNoteTitle(e.target.value);
+  };
+
+  // MARK: newNoteContent ← file
+  const [newNoteContent, setNewNoteContent] = useState("");
+
+  // MARK: importNote ← file
+  const handleImport = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!file.name.endsWith(".md")) {
+      alert(".mdファイルのみインポート可能です");
+      e.target.value = "";
+      return;
+    }
+    // ファイル名をタイトルとして設定（.mdを除く）
+    const fileName = file.name.replace(".md", "");
+    setNewNoteTitle(fileName);
+    // ファイルの内容を読み込む
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setNewNoteContent(e.target.result);
+    };
+    reader.readAsText(file);
+  };
+
+  // MARK: newNoteCreate ← newNoteGroup, newNoteTitle, newNoteContent❓
+  const handleCreateNote = async (e) => {
+    e.preventDefault();
+    const response = await fetch(`/api/post`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        table: "createNote",
+        groupId: newNoteGroup,
+        title: newNoteTitle,
+        content: newNoteContent,
+        userId: userId,
+      }),
+    });
+    const result = await response.json();
+    if (result.success) {
+      setNewNoteTitle("");
+      setNewNoteContent("");
+      refresh();
+      toast.success("ノートを作成しました", customToastOptions);
+      window.location.assign(`/Editor/${result.noteId}`);
+      return;
+    } else {
+      toast.error(result.message || "ノートの作成に失敗しました");
+    }
+  };
+
   return (
     <ModalWindow>
       <form

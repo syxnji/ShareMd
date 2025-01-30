@@ -222,74 +222,6 @@ export default function Library() {
     setModalNewNote(!modalNewNote);
   };
 
-  // MARK: newNoteGroup
-  const [newNoteGroup, setNewNoteGroup] = useState("");
-  const handleChangeNewNoteGroup = (e) => {
-    setNewNoteGroup(e.target.value);
-  };
-
-  // MARK: newNoteTitle ← file❓
-  const [newNoteTitle, setNewNoteTitle] = useState("");
-  const handleChangeNewNoteTitle = (e) => {
-    setNewNoteTitle(e.target.value);
-  };
-
-  // MARK: newNoteContent ← file❓
-  const [newNoteContent, setNewNoteContent] = useState("");
-
-  // MARK: importNote ← file❓
-  const handleImport = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    if (!file.name.endsWith(".md")) {
-      alert(".mdファイルのみインポート可能です");
-      e.target.value = "";
-      return;
-    }
-    // ファイル名をタイトルとして設定（.mdを除く）
-    const fileName = file.name.replace(".md", "");
-    setNewNoteTitle(fileName);
-    // ファイルの内容を読み込む
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setNewNoteContent(e.target.result);
-    };
-    reader.readAsText(file);
-  };
-
-  // MARK: newNoteCreate ← newNoteGroup, newNoteTitle, newNoteContent❓
-  const handleCreateNote = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch(`/api/post`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          table: "createNote",
-          groupId: newNoteGroup,
-          title: newNoteTitle,
-          content: newNoteContent,
-          userId: userId,
-        }),
-      });
-      const result = await response.json();
-      if (result.success) {
-        setNewNoteTitle("");
-        setNewNoteContent("");
-        refresh();
-        toast.success("ノートを作成しました", customToastOptions);
-        window.location.assign(`/Editor/${result.noteId}`);
-        return;
-      }
-      toast.error(result.message);
-    } catch {
-      toast.error("ノートの作成に失敗しました");
-    }
-  };
-
   // MARK:selectedGroup → groupInMember❓
   const [groupInMember, setGroupInMember] = useState([]);
   const fetchGroupInMember = async () => {
@@ -800,14 +732,11 @@ export default function Library() {
       {/* modalNewNote*/}
       {modalNewNote ? (
         <NewNoteModal
+          userId={userId}
           allGroups={allGroups}
           toggleModalNewNote={toggleModalNewNote}
-          handleCreateNote={handleCreateNote}
-          handleChangeNewNoteGroup={handleChangeNewNoteGroup}
-          handleChangeNewNoteTitle={handleChangeNewNoteTitle}
-          newNoteTitle={newNoteTitle}
-          handleImport={handleImport}
-          setNoteContent={setNewNoteContent}
+          customToastOptions={customToastOptions}
+          refresh={refresh}
         />
       ) : null}
 
