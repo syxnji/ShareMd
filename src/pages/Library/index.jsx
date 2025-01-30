@@ -59,10 +59,14 @@ export default function Library() {
     fetchGroupInMember();
     fetchGroupRole();
     fetchRoleToPermit();
-    toast.dismiss();
+
+    // 1秒後にトーストを消す
+    setTimeout(() => {
+      toast.dismiss();
+    }, 1000);
   };
 
-  // MARK:Cookies.id → userId
+  // MARK:userId ← Cookies.id
   const [userId, setUserId] = useState(null);
   useEffect(() => {
     const getUserId = async () => {
@@ -75,7 +79,7 @@ export default function Library() {
     getUserId();
   }, [userId]);
 
-  // MARK: userId → notifications
+  // MARK: notifications ← userId
   const [notifications, setNotifications] = useState([]);
   const fetchNotifications = useCallback(async () => {
     const notice = await fetch(`/api/db?table=notifications&userId=${userId}`);
@@ -100,7 +104,7 @@ export default function Library() {
     fetchRoleToPermit();
   }, [selectedGroup]);
 
-  // MARK:selectedGroup → selectedGroupNotes
+  // MARK:selectedGroupNotes ← selectedGroup
   const [selectedGroupNotes, setSelectedGroupNotes] = useState([]);
 
   // MARK: searchValue
@@ -186,7 +190,7 @@ export default function Library() {
     setModalProject(false);
   };
 
-  // MARK: allGroups ← userId❓
+  // MARK: allGroups ← userId
   const [allGroups, setAllGroups] = useState([]);
   const fetchGroup = useCallback(async () => {
     try {
@@ -948,6 +952,7 @@ export default function Library() {
       ) : null}
 
       <LibraryMenu
+        userId={userId}
         toggleModalCreateGroup={toggleModalCreateGroup}
         allGroups={allGroups}
         setSelectedGroup={setSelectedGroup}

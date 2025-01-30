@@ -27,19 +27,10 @@ export default async function handler(req, res) {
 
     // リクエスト処理
     (async () => {
-        try {  
-            // MARK: register
-            if (req.query.table === 'register') {
-                const { username, email, password } = req.query;
-                const results = await handleQuery(
-                    'INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)',
-                    [username, email, password]
-                );
-                res.status(200).json({ results });
-            }
+        try {
 
             // MARK: login
-            else if (req.query.table === 'login') {
+            if (req.query.table === 'login') {
                 const email = req.query.email;
                 const results = await handleQuery(
                     'SELECT * FROM users WHERE email = ?',
@@ -73,49 +64,12 @@ export default async function handler(req, res) {
                 );
                 res.status(200).json({ results });
             }
-            // MARK: acceptRequest
-            // else if (req.query.table === 'acceptRequest') {
-            //     const notificationId = req.query.notificationId;
-            //     const results = await handleQuery(
-            //         'UPDATE notifications SET response = 1 WHERE id = ?',
-            //         [notificationId]
-            //     );
-            //     res.status(200).json({ results });
-            // }
-            // MARK: rejectRequest
-            // else if (req.query.table === 'rejectRequest') {
-            //     const notificationId = req.query.notificationId;
-            //     const results = await handleQuery(
-            //         'UPDATE notifications SET response = 2 WHERE id = ?',
-            //         [notificationId]
-            //     );
-            //     res.status(200).json({ results });
-            // }
-            // MARK: defaultGroup
-            // else if (req.query.table === 'defaultGroup') {
-            //     const userId = req.query.userId;
-            //     const insertPrivateGroup = await handleQuery(
-            //         'INSERT INTO \`groups\` (name, created_by) VALUES (\'プライベート\', ?)',
-            //         [userId]
-            //     );
-            //     res.status(200).json({ insertPrivateGroup });
-            //     const groupId = insertPrivateGroup.insertId;
-            //     const insertUserGroupMembership = await handleQuery(
-            //         'INSERT INTO user_group_memberships (user_id, group_id, role_id) VALUES (?, ?, 1)',
-            //         [userId, groupId]
-            //     );
-            //     res.status(200).json({ insertUserGroupMembership });
-            //     const results = await handleQuery(
-            //         'INSERT INTO group_roles (group_id, role_id) VALUES (?, 1), (?, 2)',
-            //         [groupId, groupId]
-            //     );
-            //     res.status(200).json({ results });
-            // }
+
             // MARK: joinedGroups
             else if (req.query.table === 'joinedGroups') {
                 const userId = req.query.userId;
                 const results = await handleQuery(`
-                    SELECT groups.id, groups.name 
+                    SELECT *
                     FROM \`groups\` 
                     JOIN user_group_memberships 
                     ON groups.id = user_group_memberships.group_id 
@@ -126,33 +80,22 @@ export default async function handler(req, res) {
                 );
                 res.status(200).json({ results });
             }
+
             // MARK: checkPermission
             else if (req.query.table === 'checkPermission') {
                 const userId = req.query.userId;
                 const results = await handleQuery(`
-                    SELECT user_group_memberships.id, 
-                    user_group_memberships.user_id,
-                    user_group_memberships.group_id, 
-                    user_group_memberships.role_id, 
-                    role_permissions.permission_id
+                    SELECT user_group_memberships.*, role_permissions.permission_id
                     FROM user_group_memberships 
                     JOIN role_permissions 
                     ON user_group_memberships.role_id = role_permissions.role_id 
-                    WHERE user_group_memberships.user_id = ?;
+                    WHERE user_group_memberships.user_id = ?
+                    AND user_group_memberships.delete = 0;
                     `, [userId]
                 );
                 res.status(200).json({ results });
             }
-            // MARK: leaveGroup
-            // else if (req.query.table === 'leaveGroup') {
-            //     const groupId = req.query.groupId;
-            //     const userId = req.query.userId;
-            //     const results = await handleQuery(
-            //         'UPDATE user_group_memberships SET \`delete\` = 1 WHERE group_id = ? AND user_id = ?',
-            //         [groupId, userId]
-            //     );
-            //     res.status(200).json({ results });
-            // }
+
             // MARK: allNotes
             else if (req.query.table === 'allNotes') {
                 const userId = req.query.userId;
@@ -168,30 +111,36 @@ export default async function handler(req, res) {
                 );
                 res.status(200).json({ results });
             }
+
             // MARK: selectedGroup
             else if (req.query.table === 'selectedGroup') {
                 const selectGroupId = req.query.groupId;
                 const results = await handleQuery(`
                     SELECT notes.id, notes.title, notes.content, notes.updated_at, 
-                    groups.id AS groupId, groups.name AS groupName
+                        groups.id AS groupId, 
+                        groups.name AS groupName
                     FROM notes
                     JOIN \`groups\`
                     ON notes.group_id = groups.id
-                    WHERE notes.group_id = ? AND notes.delete = 0
+                    WHERE notes.group_id = ?
+                    AND notes.delete = 0
                     `, [selectGroupId]
                 );
                 res.status(200).json({ results });
             }
+
             // MARK: selectedGroupNotes
             else if (req.query.table === 'selectedGroupNotes') {
                 const selectGroupId = req.query.groupId;
                 const results = await handleQuery(`
                     SELECT *
                     FROM notes
-                    WHERE notes.group_id = ? AND notes.delete = 0
+                    WHERE notes.group_id = ?
+                    AND notes.delete = 0
                 `, [selectGroupId]);
                 res.status(200).json({ results });
             }
+
             // MARK: group
             else if (req.query.table === 'group') {
                 const id = req.query.id;
@@ -205,6 +154,7 @@ export default async function handler(req, res) {
                 );
                 res.status(200).json({ results });
             }
+            
             // MARK: notes
             else if (req.query.table === 'notes') {
                 const id = req.query.id;

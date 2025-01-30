@@ -2,9 +2,9 @@ import { Menu } from "@/components/UI/Menu";
 import styles from "./libraryMenu.module.css";
 import { BsBuildings } from "react-icons/bs";
 import { IoFolderOpenOutline, IoFolderOpenSharp } from "react-icons/io5";
-import { MdAdminPanelSettings } from "react-icons/md";
 
 export function LibraryMenu({
+  userId,
   toggleModalCreateGroup,
   allGroups,
   setSelectedGroup,
@@ -12,6 +12,9 @@ export function LibraryMenu({
   toggleModalSetting,
   menuState,
 }) {
+
+  userId = parseInt(userId);
+
   return (
     <Menu menuState={menuState}>
       <div className={styles.menuContents}>
@@ -35,6 +38,7 @@ export function LibraryMenu({
                 >
                   {checkPermission.some(
                     (permission) =>
+                      group.created_by === userId ||
                       permission.group_id === group.id &&
                       permission.permission_id === 1,
                   ) ? (
