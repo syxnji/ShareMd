@@ -112,13 +112,16 @@ export default async function handler(req, res) {
                 );
                 break;
 
-            // case 'updateUserProfile':
-            //     const { userId: profileUserId, name, bio } = params;
-            //     await connection.execute(
-            //         'UPDATE users SET name = ?, bio = ? WHERE id = ?',
-            //         [name, bio, profileUserId]
-            //     );
-            //     break;
+            // MARK: updateNote
+            case 'updateNote':
+                const content = encodeURIComponent(params.content);
+                await connection.execute(
+                    `UPDATE notes
+                     SET title = ?, content = ?, updated_at = NOW()
+                     WHERE id = ?;`,
+                    [params.title, decodeURIComponent(content), params.id]
+                );
+                break;
 
             default:
                 await connection.end();

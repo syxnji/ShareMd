@@ -27,8 +27,9 @@ export default function MarkdownEditor({ id }) {
     draggable: true,
   };
 
+  id = parseInt(id);
+
   // MARK: ユーザー情報
-  const [groupId, setGroupId] = useState("");
   const [userId, setUserId] = useState(null);
   useEffect(() => {
     const getUserId = async () => {
@@ -38,37 +39,36 @@ export default function MarkdownEditor({ id }) {
     getUserId();
   }, []);
 
-  // MARK: グループに所属しているか確認
-  const [permission, setPermission] = useState(null);
-  useEffect(() => {
-    const fetchCheck = async () => {
-      if (groupId) {
-        const response = await fetch(
-          `/api/db?table=checkUser&userId=${userId}&groupId=${groupId}`,
-        );
-        const result = await response.json();
-        if (!result.results || result.results.length === 0) {
-          window.location.assign("/404");
-        } else {
-          const roleId = await result.results[0].role_id;
 
-          const permissionResponse = await fetch(
-            `/api/db?table=roleToPermission&roleId=${roleId}`,
-          );
-          const permissionResult = await permissionResponse.json();
-          setPermission(permissionResult.results[0].permission_id);
-        }
-      }
+  // MARK: ユーザーが所属しているグループのノート
+  const [allNotes, setAllNotes] = useState([]);
+  const [allNotesId, setAllNotesId] = useState([]);
+  useEffect(() => {
+    const fetchAllNotes = async () => {
+      const resNotes = await fetch(`/api/db?table=allNotes&userId=${userId}`);
+      const retNotes = await resNotes.json();
+      setAllNotes(retNotes.results);
+      setAllNotesId(retNotes.results.map(note => note.id));
     };
-    fetchCheck();
-  }, [groupId, userId]);
+    if (userId) {
+      fetchAllNotes();
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    if (allNotesId.length > 0) {
+      if (!allNotesId.includes(id)) {
+        window.location.assign("/Library");
+      } 
+    }
+  }, [allNotesId, id]);
 
   // MARK: メニュー
   const [menuContentGroup, setMenuContentGroup] = useState(null);
   const [menuContentNote, setMenuContentNote] = useState(null);
   const fetchMenuContent = useCallback(async () => {
     const resMenuGroup = await fetch(
-      `/api/db?table=editorMenuGroup&userId=${userId}`,
+      `/api/db?table=joinedGroups&userId=${userId}`,
     );
     const retMenuGroup = await resMenuGroup.json();
     setMenuContentGroup(retMenuGroup.results);
@@ -87,6 +87,7 @@ export default function MarkdownEditor({ id }) {
   const [noteTitle, setNoteTitle] = useState("");
   const [noteContent, setNoteContent] = useState("");
   const [noteUpdatedAt, setNoteUpdatedAt] = useState("");
+  const [groupId, setGroupId] = useState(null);
 
   // MARK: noteを取得
   useEffect(() => {
@@ -94,16 +95,31 @@ export default function MarkdownEditor({ id }) {
       try {
         const noteResponse = await fetch(`/api/db?table=note&id=${id}`);
         const noteData = await noteResponse.json();
-        setNoteTitle(noteData.results[0].title);
-        setNoteContent(noteData.results[0].content);
-        setNoteUpdatedAt(noteData.results[0].updated_at);
-        setGroupId(noteData.results[0].group_id);
+        if (noteData.results[0]) {
+          setNoteTitle(noteData.results[0].title);
+          setNoteContent(noteData.results[0].content);
+          setNoteUpdatedAt(noteData.results[0].updated_at);
+          setGroupId(noteData.results[0].group_id);
+        }
       } catch (error) {
         console.error("エラー(fetchNote):", error);
       }
     };
     fetchNote();
   }, [id]);
+
+  // MARK: 権限
+  const [permission, setPermission] = useState(null);
+  useEffect(() => {
+    const fetchPermission = async () => {
+      const resPermission = await fetch(`/api/db?table=checkUser&userId=${userId}&groupId=${groupId}`);
+      const retPermission = await resPermission.json();
+      if (retPermission.results.length > 0) {
+        setPermission(retPermission.results[0].permission_id);
+      }
+    };
+    fetchPermission();
+  }, [userId, groupId]);
 
   // MARK: ノートの変更
   const handleChange = (e) => {
@@ -123,7 +139,19 @@ export default function MarkdownEditor({ id }) {
           const encodedContent = encodeURIComponent(noteContent);
           const encodedTitle = encodeURIComponent(noteTitle);
           const updResponse = await fetch(
-            `/api/db?table=updateNote&id=${id}&title=${encodedTitle}&content=${encodedContent}`,
+            `/api/patch`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                table: "updateNote",
+                id: id,
+                title: encodedTitle,
+                content: encodedContent,
+              }),
+            },
           );
           toast.success("保存しました", customToastOptions);
           if (!updResponse.ok) {

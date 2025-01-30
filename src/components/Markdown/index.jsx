@@ -3,9 +3,15 @@ import { useState } from "react";
 import styles from "./markdown.module.css";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import Image from "next/image";
+import { toast } from "react-toastify";
 
 export function Markdown({ content, change, view, permission }) {
+
+  if (permission === 3) {
+    toast.dismiss();
+    toast.error("編集権限がありません");
+  }
+
   const placeholder =
     "マークダウン記法で記述できます。\n例:\n# 見出し1\n## 見出し2\n**太字**\n*斜体*\n詳しくはHelpをご覧ください。";
 

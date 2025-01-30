@@ -69,7 +69,7 @@ export default async function handler(req, res) {
             else if (req.query.table === 'joinedGroups') {
                 const userId = req.query.userId;
                 const results = await handleQuery(`
-                    SELECT *
+                    SELECT \`groups\`.*
                     FROM \`groups\` 
                     JOIN user_group_memberships 
                     ON groups.id = user_group_memberships.group_id 
@@ -100,7 +100,7 @@ export default async function handler(req, res) {
             else if (req.query.table === 'allNotes') {
                 const userId = req.query.userId;
                 const results = await handleQuery(`
-                    SELECT notes.id, notes.title, notes.content, notes.updated_at, groups.name
+                    SELECT notes.*
                     FROM notes 
                     JOIN \`groups\` 
                     ON notes.group_id = groups.id
@@ -247,11 +247,17 @@ export default async function handler(req, res) {
                 const userId = req.query.userId;
                 const groupId = req.query.groupId;
                 const results = await handleQuery(
-                    `SELECT * FROM user_group_memberships WHERE group_id = ? AND user_id = ?;`,
+                    `SELECT role_permissions.permission_id 
+                    FROM user_group_memberships 
+                    JOIN role_permissions
+                    ON user_group_memberships.role_id = role_permissions.role_id
+                    WHERE group_id = ? 
+                    AND user_id = ?;`,
                     [groupId, userId]
                 );
                 res.status(200).json({ results });
             }
+
             // MARK: newNote
             // else if (req.query.table === 'newNote') {
             //     const groupId = req.query.groupId;
