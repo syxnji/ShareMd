@@ -1,18 +1,39 @@
 import { ModalWindow } from "@/components/UI/ModalWindow";
 import styles from "./joinedGroups.module.css";
-import { BsFolder, BsX } from "react-icons/bs";
-import { MdAdminPanelSettings } from "react-icons/md";
+import { BsX } from "react-icons/bs";
 import { IoFolderOpenOutline, IoFolderOpenSharp } from "react-icons/io5";
+import { toast } from "react-toastify";
 
 export function JoinedGroupsModal({
+  userId,
   allGroups,
   toggleModalJoinedGroups,
   checkPermission,
-  handleLeaveGroup,
+  // handleLeaveGroup,
   toggleModalSetting,
   setSelectedGroup,
   setModalJoinedGroups,
+  customToastOptions,
+  refresh,
 }) {
+
+  // MARK: leaveGroup ← groupId, userId
+  const handleLeaveGroup = async (groupId) => {
+    await fetch(`/api/patch`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        table: "leaveGroup",
+        groupId: groupId,
+        userId: userId,
+      }),
+    });
+    toast.success("グループを退会しました", customToastOptions);
+    refresh();
+  };
+
   return (
     <ModalWindow>
       <button

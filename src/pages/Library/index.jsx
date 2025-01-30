@@ -73,11 +73,30 @@ export default function Library() {
       const id = Cookies.get("id");
       if (!id) {
         window.location.assign("/Auth");
+      } else {
+        setUserId(id);
+        refresh();
       }
-      setUserId(id);
     };
     getUserId();
   }, [userId]);
+
+  // MARK: userInfo ← userId
+  const [userInfo, setUserInfo] = useState({});
+  useEffect(() => {
+    const fetchUser = async () => {
+      const response = await fetch(`/api/db?table=userInfo&userId=${userId}`);
+      const result = await response.json();
+      setUserInfo(result.results[0]);
+    };
+    fetchUser();
+  }, [userId]);
+
+  // MARK: logout
+  const handleLogout = () => {
+    Cookies.remove("id", { path: "/" });
+    window.location.assign("/Auth");
+  };
 
   // MARK: notifications ← userId
   const [notifications, setNotifications] = useState([]);
@@ -145,23 +164,6 @@ export default function Library() {
     setModalSetting(false);
   };
 
-  // MARK: userInfo ← userId
-  const [userInfo, setUserInfo] = useState({});
-  useEffect(() => {
-    const fetchUser = async () => {
-      const response = await fetch(`/api/db?table=userInfo&userId=${userId}`);
-      const result = await response.json();
-      setUserInfo(result.results[0]);
-    };
-    fetchUser();
-  }, [userId]);
-
-  // MARK: logout
-  const handleLogout = () => {
-    Cookies.remove("id", { path: "/" });
-    window.location.assign("/Auth");
-  };
-
   // MARK: modalSetting
   const [modalSetting, setModalSetting] = useState(false);
   const toggleModalSetting = () => {
@@ -204,24 +206,7 @@ export default function Library() {
     }
   }, [userId]);
 
-  // MARK: leaveGroup ← groupId, userId❓
-  const handleLeaveGroup = async (groupId) => {
-    await fetch(`/api/patch`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        table: "leaveGroup",
-        groupId: groupId,
-        userId: userId,
-      }),
-    });
-    toast.success("グループを退会しました", customToastOptions);
-    refresh();
-  };
-
-  // MARK: checkPermission ← userId❓
+  // MARK: checkPermission ← userId
   const [checkPermission, setCheckPermission] = useState([]);
   const fetchCheckPermission = useCallback(async () => {
     const response = await fetch(
@@ -237,7 +222,7 @@ export default function Library() {
     setModalNewNote(!modalNewNote);
   };
 
-  // MARK: newNoteGroup ← groupId❓
+  // MARK: newNoteGroup
   const [newNoteGroup, setNewNoteGroup] = useState("");
   const handleChangeNewNoteGroup = (e) => {
     setNewNoteGroup(e.target.value);
@@ -865,10 +850,12 @@ export default function Library() {
           allGroups={allGroups}
           toggleModalJoinedGroups={toggleModalJoinedGroups}
           checkPermission={checkPermission}
-          handleLeaveGroup={handleLeaveGroup}
           toggleModalSetting={toggleModalSetting}
           setSelectedGroup={setSelectedGroup}
           setModalJoinedGroups={setModalJoinedGroups}
+          customToastOptions={customToastOptions}
+          userId={userId}
+          refresh={refresh}
         />
       ) : null}
 
