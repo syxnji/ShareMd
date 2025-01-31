@@ -1,14 +1,56 @@
 import { BsFolder, BsX } from "react-icons/bs";
 import styles from "./searchGroups.module.css";
 import { ModalWindow } from "@/components/UI/ModalWindow";
+import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
 
 export function SearchGroups({
   toggleModalSearchGroup,
-  handleSearchGroup,
-  searchGroup,
-  searchGroupResult,
-  handleRequestGroup,
+  userId,
+  customToastOptions,
+  refresh,
 }) {
+
+  // MARK: searchGroup
+  const [searchGroup, setSearchGroup] = useState("");
+  const handleSearchGroup = (e) => {
+    setSearchGroup(e.target.value);
+  };
+
+  // MARK: searchGroupResult
+  const [searchGroupResult, setSearchGroupResult] = useState([]);
+  useEffect(() => {
+    fetchSearchGroup();
+  }, [searchGroup]);
+  const fetchSearchGroup = async () => {
+    const response = await fetch(
+      `/api/db?table=searchGroup&name=${searchGroup}`,
+    );
+    const groups = await response.json();
+    setSearchGroupResult(groups.results);
+  };
+
+  // MARK: requestGroup ← groupId, createdBy
+  const handleRequestGroup = async (e, groupId, createdBy) => {
+    e.preventDefault();
+    await fetch(
+      `/api/post`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          table: "requestGroup",
+          groupId: groupId,
+          fromUserId: userId,
+          toUserId: createdBy,
+        }),
+      },
+    );
+    refresh();
+    toast.success("グループ参加リクエストを送信しました", customToastOptions);
+  };
   return (
     <ModalWindow>
       {/* 閉じるボタン */}

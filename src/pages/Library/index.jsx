@@ -43,8 +43,6 @@ export default function Library() {
     fetchGroup();
     fetchNotes();
     fetchCheckPermission();
-    // fetchGroupInMember();
-    // fetchGroupRole();
     fetchRoleToPermit();
 
     // 1秒後にトーストを消す
@@ -52,6 +50,17 @@ export default function Library() {
       toast.dismiss();
     }, 1000);
   };
+
+  // MARK: permission
+  const [permission, setPermission] = useState([]);
+  useEffect(() => {
+    const fetchPermission = async () => {
+      const response = await fetch(`/api/db?table=permission`);
+      const permissions = await response.json();
+      setPermission(permissions.results || []);
+    };
+    fetchPermission();
+  }, []);
 
   // MARK:userId ← Cookies.id
   const [userId, setUserId] = useState(null);
@@ -101,14 +110,26 @@ export default function Library() {
 
   // MARK:selectedGroup
   const [selectedGroup, setSelectedGroup] = useState({ id: null, name: null });
+  
 
   // MARK: selectedGroup → useEffect
   useEffect(() => {
+    // 初回レンダリング時は実行しない
+    if (selectedGroup.id === null) return;
+
+    // モーダルをすべて閉じる
+    setModalNotification(false);
+    setModalJoinedGroups(false);
+    setModalSetting(false);
+    setModalNewNote(false);
+    setModalSearchGroup(false);
+    setModalCreateGroup(false);
+    setAccountView(false);
+
+    // 既存の処理を維持
     fetchNotes();
-    // fetchGroupInMember();
-    // fetchGroupRole();
     fetchRoleToPermit();
-  }, [selectedGroup]);
+  }, [selectedGroup.id]); // selectedGroup.idの変更時のみ実行
 
   // MARK:selectedGroupNotes ← selectedGroup
   // projectManagement
@@ -221,17 +242,6 @@ export default function Library() {
     setRoleToPermit(roles.results);
   };
 
-  // MARK: permission❓
-  const [permission, setPermission] = useState([]);
-  useEffect(() => {
-    const fetchPermission = async () => {
-      const response = await fetch(`/api/db?table=permission`);
-      const permissions = await response.json();
-      setPermission(permissions.results || []);
-    };
-    fetchPermission();
-  }, []);
-
   // MARK: isGridView
   const [isGridView, setIsGridView] = useState(true);
   const [isNotesClass, setIsNotesClass] = useState(true);
@@ -245,47 +255,6 @@ export default function Library() {
   const [modalSearchGroup, setModalSearchGroup] = useState(false);
   const toggleModalSearchGroup = () => {
     setModalSearchGroup(!modalSearchGroup);
-  };
-
-  // MARK: searchGroup❓
-  const [searchGroup, setSearchGroup] = useState("");
-  const handleSearchGroup = (e) => {
-    setSearchGroup(e.target.value);
-  };
-
-  // MARK: searchGroupResult❓
-  const [searchGroupResult, setSearchGroupResult] = useState([]);
-  useEffect(() => {
-    fetchSearchGroup();
-  }, [searchGroup]);
-  const fetchSearchGroup = async () => {
-    const response = await fetch(
-      `/api/db?table=searchGroup&name=${searchGroup}`,
-    );
-    const groups = await response.json();
-    setSearchGroupResult(groups.results);
-  };
-
-  // MARK: requestGroup ← groupId, createdBy❓
-  const handleRequestGroup = async (e, groupId, createdBy) => {
-    e.preventDefault();
-    await fetch(
-      `/api/post`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          table: "requestGroup",
-          groupId: groupId,
-          fromUserId: userId,
-          toUserId: createdBy,
-        }),
-      },
-    );
-    refresh();
-    toast.success("グループ参加リクエストを送信しました", customToastOptions);
   };
 
   // MARK: modalCreateGroup
@@ -556,10 +525,9 @@ export default function Library() {
       {modalSearchGroup ? (
         <SearchGroups
           toggleModalSearchGroup={toggleModalSearchGroup}
-          handleSearchGroup={handleSearchGroup}
-          searchGroup={searchGroup}
-          searchGroupResult={searchGroupResult}
-          handleRequestGroup={handleRequestGroup}
+          userId={userId}
+          customToastOptions={customToastOptions}
+          refresh={refresh}
         />
       ) : null}
 
