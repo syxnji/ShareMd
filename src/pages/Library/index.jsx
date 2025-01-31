@@ -111,7 +111,19 @@ export default function Library() {
   }, [selectedGroup]);
 
   // MARK:selectedGroupNotes ← selectedGroup
+  // projectManagement
   const [selectedGroupNotes, setSelectedGroupNotes] = useState([]);
+
+  // MARK: fetchNotes
+  const fetchNotes = async () => {
+    if (selectedGroup.id) {
+      const response = await fetch(
+        `/api/db?table=selectedGroupNotes&groupId=${selectedGroup.id}`,
+      );
+      const notes = await response.json();
+      setSelectedGroupNotes(notes.results || []);
+    }
+  };
 
   // MARK: searchValue
   const [searchValue, setSearchValue] = useState("");
@@ -127,16 +139,6 @@ export default function Library() {
     setSearchValue(e.target.value);
   };
 
-  // MARK: fetchNotes
-  const fetchNotes = async () => {
-    if (selectedGroup.id) {
-      const response = await fetch(
-        `/api/db?table=selectedGroupNotes&groupId=${selectedGroup.id}`,
-      );
-      const notes = await response.json();
-      setSelectedGroupNotes(notes.results || []);
-    }
-  };
 
   // MARK: accountView
   const [accountView, setAccountView] = useState(false);
@@ -219,22 +221,6 @@ export default function Library() {
     setRoleToPermit(roles.results);
   };
 
-  // MARK: deleteProject ← projectId❓
-  const handleDeleteProject = async (projectId) => {
-    await fetch(`/api/patch`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        table: "deleteNote",
-        id: projectId,
-      }),
-    });
-    refresh();
-    toast.success("ノートを削除しました", customToastOptions);
-  };
-
   // MARK: permission❓
   const [permission, setPermission] = useState([]);
   useEffect(() => {
@@ -245,96 +231,6 @@ export default function Library() {
     };
     fetchPermission();
   }, []);
-
-  // MARK: changeRoleName ← roleId❓
-  const handleChangeRoleName = async (e, roleId) => {
-    await fetch(`/api/patch`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        table: "updateRoleName",
-        roleId: roleId,
-        roleName: e.target.value,
-      }),
-    });
-    refresh();
-    toast.success("役職名を更新しました", customToastOptions);
-  };
-
-  // MARK: changePermit ← newPermitId❓
-  const handleChangePermit = async (e, roleId) => {
-    const newPermitId = parseInt(e.target.value, 10);
-    await fetch(
-      `/api/patch`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          table: "updateRoleToPermit",
-          roleId: roleId,
-          permitId: newPermitId,
-        }),
-      },
-    );
-    refresh();
-    toast.success("権限を更新しました", customToastOptions);
-  };
-
-  // MARK: deleteRole❓
-  const handleDeleteRole = async (e, roleId) => {
-    e.preventDefault();
-    await fetch(`/api/patch`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        table: "deleteRole",
-        roleId: roleId,
-      }),
-    });
-    refresh();
-    toast.success("役職を削除しました", customToastOptions);
-  };
-
-  // MARK: addRole ← newRoleName, newPermitId❓
-  const handleAddRole = async (e) => {
-    if (newRoleName.length > 0) {
-      e.preventDefault();
-      await fetch(`/api/post`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          table: "addRole",
-          roleName: newRoleName,
-          groupId: selectedGroup.id,
-          permissionId: newPermitId,
-        }),
-      });
-      setNewRoleName("");
-      setNewPermitId(1);
-      refresh();
-      toast.success("役職を追加しました", customToastOptions);
-    }
-  };
-
-  // MARK: newRoleName❓
-  const [newRoleName, setNewRoleName] = useState("");
-  const handleChangeNewRoleName = async (e) => {
-    setNewRoleName(e.target.value);
-  };
-
-  // MARK: newPermitId❓
-  const [newPermitId, setNewPermitId] = useState(1);
-  const handleChangeNewPermit = async (e) => {
-    setNewPermitId(e.target.value);
-  };
 
   // MARK: isGridView
   const [isGridView, setIsGridView] = useState(true);
@@ -537,37 +433,26 @@ export default function Library() {
         {/* 設定内容 */}
         {modalMember ? (
           <MemberManagement
-            // searchUser={searchUser}
-            // handleSearchUser={handleSearchUser}
-            // memberSuggest={memberSuggest}
-            // handleAddMember={handleAddMember}
-            // groupInMember={groupInMember}
-            // groupRole={groupRole}
-            // handleChangeRole={handleChangeRole}
             selectedGroup={selectedGroup}
             userId={userId}
             refresh={refresh}
             customToastOptions={customToastOptions}
-            // handleDeleteMember={handleDeleteMember}
           />
         ) : null}
         {modalProject ? (
           <ProjectManagement
             selectedGroupNotes={selectedGroupNotes}
-            handleDeleteProject={handleDeleteProject}
+            customToastOptions={customToastOptions}
+            refresh={refresh}
           />
         ) : null}
         {modalPermit ? (
           <PermissionManagement
-            newRoleName={newRoleName}
-            handleChangeNewRoleName={handleChangeNewRoleName}
+            customToastOptions={customToastOptions}
+            refresh={refresh}
+            selectedGroup={selectedGroup}
             permission={permission}
-            handleChangeNewPermit={handleChangeNewPermit}
-            handleAddRole={handleAddRole}
             roleToPermit={roleToPermit}
-            handleChangeRoleName={handleChangeRoleName}
-            handleChangePermit={handleChangePermit}
-            handleDeleteRole={handleDeleteRole}
           />
         ) : null}
       </div>

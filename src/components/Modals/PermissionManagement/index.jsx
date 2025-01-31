@@ -1,18 +1,108 @@
 import { BsPlus, BsX } from "react-icons/bs";
 import styles from "./permissionManagement.module.css";
 import { MdOutlineShield, MdShield } from "react-icons/md";
-import { ModalWindow } from "@/components/UI/ModalWindow";
+import { toast } from "react-toastify";
+import { useState } from "react";
+
 export const PermissionManagement = ({
-  newRoleName,
-  handleChangeNewRoleName,
+  customToastOptions,
+  refresh,
+  selectedGroup,
   permission,
-  handleChangeNewPermit,
-  handleAddRole,
   roleToPermit,
-  handleChangeRoleName,
-  handleChangePermit,
-  handleDeleteRole,
 }) => {
+
+  // MARK: newRoleName
+  const [newRoleName, setNewRoleName] = useState("");
+  const handleChangeNewRoleName = async (e) => {
+    setNewRoleName(e.target.value);
+  };
+
+  // MARK: newPermitId
+  const [newPermitId, setNewPermitId] = useState(1);
+  const handleChangeNewPermit = async (e) => {
+    setNewPermitId(e.target.value);
+  };
+
+  // MARK: addRole ← newRoleName, newPermitId
+  const handleAddRole = async (e) => {
+    if (newRoleName.length > 0) {
+      e.preventDefault();
+      await fetch(`/api/post`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          table: "addRole",
+          roleName: newRoleName,
+          groupId: selectedGroup.id,
+          permissionId: newPermitId,
+        }),
+      });
+      setNewRoleName("");
+      setNewPermitId(1);
+      refresh();
+      toast.success("役職を追加しました", customToastOptions);
+    }
+  };
+  
+  // MARK: changeRoleName ← roleId
+  const handleChangeRoleName = async (e, roleId) => {
+    await fetch(`/api/patch`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        table: "updateRoleName",
+        roleId: roleId,
+        roleName: e.target.value,
+      }),
+    });
+    refresh();
+    toast.success("役職名を更新しました", customToastOptions);
+  };
+
+  // MARK: changePermit ← newPermitId
+  const handleChangePermit = async (e, roleId) => {
+    const newPermitId = parseInt(e.target.value, 10);
+    await fetch(
+      `/api/patch`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          table: "updateRoleToPermit",
+          roleId: roleId,
+          permitId: newPermitId,
+        }),
+      },
+    );
+    refresh();
+    toast.success("権限を更新しました", customToastOptions);
+  };
+
+  // MARK: deleteRole
+  const handleDeleteRole = async (e, roleId) => {
+    e.preventDefault();
+    await fetch(`/api/patch`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        table: "deleteRole",
+        roleId: roleId,
+      }),
+    });
+    refresh();
+    toast.success("役職を削除しました", customToastOptions);
+  };
+
+
   return (
     <div className={styles.permitContent}>
       <div className={styles.addRole}>
@@ -54,7 +144,7 @@ export const PermissionManagement = ({
                 placeholder="役職名"
                 className={styles.roleName}
                 defaultValue={role.name}
-                onChange={(e) => handleChangeRoleName(e, role.id)}
+                onBlur={(e) => handleChangeRoleName(e, role.id)}
                 disabled={role.id === 1 || role.id === 2}
               />
 

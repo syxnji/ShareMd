@@ -15,7 +15,7 @@ export const MemberManagement = ({
   useEffect(() => {
     fetchGroupInMember();
     fetchGroupRole();
-  }, [selectedGroup]);
+  }, [selectedGroup, refresh]);
 
   // MARK: searchUser
   const [searchUser, setSearchUser] = useState("");
