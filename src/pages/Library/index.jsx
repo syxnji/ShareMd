@@ -17,22 +17,9 @@ import { NotesInGroup } from "@/components/NotesInGroup";
 import { ModalWindow } from "@/components/UI/ModalWindow";
 import { RequestToast } from "@/components/RequestToast";
 // icon
-import {
-  BsFileEarmarkPlus,
-  BsGrid3X3,
-  BsX,
-  BsBuildings,
-  BsArrowRepeat,
-  BsFolder,
-} from "react-icons/bs";
+import { BsFileEarmarkPlus, BsGrid3X3, BsX, BsBuildings, BsArrowRepeat, BsFolder } from "react-icons/bs";
 import { FaRegUser } from "react-icons/fa6";
-import {
-  MdClose,
-  MdFormatListBulleted,
-  MdLogout,
-  MdMenu,
-  MdOutlineWifiFind,
-} from "react-icons/md";
+import { MdClose, MdFormatListBulleted, MdLogout, MdMenu, MdOutlineWifiFind } from "react-icons/md";
 import { IoSearch } from "react-icons/io5";
 import { RiNotification2Line } from "react-icons/ri";
 import { PiEmpty } from "react-icons/pi";
@@ -56,8 +43,8 @@ export default function Library() {
     fetchGroup();
     fetchNotes();
     fetchCheckPermission();
-    fetchGroupInMember();
-    fetchGroupRole();
+    // fetchGroupInMember();
+    // fetchGroupRole();
     fetchRoleToPermit();
 
     // 1秒後にトーストを消す
@@ -118,8 +105,8 @@ export default function Library() {
   // MARK: selectedGroup → useEffect
   useEffect(() => {
     fetchNotes();
-    fetchGroupInMember();
-    fetchGroupRole();
+    // fetchGroupInMember();
+    // fetchGroupRole();
     fetchRoleToPermit();
   }, [selectedGroup]);
 
@@ -222,28 +209,6 @@ export default function Library() {
     setModalNewNote(!modalNewNote);
   };
 
-  // MARK:selectedGroup → groupInMember❓
-  const [groupInMember, setGroupInMember] = useState([]);
-  const fetchGroupInMember = async () => {
-    if (selectedGroup.id) {
-      const response = await fetch(
-        `/api/db?table=groupInMember&groupId=${selectedGroup.id}`,
-      );
-      const members = await response.json();
-      setGroupInMember(members.results);
-    }
-  };
-
-  // MARK:selectedGroup → groupRole❓
-  const [groupRole, setGroupRole] = useState([]);
-  const fetchGroupRole = async () => {
-    const response = await fetch(
-      `/api/db?table=groupRole&groupId=${selectedGroup.id}`,
-    );
-    const roles = await response.json();
-    setGroupRole(roles.results);
-  };
-
   // MARK:selectedGroup → roleToPermit❓
   const [roleToPermit, setRoleToPermit] = useState([]);
   const fetchRoleToPermit = async () => {
@@ -252,96 +217,6 @@ export default function Library() {
     );
     const roles = await response.json();
     setRoleToPermit(roles.results);
-  };
-
-  // MARK: handleChangeRole ← userId, newRoleId❓
-  const handleChangeRole = async (e, userId) => {
-    const newRoleId = parseInt(e.target.value, 10);
-    await fetch(
-      `/api/patch`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          table: "changeRole",
-          groupId: selectedGroup.id,
-          userId: userId,
-          roleId: newRoleId,
-        }),
-      },
-    );
-    refresh();
-    toast.success("役職を更新しました", customToastOptions);
-  };
-
-  // MARK: deleteMember ← userId❓
-  const handleDeleteMember = async (e, userId) => {
-    e.preventDefault();
-    await fetch(
-      `/api/patch`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          table: "deleteMember",
-          groupId: selectedGroup.id,
-          userId: userId,
-        }),
-      },
-    );
-    refresh();
-    toast.success("メンバーを削除しました", customToastOptions);
-  };
-
-  // MARK: searchUser❓
-  const [searchUser, setSearchUser] = useState("");
-  const handleSearchUser = (e) => {
-    setSearchUser(e.target.value);
-  };
-
-  // MARK: searchUser → memberSuggest❓
-  const [memberSuggest, setMemberSuggest] = useState([]);
-  useEffect(() => {
-    const fetchMemberSuggest = async () => {
-      if (searchUser.length > 0) {
-        const response = await fetch(
-          `/api/db?table=suggestUsers&name=${searchUser}`,
-        );
-        const suggestUsers = await response.json();
-        setMemberSuggest(suggestUsers.results);
-      } else {
-        setMemberSuggest([]);
-      }
-    };
-    fetchMemberSuggest();
-  }, [searchUser]);
-
-  // MARK: addMember ← user❓
-  const handleAddMember = async (e, user) => {
-    e.preventDefault();
-    const newMemberId = user.id;
-    await fetch(
-      `/api/post`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          table: "inviteGroup",
-          groupId: selectedGroup.id,
-          inviteUserId: newMemberId,
-          userId: userId,
-        }),
-      },
-    );
-    setSearchUser("");
-    refresh();
-    toast.success("メンバーを招待しました", customToastOptions);
   };
 
   // MARK: deleteProject ← projectId❓
@@ -662,14 +537,18 @@ export default function Library() {
         {/* 設定内容 */}
         {modalMember ? (
           <MemberManagement
-            searchUser={searchUser}
-            handleSearchUser={handleSearchUser}
-            memberSuggest={memberSuggest}
-            handleAddMember={handleAddMember}
-            groupInMember={groupInMember}
-            groupRole={groupRole}
-            handleChangeRole={handleChangeRole}
-            handleDeleteMember={handleDeleteMember}
+            // searchUser={searchUser}
+            // handleSearchUser={handleSearchUser}
+            // memberSuggest={memberSuggest}
+            // handleAddMember={handleAddMember}
+            // groupInMember={groupInMember}
+            // groupRole={groupRole}
+            // handleChangeRole={handleChangeRole}
+            selectedGroup={selectedGroup}
+            userId={userId}
+            refresh={refresh}
+            customToastOptions={customToastOptions}
+            // handleDeleteMember={handleDeleteMember}
           />
         ) : null}
         {modalProject ? (
