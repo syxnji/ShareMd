@@ -72,6 +72,10 @@ export default async function handler(req, res) {
                     [params.name, params.userId]
                 );
                 const groupId = createGroupResults.insertId;
+                await connection.execute(
+                    `INSERT INTO group_roles (group_id, role_id) VALUES (?, 1), (?, 2);`,
+                    [groupId, groupId]
+                );
                 const userId = parseInt(params.userId);
                 // メンバー分の処理
                 for (const memberId of params.memberIds) {

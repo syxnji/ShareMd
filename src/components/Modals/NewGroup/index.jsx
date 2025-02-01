@@ -1,19 +1,111 @@
 import { ModalWindow } from "@/components/UI/ModalWindow";
 import styles from "./newGroup.module.css";
 import { BsX } from "react-icons/bs";
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 export function NewGroup({
   toggleModalCreateGroup,
-  createName,
-  handleChangeCreateName,
-  createGroupMemberSuggest,
-  searchCreateGroupMember,
-  handleSearchCreateGroupMember,
-  handleAddCreateGroupMember,
-  handleDeleteCreateGroupMember,
-  createGroupMemberList,
-  handleCreateGroup,
+  customToastOptions,
+  refresh,
+  userInfo,
+  userId,
 }) {
+
+  // MARK: createName
+  const [createName, setCreateName] = useState("");
+  const handleChangeCreateName = (e) => {
+    setCreateName(e.target.value);
+  };
+
+  // MARK: searchCreateMember
+  const [searchCreateGroupMember, setSearchCreateGroupMember] = useState("");
+  const handleSearchCreateGroupMember = (e) => {
+    setSearchCreateGroupMember(e.target.value);
+  };
+  useEffect(() => {
+    fetchCreateGroupMember();
+  }, [searchCreateGroupMember]);
+
+  // MARK: MemberSuggest ← searchCreateGroupMember
+  const [createGroupMemberSuggest, setCreateGroupMemberSuggest] = useState([]);
+  const fetchCreateGroupMember = async () => {
+    if (searchCreateGroupMember.length > 0) {
+      const response = await fetch(
+        `/api/db?table=suggestUsers&name=${searchCreateGroupMember}`,
+      );
+      const suggestUsers = await response.json();
+      setCreateGroupMemberSuggest(suggestUsers.results);
+    } else {
+      setCreateGroupMemberSuggest([]);
+    }
+  };
+  // MARK: MemberList
+  const [createGroupMemberList, setCreateGroupMemberList] = useState([]);
+  if (userInfo && createGroupMemberList.length === 0) {
+    setCreateGroupMemberList([
+      { id: userInfo.id, username: userInfo.username },
+    ]);
+  }
+  // MARK: addCreateGroupMember
+  const handleAddCreateGroupMember = (e, user) => {
+    e.preventDefault();
+    const newMember = {
+      id: user.id,
+      username: user.username,
+    };
+    if (createGroupMemberList.some((member) => member.id === newMember.id)) {
+      toast.error("既に追加されています", customToastOptions);
+      setSearchCreateGroupMember("");
+      return;
+    }
+    setCreateGroupMemberList([...createGroupMemberList, newMember]);
+    setSearchCreateGroupMember("");
+  };
+
+  // MARK: deleteCreateGroupMember
+  const handleDeleteCreateGroupMember = (e, memberToDelete) => {
+    e.preventDefault();
+    if (memberToDelete.id === userInfo.id) {
+      toast.error("自分は削除できません", customToastOptions);
+    } else {
+      setCreateGroupMemberList(
+        createGroupMemberList.filter((m) => m.id !== memberToDelete.id),
+      );
+    }
+  };
+
+  // MARK: memberIds
+  const [memberIds, setMemberIds] = useState([]);
+  useEffect(() => {
+    setMemberIds(createGroupMemberList.map((member) => member.id));
+  }, [createGroupMemberList]);
+
+  // MARK: createGroup
+  const handleCreateGroup = async (e) => {
+    e.preventDefault();
+    await fetch(
+      `/api/post?`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          table: "createGroup",
+          name: createName,
+          userId: userId,
+          memberIds: memberIds,
+        }),
+      },
+    );
+    toggleModalCreateGroup();
+    setCreateName("");
+    setCreateGroupMemberList([]);
+    refresh();
+    toast.success("グループを作成しました", customToastOptions);
+  };
+
   return (
     <ModalWindow>
       {/* 閉じるボタン */}
