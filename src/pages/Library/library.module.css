@@ -52,9 +52,7 @@
 }
 /* MARK: サービス名 */
 .headerServiceName{
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    font-size: 1.5rem;
-    color: #44f;
+    max-height: 35px;
 }
 /* MARK: 検索フォーム */
 .headerSearch{

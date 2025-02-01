@@ -540,7 +540,8 @@ export default function Library() {
           </button>
         </div>
 
-        <p className={styles.headerServiceName}>ShareMd</p>
+        {/* <p className={styles.headerServiceName}>ShareMd</p> */}
+        <img src="/ShareMd.svg" alt="ShareMd" className={styles.headerServiceName} />
 
         <div className={styles.headerSearch}>
           <div className={styles.searchIcon}>
