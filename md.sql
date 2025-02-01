@@ -202,7 +202,7 @@ CREATE TABLE role_permissions (
 -- MARK: INS 役職ごとの権限
 INSERT INTO role_permissions (role_id, permission_id) VALUES
 -- デフォルト
-(1, 1), (2, 2),
+(1, 1), (2, 3),
 -- グループ作成者
 (3, 1),(4, 2),(5, 3),
 -- マーケティング
