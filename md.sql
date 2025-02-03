@@ -67,18 +67,33 @@ CREATE TABLE `groups` (
 ) ENGINE=InnoDB;
 
 -- MARK: INS グループ
-INSERT INTO `groups` (name, description, created_by, category, level) VALUES
-('Marketing Team', 'マーケティング関連の文書用グループ', 1, 'shared', 'public'),
-('Development Team', '開発関連の文書用グループ', 2, 'shared', 'public'),
-('HR Department', '人事関連の文書用グループ', 3, 'shared', 'public'),
-('財務部門', '財務関連の文書用グループ', 4, 'shared', 'public'),
-('営業チーム', '営業関連の文書用グループ', 5, 'shared', 'public'),
-('カスタマーサポート', 'カスタマーサポート関連の文書用グループ', 6, 'shared', 'public'),
-('研究チーム', '研究関連の文書用グループ', 7, 'shared', 'public'),
-('法務部門', '法務関連の文書用グループ', 8, 'shared', 'public'),
-('経営層チーム', '経営層向けの文書用グループ', 9, 'shared', 'public'),
-('IT部門', 'IT関連の文書用グループ', 10, 'shared', 'public'),
-('サポート', 'サポート関連の文書用グループ', 11, 'shared', 'public');
+INSERT INTO `groups` (name, created_by, category, level) VALUES
+-- 1
+('Marketing Team', 1, 'shared', 'public'),
+('Development Team',  2, 'shared', 'public'),
+('HR Department', 3, 'shared', 'public'),
+('財務部門', 4, 'shared', 'public'),
+('営業チーム', 5, 'shared', 'public'),
+-- 6
+('カスタマーサポート', 6, 'shared', 'public'),
+('研究チーム', 7, 'shared', 'public'),
+('法務部門', 8, 'shared', 'public'),
+('経営層チーム', 9, 'shared', 'public'),
+('IT部門', 10, 'shared', 'public'),
+-- 11
+('サポート', 1, 'shared', 'public'),
+('PERSONAL', 1, 'personal', 'private'),
+('PERSONAL', 2, 'personal', 'private'),
+('PERSONAL', 3, 'personal', 'private'),
+('PERSONAL', 4, 'personal', 'private'),
+-- 16
+('PERSONAL', 5, 'personal', 'private'),
+('PERSONAL', 6, 'personal', 'private'),
+('PERSONAL', 7, 'personal', 'private'),
+('PERSONAL', 8, 'personal', 'private'),
+('PERSONAL', 9, 'personal', 'private'),
+-- 21
+('PERSONAL', 10, 'personal', 'private');
 
 -- MARK: 役職
 CREATE TABLE roles (
@@ -186,7 +201,12 @@ INSERT INTO group_roles (group_id, role_id) VALUES
 -- IT
 (10,1),(10,2), (10, 30), (10, 31), (10, 32),
 -- サポート
-(11,1),(11,2), (11, 33), (11, 34), (11, 35);
+(11,1),(11,2), (11, 33), (11, 34), (11, 35),
+-- personal
+(12,1),(12,2),(13,1),(13,2),(14,1),(14,2),
+(15,1),(15,2),(16,1),(16,2),(17,1),(17,2),
+(18,1),(18,2),(19,1),(19,2),(20,1),(20,2),
+(21,1),(21,2);
 
 -- MARK: 役職ごとの権限
 CREATE TABLE role_permissions (
@@ -260,7 +280,12 @@ INSERT INTO user_group_memberships (user_id, group_id, role_id) VALUES
 (1, 11, 1), (2, 11, 2), (3, 11, 2),
 (4, 11, 2), (5, 11, 2), (6, 11, 2),
 (7, 11, 2), (8, 11, 2), (9, 11, 2),
-(10, 11, 1);
+(10, 11, 1),
+-- private
+(1, 12, 1), (2, 13, 1), (3, 14, 1),
+(4, 15, 1), (5, 16, 1), (6, 17, 1),
+(7, 18, 1), (8, 19, 1), (9, 20, 1),
+(10, 21, 1);
 
 -- MARK: ノート
 CREATE TABLE notes (
