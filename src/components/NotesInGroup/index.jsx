@@ -10,6 +10,16 @@ export function NotesInGroup({
   isNotesClass,
   toggleModalNewNote,
 }) {
+  // タグの解析関数
+  const parseTags = (tags) => {
+    if (!tags) return [];
+    try {
+      return typeof tags === 'string' ? JSON.parse(tags) : tags;
+    } catch (e) {
+      return [];
+    }
+  };
+
   return (
     <>
       {/* グリープの選択時と未選択時で表示を切り替え */}
@@ -28,6 +38,7 @@ export function NotesInGroup({
           {/* notes */}
           <div className={styles.notesTitles}>
             <p className={styles.notesTitle}>GROUP IN NOTES</p>
+            <p className={styles.notesCount}>{notes.length} ノート</p>
           </div>
           <div className={isNotesClass ? styles.grid : styles.list}>
             {/* ノート */}
@@ -39,12 +50,13 @@ export function NotesInGroup({
                 title={note.title}
                 preview={note.content?.split("\n").slice(0, 3).join("\n") || ""}
                 last={new Date(note.updated_at).toLocaleString()}
+                tags={parseTags(note.tags)}
               />
             ))}
 
             {/* ノートを追加 */}
             <div
-              className={styles.empty}
+              className={`${styles.empty} ${styles.addNote}`}
               onClick={() => {
                 toggleModalNewNote();
               }}

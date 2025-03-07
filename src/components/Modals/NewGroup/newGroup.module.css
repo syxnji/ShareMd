@@ -1,91 +1,177 @@
 .modalNewGroupClose{
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 15px;
+    right: 15px;
     background-color: transparent;
     border: none;
-    color: #333;
+    color: #555;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+.modalNewGroupClose:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #f44336;
+    transform: rotate(90deg);
 }
 .modalNewGroupContents{
     width: 90vw;
+    max-width: 550px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
     align-items: center;
     justify-content: center;
+    padding: 15px 15px 20px;
+    overflow-y: auto;
+    max-height: calc(100% - 70px); /* ヘッダーの高さを考慮 */
 }
 @media (min-width: 768px) {
     .modalNewGroupContents{
-        width: 500px;
+        width: 550px;
+        padding: 20px 20px 25px;
     }
 }
 .modalNewGroupForm{
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
+    height: 100%;
 }
 .newGroupLabel{
     width: 100%;
     text-align: left;
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: #aaa;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 5px;
+    letter-spacing: 0.5px;
 }
 .newGroupTitle{
     width: 100%;
     display: flex;
     flex-direction: column;
+    margin-bottom: 5px;
 }
 .newGroupInput{
     width: 100%;
-    padding: 10px;
-    border: solid 1px #ddd;
-    border-radius: 10px;
+    padding: 12px 15px;
+    border: solid 1px #e0e0e0;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.newGroupInput:focus {
+    outline: none;
+    border-color: #4a6cf7;
+    box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.2);
+}
+.newGroupInput::placeholder {
+    color: #aaa;
+}
+.newGroupMembers {
+    position: relative;
+    width: 100%;
 }
 .newGroupSuggest{
-    width: 500px;
-    border-radius: 10px;
+    width: 100%;
+    border-radius: 12px;
     position: absolute;
+    margin-top: 5px;
+    z-index: 10;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 .suggestMemberBox{
     width: 100%;
     max-height: 200px;
-    overflow-y: scroll;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    background-color: #eee;
-    border: solid 1px #ccc;
+    background-color: #fff;
+    border: solid 1px #eaeaea;
+    border-radius: 12px;
+}
+.suggestMemberBox::-webkit-scrollbar {
+    width: 8px;
+}
+.suggestMemberBox::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+.suggestMemberBox::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
     border-radius: 10px;
 }
 .suggestMember{
     width: 100%;
-    padding: 10px;
+    padding: 12px 15px;
     background-color: #fff;
     border: none;
     text-align: left;
-    transition: all 0.3s;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+.suggestMember:first-child {
+    border-radius: 12px 12px 0 0;
+}
+.suggestMember:last-child {
+    border-radius: 0 0 12px 12px;
+}
+.suggestMember:only-child {
+    border-radius: 12px;
 }
 .suggestMember:hover{
-    background-color: #eee;
+    background-color: #f5f7ff;
+}
+.newGroupMemberListBox {
+    width: 100%;
 }
 .newGroupMemberList{
     width: 100%;
-    height: 200px;
-    overflow-y: scroll;
+    height: 150px; /* 高さを少し小さくする */
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    background-color: #eee;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    border: 1px solid #eaeaea;
+}
+.newGroupMemberList::-webkit-scrollbar {
+    width: 8px;
+}
+.newGroupMemberList::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+.newGroupMemberList::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
 }
 .member{
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding: 10px;
-    border: none;
+    padding: 12px 15px;
+    border-bottom: 1px solid #eaeaea;
     text-align: left;
-    transition: all 0.3s;
+    transition: all 0.2s ease;
+    background-color: #fff;
+}
+.member:last-child {
+    border-bottom: none;
+}
+.member:hover {
+    background-color: #f5f7ff;
 }
 .memberDelete{
     display: flex;
@@ -93,20 +179,240 @@
     align-items: center;
     background-color: transparent;
     border: none;
-    color: #333;
+    color: #777;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+.memberDelete:hover{
+    background-color: rgba(244, 67, 54, 0.1);
+    color: #f44336;
 }
 .newGroupBtn{
     width: 100%;
-    padding: 10px;
-    background-color: #44f;
-    transition: all 0.3s;
+    padding: 14px;
+    background-color: #4a6cf7;
+    transition: all 0.3s ease;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+    box-shadow: 0 4px 10px rgba(74, 108, 247, 0.3);
+    letter-spacing: 1px;
 }
 .newGroupBtn:hover{
-    scale: 1.02;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(74, 108, 247, 0.4);
 }
 .newGroupBtn:active{
-    opacity: 0.5;
+    transform: translateY(0);
+    opacity: 0.85;
+    box-shadow: 0 2px 5px rgba(74, 108, 247, 0.3);
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.newGroupMemberList, .newGroupSuggest, .newGroupInput {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+/* モーダルヘッダー */
+.modalHeader {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 15px 0;
+    border-bottom: 1px solid #eaeaea;
+    margin-bottom: 5px;
+    flex-shrink: 0;
+    height: 60px;
+}
+
+.modalTitle {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin: 0;
+}
+
+/* 入力フィールドラッパー */
+.inputWrapper {
+    position: relative;
+    width: 100%;
+}
+
+.inputIcon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* メンバー候補アイコン */
+.suggestMemberIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    color: #4a6cf7;
+}
+
+/* メンバーリストヘッダー */
+.memberListHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+/* 現在のユーザー表示 */
+.currentUser {
+    background-color: rgba(74, 108, 247, 0.05) !important;
+}
+
+.youBadge {
+    display: inline-block;
+    background-color: #4a6cf7;
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 8px;
+    font-weight: 500;
+}
+
+/* 空のメンバーリスト */
+.emptyMemberList {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: #aaa;
+    font-style: italic;
+}
+
+/* 送信中ボタン */
+.submitting {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* ボタン無効化 */
+.newGroupBtn:disabled {
+    background-color: #b0b0b0;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* レスポンシブ調整 */
+@media (max-width: 480px) {
+    .modalTitle {
+        font-size: 1.1rem;
+    }
+    
+    .newGroupBtn {
+        padding: 12px;
+        margin-bottom: 10px;
+    }
+    
+    .newGroupMemberList {
+        height: 120px;
+    }
+    
+    .modalNewGroupContents {
+        padding: 10px 15px 15px;
+    }
+}
+
+/* 新しいモーダルクラス */
+.newGroupModal {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* スクロール可能なコンテンツ領域 */
+.scrollableContent {
+    flex: 1;
+    overflow-y: auto;
+    width: 100%;
+    padding-right: 5px;
+}
+
+.scrollableContent::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scrollableContent::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.scrollableContent::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+/* フォームアクション領域 */
+.formActions {
+    width: 100%;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eaeaea;
+    flex-shrink: 0;
+}
+
+/* モーダルコンテンツ調整 */
+.modalNewGroupContents {
+    width: 90vw;
+    max-width: 550px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 15px 15px;
+    overflow-y: hidden;
+    flex: 1;
+}
+
+/* フォーム全体 */
+.modalNewGroupForm {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 100%;
+    overflow: hidden;
+}
+
+@media (max-width: 480px) {
+    .formActions {
+        margin-top: 10px;
+        padding-top: 10px;
+    }
+    
+    .modalNewGroupContents {
+        padding: 0 10px 10px;
+    }
 }

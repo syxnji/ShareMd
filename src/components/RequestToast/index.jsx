@@ -161,6 +161,9 @@ export function RequestToast({ notification, userId, refresh }) {
     }
   };
 
+  // 適切なトーストクラスを設定
+  const toastClass = `${styles.toast} ${notification.sender_id === userIdInt ? styles.sent : styles.received}`;
+
   return (
     <>
       {/* 自分が通知を送信した場合 */}
@@ -168,7 +171,7 @@ export function RequestToast({ notification, userId, refresh }) {
         <>
           {/* 参加リクエスト */}
           {notification.type_id === 1 && (
-            <div className={styles.toast}>
+            <div className={toastClass}>
               <div className={styles.status}>
                 <GrStatusGoodSmall color="#f74" />
               </div>
@@ -183,7 +186,7 @@ export function RequestToast({ notification, userId, refresh }) {
           )}
           {/* 招待 */}
           {notification.type_id === 2 && (
-            <div className={styles.toast}>
+            <div className={toastClass}>
               <div className={styles.status}>
                 <GrStatusGoodSmall color="#f74" />
               </div>
@@ -204,66 +207,74 @@ export function RequestToast({ notification, userId, refresh }) {
         <>
           {/* 参加リクエスト */}
           {notification.type_id === 1 && (
-            <div className={styles.toast}>
+            <div className={toastClass}>
               <div className={styles.status}>
                 <GrStatusGoodSmall color="#4f4" />
               </div>
               <p className={styles.messageContent}>
                 {messageContent(notification)}
               </p>
-              <button
-                className={styles.acceptBtn}
-                onClick={() => {
-                  handleAccept(
-                    notification.id,
-                    notification.group_id,
-                    notification.sender_id,
-                    notification.type_id,
-                  );
-                }}
-              >
-                <MdCheck size={20} />
-              </button>
-              <button
-                className={styles.rejectBtn}
-                onClick={() => {
-                  handleReject(notification.id);
-                }}
-              >
-                <MdClose size={20} />
-              </button>
+              <div className={styles.actionButtons}>
+                <button
+                  className={styles.acceptBtn}
+                  onClick={() => {
+                    handleAccept(
+                      notification.id,
+                      notification.group_id,
+                      notification.sender_id,
+                      notification.type_id,
+                    );
+                  }}
+                  title="承認"
+                >
+                  <MdCheck size={20} />
+                </button>
+                <button
+                  className={styles.rejectBtn}
+                  onClick={() => {
+                    handleReject(notification.id);
+                  }}
+                  title="拒否"
+                >
+                  <MdClose size={20} />
+                </button>
+              </div>
             </div>
           )}
           {/* 招待 */}
           {notification.type_id === 2 && (
-            <div className={styles.toast}>
+            <div className={toastClass}>
               <div className={styles.status}>
                 <GrStatusGoodSmall color="#4f4" />
               </div>
               <p className={styles.messageContent}>
                 {messageContent(notification)}
               </p>
-              <button
-                className={styles.acceptBtn}
-                onClick={() => {
-                  handleAccept(
-                    notification.id,
-                    notification.group_id,
-                    notification.user_id,
-                    notification.type_id,
-                  );
-                }}
-              >
-                <MdCheck size={20} />
-              </button>
-              <button
-                className={styles.rejectBtn}
-                onClick={() => {
-                  handleReject(notification.id);
-                }}
-              >
-                <MdClose size={20} />
-              </button>
+              <div className={styles.actionButtons}>
+                <button
+                  className={styles.acceptBtn}
+                  onClick={() => {
+                    handleAccept(
+                      notification.id,
+                      notification.group_id,
+                      notification.user_id,
+                      notification.type_id,
+                    );
+                  }}
+                  title="承認"
+                >
+                  <MdCheck size={20} />
+                </button>
+                <button
+                  className={styles.rejectBtn}
+                  onClick={() => {
+                    handleReject(notification.id);
+                  }}
+                  title="拒否"
+                >
+                  <MdClose size={20} />
+                </button>
+              </div>
             </div>
           )}
         </>

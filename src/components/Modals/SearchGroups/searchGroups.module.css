@@ -1,89 +1,555 @@
-.searchGroupClose{
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: transparent;
-    border: none;
-}
-.searchGroupContent{
-    width: 90vw;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    justify-content: center;
-    overflow-y: scroll;
-    scrollbar-width: none;
-}
-@media (min-width: 768px) {
-    .searchGroupContent{
-        width: 500px;
-    }
-}
-.searchGroupLabel{
-    width: 100%;
-    text-align: left;
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: #aaa;
-}
-.searchGroupInput{
-    width: 100%;
-    border: solid 1px #ddd;
-    border-radius: 10px;
-    padding: 10px;
+/* 基本スタイル - 各コンポーネントに直接変数を適用 */
+.searchGroupHeader,
+.searchGroupTitle,
+.searchGroupClose,
+.searchGroupContent,
+.searchGroupForm,
+.searchInputWrapper,
+.searchIcon,
+.searchGroupInput,
+.filterButton,
+.filterPanel,
+.filterSection,
+.filterTitle,
+.categoryButtons,
+.sortButtons,
+.categoryButton,
+.sortButton,
+.categoryButtonActive,
+.sortButtonActive,
+.searchGroupResult,
+.searchResultHeader,
+.searchGroupLabel,
+.resultCount,
+.searchGroupList,
+.groupCard,
+.groupCardHeader,
+.groupAvatarContainer,
+.groupIcon,
+.groupInfo,
+.groupName,
+.groupMeta,
+.groupCategory,
+.groupMembers,
+.groupDate,
+.favoriteButton,
+.starFilled,
+.groupDescription,
+.groupTags,
+.tag,
+.groupCardFooter,
+.requestBtn,
+.detailsBtn,
+.loadingContainer,
+.loadingSpinner,
+.emptyState,
+.emptyStateIcon {
+  --primary-color: #4a6cf7;
+  --primary-hover: #3a5ce5;
+  --secondary-color: #6c757d;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #17a2b8;
+  --light-color: #f8f9fa;
+  --dark-color: #343a40;
+  --border-color: #e9ecef;
+  --border-radius: 8px;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
 }
 
-.searchGroupResult{
-    flex: 1;
-    width: 100%;
-    display: flex;
+/* ヘッダー */
+.searchGroupHeader {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.searchGroupTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--dark-color);
+  margin: 0;
+}
+
+.searchGroupClose {
+  position: relative;
+  top: 0;
+  right: 0;
+  background-color: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--secondary-color);
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+.searchGroupClose:hover {
+  background-color: rgba(108, 117, 125, 0.1);
+  color: var(--dark-color);
+}
+
+/* コンテンツ */
+.searchGroupContent {
+  width: 100%;
+  height: calc(100% - 70px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--secondary-color) transparent;
+}
+
+.searchGroupContent::-webkit-scrollbar {
+  width: 6px;
+}
+
+.searchGroupContent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.searchGroupContent::-webkit-scrollbar-thumb {
+  background-color: var(--secondary-color);
+  border-radius: 20px;
+}
+
+/* 検索フォーム */
+.searchGroupForm {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.searchInputWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 15px;
+  color: var(--secondary-color);
+  font-size: 1rem;
+}
+
+.searchGroupInput {
+  width: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 12px 15px 12px 40px;
+  font-size: 1rem;
+  transition: var(--transition);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.searchGroupInput:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.2);
+}
+
+.filterButton {
+  position: absolute;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  color: var(--secondary-color);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+.filterButton:hover {
+  background-color: rgba(108, 117, 125, 0.1);
+  color: var(--dark-color);
+}
+
+/* フィルターパネル */
+.filterPanel {
+  width: 100%;
+  background-color: var(--light-color);
+  border-radius: var(--border-radius);
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  animation: slideDown 0.3s ease;
+  box-shadow: var(--box-shadow);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.filterSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.filterTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--secondary-color);
+  margin: 0;
+}
+
+.categoryButtons, .sortButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.categoryButton, .sortButton {
+  padding: 6px 12px;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.categoryButton:hover, .sortButton:hover {
+  background-color: rgba(74, 108, 247, 0.1);
+  border-color: var(--primary-color);
+}
+
+.categoryButtonActive, .sortButtonActive {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.categoryButtonActive:hover, .sortButtonActive:hover {
+  background-color: var(--primary-hover);
+  color: white;
+}
+
+/* 検索結果 */
+.searchGroupResult {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--secondary-color) transparent;
+}
+
+.searchGroupResult::-webkit-scrollbar {
+  width: 6px;
+}
+
+.searchGroupResult::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.searchGroupResult::-webkit-scrollbar-thumb {
+  background-color: var(--secondary-color);
+  border-radius: 20px;
+}
+
+.searchResultHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.searchGroupLabel {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--dark-color);
+  margin: 0;
+}
+
+.resultCount {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--secondary-color);
+  margin-left: 5px;
+}
+
+.searchGroupList {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* グループカード */
+.groupCard {
+  width: 100%;
+  background-color: white;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  transition: var(--transition);
+  box-shadow: var(--box-shadow);
+  display: flex;
+  flex-direction: column;
+}
+
+.groupCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.groupCardHeader {
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.groupAvatarContainer {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: #f0f2f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.groupIcon {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--primary-color);
+  font-size: 1.8rem;
+  background-color: rgba(74, 108, 247, 0.1);
+  border-radius: 50%;
+}
+
+.groupInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.groupName {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--dark-color);
+  margin: 0;
+}
+
+.groupMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.groupCategory, .groupMembers, .groupDate {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  color: var(--secondary-color);
+}
+
+.favoriteButton {
+  background-color: transparent;
+  border: none;
+  color: var(--secondary-color);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+.favoriteButton:hover {
+  background-color: rgba(108, 117, 125, 0.1);
+  color: var(--warning-color);
+}
+
+.starFilled {
+  color: var(--warning-color);
+}
+
+.groupDescription {
+  padding: 15px;
+  font-size: 0.9rem;
+  color: var(--secondary-color);
+  line-height: 1.5;
+}
+
+.groupTags {
+  padding: 0 15px 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  padding: 4px 10px;
+  background-color: rgba(74, 108, 247, 0.1);
+  color: var(--primary-color);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.groupCardFooter {
+  padding: 15px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  border-top: 1px solid var(--border-color);
+}
+
+.requestBtn {
+  padding: 8px 16px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.requestBtn:hover {
+  background-color: var(--primary-hover);
+}
+
+.detailsBtn {
+  padding: 8px 16px;
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.detailsBtn:hover {
+  background-color: rgba(74, 108, 247, 0.1);
+}
+
+/* ローディング */
+.loadingContainer {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(74, 108, 247, 0.2);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 空の状態 */
+.emptyState {
+  width: 100%;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  text-align: center;
+  background-color: white;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+}
+
+.emptyStateIcon {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--secondary-color);
+  font-size: 2rem;
+  background-color: var(--light-color);
+  border-radius: 50%;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+  .searchGroupContent {
+    padding: 15px;
+  }
+  
+  .groupCardHeader {
     flex-direction: column;
-    /* background-color: #eee; */
-    overflow-y: scroll;
-    scrollbar-width: none;
-}
-.searchGroupResultLabel{
-    width: 100%;
-    text-align: left;
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: #aaa;
-}
-.searchGroupList{
-    width: 100%;
-    display: flex;
+    align-items: flex-start;
+  }
+  
+  .groupMeta {
     flex-direction: column;
-    gap: 10px;
-}
-.group{
+    gap: 5px;
+  }
+  
+  .favoriteButton {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+  }
+  
+  .groupCardFooter {
+    flex-direction: column;
+  }
+  
+  .requestBtn, .detailsBtn {
     width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.groupIcon{
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #44f;
-}
-.groupName{
-    flex: 1;
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: #333;
-}
-.requestBtn{
-    padding: 5px;
-    background-color: #44f;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    transition: all 0.3s;
-}
-.requestBtn:hover{
-    opacity: 0.8;
+  }
 }

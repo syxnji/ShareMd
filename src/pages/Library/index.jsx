@@ -17,15 +17,21 @@ import { NotesInGroup } from "@/components/NotesInGroup";
 import { ModalWindow } from "@/components/UI/ModalWindow";
 import { RequestToast } from "@/components/RequestToast";
 // icon
-import { BsFileEarmarkPlus, BsGrid3X3, BsX, BsBuildings, BsArrowRepeat, BsFolder } from "react-icons/bs";
+import { BsFileEarmarkPlus, BsGrid3X3, BsX, BsBuildings, BsArrowRepeat, BsFolder, BsFileText, BsPeople, BsClock } from "react-icons/bs";
 import { FaRegUser } from "react-icons/fa6";
-import { MdClose, MdFormatListBulleted, MdLogout, MdMenu, MdOutlineWifiFind } from "react-icons/md";
+import { MdClose, MdFormatListBulleted, MdLogout, MdMenu, MdOutlineWifiFind, MdEdit, MdAddCircleOutline, MdSettings, MdHelpOutline } from "react-icons/md";
 import { IoSearch } from "react-icons/io5";
 import { RiNotification2Line } from "react-icons/ri";
 import { PiEmpty } from "react-icons/pi";
 // style
 import styles from "./library.module.css";
 import "react-toastify/dist/ReactToastify.css";
+
+// タグのリスト
+const AVAILABLE_TAGS = [
+  "仕事", "プライベート", "アイデア", "重要", "緊急", 
+  "会議", "プロジェクト", "タスク", "メモ", "学習"
+];
 
 export default function Library() {
   // MARK: Toast Settings
@@ -142,7 +148,26 @@ export default function Library() {
         `/api/db?table=selectedGroupNotes&groupId=${selectedGroup.id}`,
       );
       const notes = await response.json();
-      setSelectedGroupNotes(notes.results || []);
+      
+      // ノートにランダムにタグを付与
+      const notesWithTags = (notes.results || []).map(note => {
+        // すでにタグがある場合はそのまま使用
+        if (note.tags) {
+          return note;
+        }
+        
+        // ランダムにタグを2〜3個選択
+        const tagCount = Math.floor(Math.random() * 2) + 2; // 2〜3個
+        const shuffledTags = [...AVAILABLE_TAGS].sort(() => 0.5 - Math.random());
+        const selectedTags = shuffledTags.slice(0, tagCount);
+        
+        return {
+          ...note,
+          tags: JSON.stringify(selectedTags)
+        };
+      });
+      
+      setSelectedGroupNotes(notesWithTags || []);
     }
   };
 
@@ -159,7 +184,6 @@ export default function Library() {
   const handleSearch = (e) => {
     setSearchValue(e.target.value);
   };
-
 
   // MARK: accountView
   const [accountView, setAccountView] = useState(false);
@@ -344,6 +368,13 @@ export default function Library() {
         <div className={styles.toastContainer}>
           <div className={styles.toastHeader}>
             <p className={styles.toastHeaderTitle}>通知</p>
+            <button 
+              className={styles.toastCloseBtn} 
+              onClick={toggleModalNotification}
+              title="閉じる"
+            >
+              <MdClose />
+            </button>
           </div>
           <div className={styles.toastBody}>
             {/* 通知一覧 */}
@@ -358,7 +389,7 @@ export default function Library() {
               ))
             ) : (
               <p className={styles.toastBodyEmpty}>
-                <PiEmpty />
+                <PiEmpty size={18} />
                 通知はありません
               </p>
             )}
@@ -385,28 +416,70 @@ export default function Library() {
       {/* accountView */}
       {accountView ? (
         <div className={styles.accountWindow}>
-          <div className={styles.accountContent}>
-            <FaRegUser />
+          {/* ヘッダー部分 */}
+          <div className={styles.accountHeader}>
+            <div className={styles.accountAvatar}>
+              <FaRegUser size={40} />
+            </div>
             <div className={styles.accountInfo}>
-              {/* ユーザー名 */}
-              <p className={styles.accountName}>{userInfo.username}</p>
-              {/* メールアドレス */}
-              <p className={styles.accountEmail}>{userInfo.email}</p>
+              <p className={styles.accountName}>{userInfo.username || "ユーザー名"}</p>
+              <p className={styles.accountEmail}>{userInfo.email || "email@example.com"}</p>
+              <div className={styles.accountBadge}>プレミアムユーザー</div>
             </div>
           </div>
-          <div className={styles.groupBtnContainer}>
-            {/* グループモーダル切替 */}
-            <button
-              className={styles.groupsBtn}
-              onClick={toggleModalJoinedGroups}
-            >
-              <BsBuildings />
-            </button>
+          
+          {/* 統計情報 */}
+          <div className={styles.accountStats}>
+            <div className={styles.statItem}>
+              <span className={styles.statValue}>42</span>
+              <span className={styles.statLabel}>ノート</span>
+            </div>
+            <div className={styles.statItem}>
+              <span className={styles.statValue}>7</span>
+              <span className={styles.statLabel}>グループ</span>
+            </div>
+            <div className={styles.statItem}>
+              <span className={styles.statValue}>128</span>
+              <span className={styles.statLabel}>貢献</span>
+            </div>
           </div>
-          <div className={styles.logoutBtnContainer}>
-            {/* ログアウト */}
+          
+          {/* アクティビティ */}
+          <div className={styles.accountActivity}>
+            <h3 className={styles.sectionTitle}>最近のアクティビティ</h3>
+            <div className={styles.activityItem}>
+              <div className={styles.activityIcon}><MdEdit /></div>
+              <div className={styles.activityInfo}>
+                <p className={styles.activityText}>「プロジェクト計画」を編集しました</p>
+                <p className={styles.activityTime}>2時間前</p>
+              </div>
+            </div>
+            <div className={styles.activityItem}>
+              <div className={styles.activityIcon}><MdAddCircleOutline /></div>
+              <div className={styles.activityInfo}>
+                <p className={styles.activityText}>「マーケティング」グループに参加しました</p>
+                <p className={styles.activityTime}>昨日</p>
+              </div>
+            </div>
+          </div>
+          
+          {/* アクションボタン */}
+          <div className={styles.accountActions}>
+            <button className={styles.actionButton} onClick={toggleModalJoinedGroups}>
+              <BsBuildings />
+              <span>グループ管理</span>
+            </button>
+            <button className={styles.actionButton} onClick={toggleModalSetting}>
+              <MdSettings />
+              <span>設定</span>
+            </button>
+            <button className={styles.actionButton} onClick={() => {}}>
+              <MdHelpOutline />
+              <span>ヘルプ</span>
+            </button>
             <button className={styles.logoutBtn} onClick={handleLogout}>
               <MdLogout />
+              <span>ログアウト</span>
             </button>
           </div>
         </div>
@@ -450,17 +523,36 @@ export default function Library() {
         <img src="/ShareMd.svg" alt="ShareMd" className={styles.headerServiceName} />
 
         <div className={styles.headerSearch}>
-          <div className={styles.searchIcon}>
-            <IoSearch />
+          <div className={styles.searchContainer}>
+            <div className={styles.searchBox}>
+              <IoSearch className={styles.searchIcon} />
+              <input
+                type="text"
+                placeholder="Search notes..."
+                className={styles.searchInput}
+                value={searchValue}
+                onChange={handleSearch}
+              />
+              {searchValue && (
+                <button
+                  className={styles.clearButton}
+                  onClick={() => setSearchValue("")}
+                >
+                  <BsX />
+                </button>
+              )}
+            </div>
+            <div className={styles.viewToggle}>
+              {isGridView ? (
+                <MdFormatListBulleted
+                  className={styles.viewIcon}
+                  onClick={toggleView}
+                />
+              ) : (
+                <BsGrid3X3 className={styles.viewIcon} onClick={toggleView} />
+              )}
+            </div>
           </div>
-          {/* 検索フォーム */}
-          <form className={styles.searchForm}>
-            <input
-              placeholder="Search Notes"
-              type="text"
-              onChange={handleSearch}
-            />
-          </form>
         </div>
 
         {/* ヘッダーボタン */}
@@ -562,20 +654,84 @@ export default function Library() {
         ) : (
           <div className={styles.notSelectGroupContents}>
             {/* 所属グループ */}
-            {allGroups.map((group) => (
-              <button
-                className={styles.notSelectGroupBtn}
-                key={group.id}
-                onClick={() => {
-                  setSelectedGroup(group);
-                }}
-              >
-                <div className={styles.notSelectGroupBtnIcon}>
+            {allGroups.length > 0 ? (
+              allGroups.map((group) => (
+                <button
+                  className={styles.notSelectGroupBtn}
+                  key={group.id}
+                  onClick={() => {
+                    setSelectedGroup(group);
+                  }}
+                  aria-label={`${group.name}グループを選択`}
+                >
+                  <div className={styles.groupCardHeader}>
+                    <div className={styles.notSelectGroupBtnIcon}>
+                      <BsFolder />
+                    </div>
+                    <div className={styles.groupCardBadge}>
+                      {checkPermission.some(
+                        (permission) =>
+                          permission.group_id === group.id &&
+                          permission.permission_id === 1
+                      ) ? (
+                        <span className={styles.adminBadge}>管理者</span>
+                      ) : (
+                        <span className={styles.memberBadge}>メンバー</span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className={styles.groupCardBody}>
+                    <p className={styles.notSelectGroupName}>{group.name}</p>
+                    
+                    <div className={styles.groupCardStats}>
+                      <div className={styles.groupCardStat}>
+                        <BsFileText className={styles.statIcon} />
+                        <span className={styles.statValue}>
+                          {selectedGroupNotes.filter(note => note.group_id === group.id).length || 0}
+                        </span>
+                        <span className={styles.statLabel}>ノート</span>
+                      </div>
+                      
+                      <div className={styles.groupCardStat}>
+                        <BsPeople className={styles.statIcon} />
+                        <span className={styles.statValue}>
+                          {Math.floor(Math.random() * 5) + 1}
+                        </span>
+                        <span className={styles.statLabel}>メンバー</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className={styles.groupCardFooter}>
+                    <div className={styles.lastUpdated}>
+                      <BsClock className={styles.timeIcon} />
+                      <span>
+                        {new Date(Date.now() - Math.random() * 10 * 24 * 60 * 60 * 1000).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div className={styles.groupCardActions}>
+                      <span className={styles.viewGroupText}>グループを開く</span>
+                      <span className={styles.viewGroupArrow}>→</span>
+                    </div>
+                  </div>
+                </button>
+              ))
+            ) : (
+              <div className={styles.emptyGroupsMessage}>
+                <div className={styles.emptyGroupsIcon}>
                   <BsFolder />
                 </div>
-                <p className={styles.notSelectGroupName}>{group.name}</p>
-              </button>
-            ))}
+                <h3>グループがありません</h3>
+                <p>新しいグループを作成するか、グループに参加してください</p>
+                <button 
+                  className={styles.createGroupBtn}
+                  onClick={toggleModalCreateGroup}
+                >
+                  グループを作成
+                </button>
+              </div>
+            )}
           </div>
         )}
 
