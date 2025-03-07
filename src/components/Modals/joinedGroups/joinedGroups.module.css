@@ -6,10 +6,15 @@
     border: none;
 }
 .joinedGroupsContent{
-    width: 500px;
+    width: 90vw;
     height: 100%;
     display: flex;
     flex-direction: column;
+}
+@media (min-width: 768px) {
+    .joinedGroupsContent{
+        width: 500px;
+    }
 }
 .joinedGroupsLabel{
     width: 100%;

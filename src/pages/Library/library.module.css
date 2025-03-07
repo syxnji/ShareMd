@@ -397,7 +397,6 @@
 
 /* MARK: 切り替えボタン */
 .toggleSettingContent{
-    width: 500px;
     display: flex;
     justify-content: center;
     gap: 5px;
@@ -407,12 +406,17 @@
     box-shadow: inset 20px 20px 60px #bebebe,
                 inset -20px -20px 60px #ffffff;
 }
-.falseBtn{
-    width: 100%;
-    height: 32px;
-    border: none;
-    background-color: transparent;
+@media (min-width: 768px) {
+    .toggleSettingContent{
+        width: 500px;
+    }
 }
+    .falseBtn{
+        width: 100%;
+        height: 32px;
+        border: none;
+        background-color: transparent;
+    }
 .trueBtn{
     width: 100%;
     height: 32px;

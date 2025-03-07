@@ -21,7 +21,7 @@ export const getServerSideProps = async ({ params: { id } }) => ({
 export default function MarkdownEditor({ id }) {
   // MARK: Toast Settings
   const customToastOptions = {
-    position: "top-right",
+    position: "bottom-right",
     autoClose: 2000,
     closeOnClick: true,
     draggable: true,

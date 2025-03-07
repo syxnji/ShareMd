@@ -6,7 +6,7 @@
     border: none;
 }
 .searchGroupContent{
-    width: 500px;
+    width: 90vw;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -14,6 +14,11 @@
     justify-content: center;
     overflow-y: scroll;
     scrollbar-width: none;
+}
+@media (min-width: 768px) {
+    .searchGroupContent{
+        width: 500px;
+    }
 }
 .searchGroupLabel{
     width: 100%;

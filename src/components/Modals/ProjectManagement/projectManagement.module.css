@@ -1,8 +1,13 @@
 .projectContent{
-    width: 500px;
+    width: 90vw;    
     overflow-y: scroll;
     scrollbar-color: #ddd transparent;
     scrollbar-width: thin;
+}
+@media (min-width: 768px) {
+    .projectContent{
+        width: 500px;
+    }
 }
 .project{
     display: flex;
