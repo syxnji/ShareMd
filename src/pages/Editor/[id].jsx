@@ -136,8 +136,6 @@ export default function MarkdownEditor({ id }) {
 
       const fetchNoteUpd = async () => {
         try {
-          const encodedContent = encodeURIComponent(noteContent);
-          const encodedTitle = encodeURIComponent(noteTitle);
           const updResponse = await fetch(
             `/api/patch`,
             {
@@ -148,8 +146,8 @@ export default function MarkdownEditor({ id }) {
               body: JSON.stringify({
                 table: "updateNote",
                 id: id,
-                title: encodedTitle,
-                content: encodedContent,
+                title: noteTitle,
+                content: noteContent,
               }),
             },
           );
